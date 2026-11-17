@@ -70,7 +70,28 @@ No abras `index.html` desde el disco (`file://`): no se puede instalar. Usa siem
 - Las preferencias de cada dispositivo (vista, tema, barra lateral, filtros) van en `localStorage` con la clave `habitos_v1_ui`.
 - El token de Habitica (fase 4) irá en `localStorage` con la clave `habitos_v1_hab`, **fuera** de los datos: nunca entra en las copias ni en los archivos exportados.
 - **No uses «Borrar datos del sitio» de Chrome**: borraría también las otras apps publicadas en `carlosmera10.github.io`. Para empezar de cero, **Ajustes y avisos → Aplicación → Vaciar** (solo afecta a Hábitos).
-- Para pasar los datos entre el PC y el móvil: **Exportar** en uno e **Importar → Fusionar** en el otro.
+- Sin sincronización, para pasar los datos entre el PC y el móvil: **Exportar** en uno e **Importar → Fusionar** en el otro.
+
+## Sincronizar el PC y el móvil
+
+En **Ajustes y avisos → Sincronización (PC y móvil)**, con los pasos para crear el token dentro de la propia pantalla:
+
+1. Pega un token de GitHub *fine-grained* con un único permiso de cuenta: **Gists: Read and write**. **Sirve el mismo token del Revisor de Tareas.**
+2. Elige una contraseña de cifrado (mínimo 8 caracteres, la misma en todos los dispositivos) y pulsa **Activar sincronización**.
+3. Repite en el otro dispositivo con el mismo token y la misma contraseña.
+
+- Los datos se guardan en un **Gist secreto** propio (`habitos-sync.json`, distinto del del Revisor), **cifrados** en el navegador (PBKDF2-SHA256 de 600 000 vueltas + AES-GCM de 256 bits, con compresión previa).
+- El token y la contraseña se guardan **solo en el `localStorage` de cada dispositivo** (`habitos_v1_sync`) y nunca entran en las copias.
+- Se sincroniza al abrir la app, unos segundos después de cada cambio, al volver a la app o recuperar la conexión, y cada 3 minutos.
+- **Fusión elemento a elemento**: en cada hábito, registro, pausa, categoría y etiqueta gana la versión más reciente; los borrados se anotan (180 días) para que no reaparezcan. Un dispositivo recién estrenado adopta lo que hay en GitHub.
+- **No se sincronizan** los ajustes ni la interfaz de cada dispositivo.
+- Si algo falla (token caducado, contraseña incorrecta…), aparece un aviso y un punto rojo en «Ajustes y avisos»; la sincronización queda en pausa hasta corregirlo y pulsar «Sincronizar ahora».
+
+## Días pasados
+
+- Cualquier día pasado se registra desde «Hoy» (flechas, fecha o «Ayer»), «Varios días», el calendario o la ficha del hábito.
+- Registrar un día **anterior al inicio** adelanta el inicio del hábito a ese día (en «Evitar», el inicio se cambia en el editor).
+- En la ficha: **Editar** en el calendario marca y desmarca días de un toque, y **Rellenar días** marca (o borra) todos los días de un periodo, eligiendo los días de la semana y, en los de cantidad, la cantidad.
 
 ## Publicación
 
@@ -82,4 +103,4 @@ Se sirve con GitHub Pages desde la rama `main`, carpeta `/ (root)`. Archivos: `i
 
 ## Pruebas
 
-Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
+Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `syncNow`, `fingerprint`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.

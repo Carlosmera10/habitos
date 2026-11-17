@@ -397,8 +397,18 @@ i.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:v
 .hm.big .hm-grid b.fut{color:transparent}
 .hm.big .hm-days{font-size:.7rem}
 .day-mode{margin-left:4px}
+.hm.edit .hm-grid b:not(.x):not(.fut){cursor:pointer;outline:1px dashed var(--line-strong);outline-offset:-1px}
+.edit-note{margin:-4px 0 10px}
+.dg-cell.before{border-style:dashed}
 .hname-btn{background:transparent;color:var(--ink);padding:0;font-weight:600;text-align:left;justify-content:flex-start;min-width:0}
 .hname-btn:hover{background:transparent;text-decoration:underline}
+.sync-status{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.sync-status.bad{color:var(--danger)}
+.sync-help{margin-top:14px}
+.sync-help summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem}
+.sync-help ol{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;line-height:1.55}
+.sync-error [data-v=settings],.sync-error [data-v=more]{position:relative}
+.sync-error [data-v=settings]::after,.sync-error [data-v=more]::after{content:'';position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:#ef5f5a}
 @media(max-width:760px){
   .summary{grid-template-columns:auto repeat(2,minmax(0,1fr))}
   .summary .sring{grid-row:span 2}
@@ -525,6 +535,7 @@ i.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:v
   <symbol id="i-table" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
   <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
 </svg>
 
@@ -924,6 +935,12 @@ function setSkip(hid,d,on,reason){
     delete state.deleted['skip:'+k];
   } else if(i>=0){ state.skips.splice(i,1); state.deleted['skip:'+k]=nowIso(); }
 }
+/* Registrar un día anterior al inicio adelanta el inicio del hábito a ese día (salvo en «Evitar», donde se cambia en el editor) */
+const canBackfill=(h,d)=>h.kind!=='avoid'&&d<h.startDate&&d<=today()&&(!h.endDate||d<=h.endDate);
+function extendStart(hid,d){
+  const x=state.habits.find(q=>q.id===hid); if(!x||x.kind==='avoid'||d>=x.startDate) return false;
+  x.startDate=d; fixHistory(x,x.schedule); x.updatedAt=nowIso(); return true;
+}
 function deleteHabit(id){
   const now=nowIso();
   state.habits=state.habits.filter(h=>h.id!==id); state.deleted['habit:'+id]=now;
@@ -942,7 +959,8 @@ function mergeStates(a,b){
   for(const [k,v] of Object.entries(b.deleted)) if(!del[k]||del[k]<v) del[k]=v;
   for(const [name,pre,kf] of COLLECTIONS){
     const m=new Map(); for(const it of a[name]) m.set(kf(it),it);
-    for(const it of b[name]){ const k=kf(it), p=m.get(k); if(!p||it.updatedAt>p.updatedAt) m.set(k,it); }
+    /* Empate de fecha: elección fija (por contenido) para que todos los dispositivos coincidan */
+    for(const it of b[name]){ const k=kf(it), p=m.get(k); if(!p||it.updatedAt>p.updatedAt||(it.updatedAt===p.updatedAt&&JSON.stringify(it)>JSON.stringify(p))) m.set(k,it); }
     out[name]=[...m.values()].filter(it=>{ const t=del[pre+kf(it)]; return !t||t<it.updatedAt; });
   }
   const seen=new Set(out.habitica.map.map(x=>x.habiticaId));
@@ -1040,7 +1058,7 @@ function commit(msg,fn){
   const r=fn();
   if(r===false) return false;
   undoStack.push(snap); if(undoStack.length>60) undoStack.shift();
-  touch(); save(); renderApp();
+  touch(); save(); renderApp(); if(typeof scheduleSync==='function') scheduleSync();
   const m=typeof r==='string'?r:msg;
   if(m) showToast(m,{action:'Deshacer',fn:undo,undo:true,timeout:8000}); else hideUndoToast();
   return true;
@@ -1054,12 +1072,268 @@ function undo(quiet=false){
   const now=nowIso(), cur=keyed(state), prev=keyed(st);
   for(const [k,it] of prev){ const c=cur.get(k); if(!c||JSON.stringify(c)!==JSON.stringify(it)){ it.updatedAt=now; delete st.deleted[k]; } }
   for(const k of cur.keys()) if(!prev.has(k)) st.deleted[k]=now;
-  state=st; touch(); save(); renderApp();
+  state=st; touch(); save(); renderApp(); scheduleSync();
   if(!quiet) showToast('↩️ Cambio deshecho');
   return true;
 }
 /* Ajustes: se guardan sin deshacer */
 function setSetting(k,v){ state.settings[k]=v; touch(); save(); renderApp(); }
+
+/* ================= Sincronización (Gist secreto de GitHub, cifrado) ================= */
+/* Igual que en el Revisor de Tareas: el mismo token de GitHub sirve para las dos apps; cada una usa su propio Gist */
+const SYNC_KEY='habitos_v1_sync', SYNC_FILE='habitos-sync.json', SYNC_DESC='Hábitos · copia cifrada (no borrar ni editar)', PBKDF2_ITER=600000, AAD='habitos|1';
+const tsOf=s=>{ const n=Date.parse(s); return isNaN(n)?0:n; };
+function syncErr(kind,msg){ const e=new Error(msg); e.kind=kind; return e; }
+/* Lo que se sincroniza: los datos, no los ajustes ni la interfaz de cada dispositivo */
+const syncPart=st=>({habits:st.habits,logs:st.logs,skips:st.skips,categories:st.categories,tags:st.tags,habitica:{map:st.habitica.map,history:st.habitica.history},deleted:st.deleted});
+function fingerprint(st){
+  const p=syncPart(st), s=JSON.stringify([p.habits,p.logs.slice().sort((a,b)=>logKey(a)<logKey(b)?-1:1),p.skips.slice().sort((a,b)=>logKey(a)<logKey(b)?-1:1),p.categories,p.tags,p.habitica,Object.keys(p.deleted).sort().map(k=>k+p.deleted[k])]);
+  let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(16)+':'+s.length;
+}
+/* Un dispositivo recién estrenado (sin datos propios) adopta lo de GitHub tal cual */
+const isPristine=st=>!st.habits.length&&!st.logs.length&&!st.skips.length&&!st.tags.length&&!Object.keys(st.deleted).length&&st.categories.every(c=>c.updatedAt===EPOCH);
+
+/* ---- Cifrado: PBKDF2 (600 000 vueltas) + AES-GCM de 256 bits ---- */
+const te=new TextEncoder(), td=new TextDecoder();
+const b64e=u8=>{ let s=''; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s); };
+const b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const keyCache={id:'',key:null};
+async function deriveKey(pass,salt,iter){
+  const id=pass+'|'+b64e(salt)+'|'+iter;
+  if(keyCache.id===id) return keyCache.key;
+  const base=await crypto.subtle.importKey('raw',te.encode(pass),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+  keyCache.id=id; keyCache.key=key; return key;
+}
+async function pipeBytes(u8,stream){
+  const w=stream.writable.getWriter(); w.write(u8).catch(()=>{}); w.close().catch(()=>{});
+  return new Uint8Array(await new Response(stream.readable).arrayBuffer());
+}
+async function encryptState(st,saltB64){
+  const payload=Object.assign({app:'habitos',v:1,savedAt:nowIso()},syncPart(st));
+  let bytes=te.encode(JSON.stringify(payload)), z=0;
+  if(typeof CompressionStream==='function'){ try{ bytes=await pipeBytes(bytes,new CompressionStream('gzip')); z=1; }catch(e){ bytes=te.encode(JSON.stringify(payload)); z=0; } }
+  const salt=saltB64?b64d(saltB64):crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+  const key=await deriveKey(syncCfg.pass,salt,PBKDF2_ITER);
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:te.encode(AAD)},key,bytes));
+  return JSON.stringify({app:'habitos',v:1,kdf:'PBKDF2-SHA256',iter:PBKDF2_ITER,salt:b64e(salt),iv:b64e(iv),z,data:b64e(ct)});
+}
+async function decryptEnv(text){
+  const bad=()=>syncErr('format','Los datos guardados en GitHub no tienen el formato esperado.');
+  let env; try{ env=JSON.parse(text); }catch(e){ throw bad(); }
+  if(!env||env.app!=='habitos'||!env.data||!env.salt||!env.iv) throw bad();
+  if(env.v!==1) throw syncErr('version','Los datos de GitHub los guardó una versión más nueva de la app. Cierra la app y ábrela de nuevo para actualizarla.');
+  const key=await deriveKey(syncCfg.pass,b64d(env.salt),env.iter||PBKDF2_ITER);
+  let plain;
+  try{ plain=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(env.iv),additionalData:te.encode(AAD)},key,b64d(env.data))); }
+  catch(e){ throw syncErr('password','La contraseña de cifrado no coincide con la de los datos guardados en GitHub.'); }
+  if(env.z){
+    if(typeof DecompressionStream!=='function') throw syncErr('version','Este navegador no puede leer los datos comprimidos de GitHub. Actualiza Chrome.');
+    plain=await pipeBytes(plain,new DecompressionStream('gzip'));
+  }
+  let obj; try{ obj=JSON.parse(td.decode(plain)); }catch(e){ throw bad(); }
+  const st=normalizeState({habits:obj.habits,logs:obj.logs,skips:obj.skips,categories:obj.categories,tags:obj.tags,habitica:obj.habitica,deleted:obj.deleted});
+  if(!st) throw bad();
+  return {st,salt:env.salt};
+}
+
+/* ---- API de GitHub (Gists) ---- */
+async function gh(path,opts={}){
+  let res;
+  try{
+    res=await fetch('https://api.github.com'+path,{method:opts.method||'GET',cache:'no-store',
+      headers:Object.assign({Accept:'application/vnd.github+json',Authorization:'Bearer '+syncCfg.token},opts.body?{'Content-Type':'application/json'}:{}),
+      body:opts.body?JSON.stringify(opts.body):undefined});
+  }catch(e){ throw syncErr('network','No se ha podido conectar con GitHub.'); }
+  if(res.ok) return res;
+  if(res.status===401) throw syncErr('token','El token de GitHub no es válido o ha caducado.');
+  if(res.status===403||res.status===429){
+    if(res.status===429||res.headers.get('x-ratelimit-remaining')==='0') throw syncErr('limit','GitHub ha limitado las peticiones por un rato. Se reintentará solo.');
+    throw syncErr('perm','El token no tiene permiso para los Gists. Créalo de nuevo con «Gists: Read and write».');
+  }
+  if(res.status===404) throw syncErr('notfound','No se encuentra el Gist de sincronización.');
+  throw syncErr('http','GitHub ha respondido con un error ('+res.status+').');
+}
+/* Busca el Gist de la app; si hay varios, el más antiguo (así todos los dispositivos eligen el mismo) */
+async function findGist(){
+  let best=null;
+  for(let page=1;page<=10;page++){
+    const list=await (await gh(`/gists?per_page=100&page=${page}`)).json();
+    list.forEach(g=>{ if(g.files&&g.files[SYNC_FILE]&&(!best||tsOf(g.created_at)<tsOf(best.created_at))) best=g; });
+    if(list.length<100) break;
+  }
+  return best?best.id:'';
+}
+async function readGist(id){
+  const g=await (await gh('/gists/'+encodeURIComponent(id))).json(), f=g.files&&g.files[SYNC_FILE];
+  if(!f) return null;
+  if(f.truncated||typeof f.content!=='string'){
+    let r; try{ r=await fetch(f.raw_url,{cache:'no-store'}); }catch(e){ throw syncErr('network','No se ha podido conectar con GitHub.'); }
+    if(!r.ok) throw syncErr('http','GitHub ha respondido con un error ('+r.status+').');
+    return r.text();
+  }
+  return f.content;
+}
+async function writeGist(id,content){
+  if(id){ await gh('/gists/'+encodeURIComponent(id),{method:'PATCH',body:{files:{[SYNC_FILE]:{content}}}}); return id; }
+  const g=await (await gh('/gists',{method:'POST',body:{description:SYNC_DESC,public:false,files:{[SYNC_FILE]:{content}}}})).json();
+  return g.id;
+}
+
+/* ---- Ajustes de sincronización de este dispositivo (solo en su localStorage, nunca en las copias) ---- */
+function loadSyncCfg(){
+  try{
+    const c=JSON.parse(localStorage.getItem(SYNC_KEY));
+    if(c&&typeof c==='object'&&c.token&&c.pass) return {token:String(c.token),pass:String(c.pass),gistId:String(c.gistId||''),lastSync:validIso(c.lastSync)?c.lastSync:'',synced:!!c.synced};
+  }catch(e){}
+  return null;
+}
+let syncCfg=loadSyncCfg();
+function saveSyncCfg(){ try{ if(syncCfg) localStorage.setItem(SYNC_KEY,JSON.stringify(syncCfg)); else localStorage.removeItem(SYNC_KEY); }catch(e){} }
+const syncRt={busy:false,pending:false,timer:null,status:syncCfg?'ok':'off',err:null,halt:'',toastKind:''};
+let renderPending=false;
+function applyMerged(st){
+  st.settings=state.settings;
+  state=st; undoStack.length=0; touch(); flush();
+  if($('dlg').open) renderPending=true; else renderApp();
+}
+async function syncCycle(){
+  if(!syncCfg.gistId){ syncCfg.gistId=await findGist(); saveSyncCfg(); }
+  let remote=null, salt='';
+  if(syncCfg.gistId){
+    let text;
+    try{ text=await readGist(syncCfg.gistId); }
+    catch(e){ if(e.kind==='notfound'){ syncCfg.gistId=''; saveSyncCfg(); text=null; } else throw e; }
+    if(text){ const r=await decryptEnv(text); remote=r.st; salt=r.salt; }
+  }
+  /* Desde aquí hasta aplicar la fusión no hay esperas: se usa el estado de este mismo instante */
+  const local=state, localFp=fingerprint(local), remoteFp=remote?fingerprint(remote):'';
+  let merged=local;
+  if(remote){ merged=(!syncCfg.synced&&isPristine(local))?normalizeState(Object.assign(clone(remote),{settings:local.settings})):mergeStates(local,remote); merged.settings=local.settings; }
+  const mergedFp=fingerprint(merged);
+  if(merged!==local&&mergedFp!==localFp) applyMerged(merged);
+  if(!remote||mergedFp!==remoteFp){
+    const content=await encryptState(merged,salt);
+    syncCfg.gistId=await writeGist(syncCfg.gistId,content);
+  }
+  syncCfg.synced=true;
+}
+async function syncNow(opts={}){
+  if(!syncCfg) return {ok:false};
+  if(syncRt.busy){ syncRt.pending=true; return {ok:false,busy:true}; }
+  if(syncRt.halt&&!opts.force) return {ok:false};
+  if(pendingSave()) await flush();
+  syncRt.busy=true; syncRt.halt=''; setSyncStatus('syncing');
+  let res={ok:true};
+  try{
+    const run=()=>syncCycle();
+    if(navigator.locks&&navigator.locks.request) await navigator.locks.request('habitos_sync',run); else await run();
+    syncCfg.lastSync=nowIso(); saveSyncCfg(); syncRt.err=null; syncRt.toastKind='';
+    setSyncStatus('ok');
+  }catch(e){ res={ok:false,err:e}; handleSyncError(e,opts.quiet); }
+  finally{ syncRt.busy=false; const bx=document.getElementById('syncBox'); if(bx) fillSyncBox(bx); if(syncRt.pending){ syncRt.pending=false; if(!syncRt.halt) scheduleSync(2000); } }
+  return res;
+}
+function scheduleSync(delay=5000){
+  if(!syncCfg||syncRt.halt) return;
+  clearTimeout(syncRt.timer); syncRt.timer=setTimeout(()=>syncNow(),delay);
+}
+function handleSyncError(e,quiet){
+  const known=e&&e.kind, kind=known||'unknown', msg=known?e.message:'Ha ocurrido un error inesperado al sincronizar.';
+  if(!known) console.error(e);
+  syncRt.err={kind,msg};
+  if(['token','password','perm','version','format'].includes(kind)) syncRt.halt=kind;
+  setSyncStatus('error');
+  if(!quiet&&kind!=='network'&&kind!=='limit'&&syncRt.toastKind!==kind){
+    syncRt.toastKind=kind;
+    showToast('⚠️ '+msg+(syncRt.halt?' La sincronización está en pausa.':''),{action:'Abrir ajustes',fn:()=>go('settings'),timeout:20000});
+  }
+}
+function setSyncStatus(s){
+  syncRt.status=s;
+  document.documentElement.classList.toggle('sync-error',s==='error'&&!!syncRt.halt);
+  const box=document.getElementById('syncBox'); if(box) fillSyncBox(box);
+  else if(ready&&ui.view==='settings'&&!$('dlg').open) renderApp();
+}
+function syncStatusText(){
+  if(!syncCfg) return 'Desactivada en este dispositivo.';
+  if(syncRt.status==='syncing') return 'Sincronizando…';
+  if(syncRt.status==='error'&&syncRt.err) return syncRt.err.msg+(syncRt.halt?' Sincronización en pausa: corrígelo y pulsa «Sincronizar ahora».':' Se reintentará.');
+  const d=syncCfg.lastSync?new Date(syncCfg.lastSync):null;
+  return 'Activa.'+(d?` Última vez: ${ymd(d)===today()?'hoy':fmtDate(ymd(d))}, a las ${pad(d.getHours())}:${pad(d.getMinutes())}.`:'');
+}
+async function activateSync(token,p1,p2){
+  const prev=syncCfg; token=(token||'').trim()||(prev?prev.token:'');
+  if(!token) return 'Pega el token de GitHub (empieza por github_pat_).';
+  if(!prev||p1||p2){
+    if((p1||'').length<8) return 'La contraseña de cifrado debe tener al menos 8 caracteres.';
+    if(p1!==p2) return 'Las dos contraseñas no coinciden.';
+  }
+  const pass=(p1||(prev?prev.pass:'')).normalize('NFC');
+  const sameAccount=prev&&prev.token===token;
+  syncCfg={token,pass,gistId:sameAccount?prev.gistId:'',lastSync:'',synced:sameAccount?prev.synced:false};
+  keyCache.id=''; syncRt.halt='';
+  let r=await syncNow({force:true,quiet:true});
+  if(!r.ok&&r.err&&r.err.kind==='password'&&syncCfg.gistId&&
+     confirm('La contraseña no coincide con la de los datos que ya hay en GitHub.\n\nSi es la primera vez o te equivocaste al crearla, puedes SOBRESCRIBIR esa copia con los datos de ESTE dispositivo (se perderá lo que solo estuviera en esa copia). ¿Sobrescribir?')){
+    try{ syncCfg.synced=true; syncCfg.lastSync=nowIso(); await writeGist(syncCfg.gistId,await encryptState(state,'')); saveSyncCfg(); syncRt.err=null; syncRt.halt=''; setSyncStatus('ok'); r={ok:true}; }
+    catch(e){ r={ok:false,err:e}; }
+  }
+  if(r.ok){ saveSyncCfg(); showToast('✅ Sincronización activada',{timeout:4000}); startSyncTimer(); return ''; }
+  syncCfg=prev; saveSyncCfg(); syncRt.err=null; syncRt.halt=''; setSyncStatus(prev?'ok':'off');
+  const e=r.err; return (e&&e.kind?e.message:'No se ha podido activar la sincronización.')+(e&&e.kind==='token'?' Revisa que has copiado el token entero.':'');
+}
+function disableSync(){
+  if(!confirm('Se borrarán el token y la contraseña de este dispositivo y dejará de sincronizar.\n\nTus hábitos en este dispositivo y la copia cifrada en GitHub no se tocan. ¿Continuar?')) return;
+  clearTimeout(syncRt.timer); syncCfg=null; saveSyncCfg(); syncRt.err=null; syncRt.halt=''; keyCache.id=''; setSyncStatus('off'); renderApp();
+}
+/* Sincroniza al abrir, al volver a la app, al recuperar la conexión y cada 3 minutos con la app a la vista */
+let syncTimer=null;
+function startSyncTimer(){ clearInterval(syncTimer); if(syncCfg) syncTimer=setInterval(()=>{ if(document.visibilityState==='visible') syncNow({quiet:true}); },180000); }
+window.addEventListener('online',()=>{ if(syncCfg) syncNow({quiet:true}); });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&syncCfg&&ready) scheduleSync(800); });
+$('dlg').addEventListener('close',()=>{ if(renderPending){ renderPending=false; renderApp(); } });
+
+/* ---- Sección de Ajustes ---- */
+function fillSyncBox(box){
+  const st=box.querySelector('.sync-status'); st.textContent=syncStatusText(); st.classList.toggle('bad',syncRt.status==='error');
+  const on=!!syncCfg;
+  box.querySelector('[data-k=act]').textContent=on?'Guardar cambios':'Activar sincronización';
+  box.querySelector('[data-k=now]').hidden=!on; box.querySelector('[data-k=off]').hidden=!on;
+  box.querySelector('[data-k=now]').disabled=syncRt.busy; box.querySelector('[data-k=act]').disabled=syncRt.busy;
+  box.querySelector('[data-k=tok]').placeholder=on?'(guardado; escribe uno nuevo para cambiarlo)':'github_pat_…';
+  box.querySelector('[data-k=p1]').placeholder=on?'(guardada; escribe otra para cambiarla)':'';
+}
+function syncCard(){
+  const c=el('section','card'); c.id='syncBox'; c.append(h2i('Sincronización (PC y móvil)','refresh'));
+  c.append(el('p','sync-status',''));
+  const g=el('div','form-grid');
+  const tok=field('input',{type:'password',autocomplete:'off',spellcheck:false}); tok.dataset.k='tok'; g.append(fld('Token de GitHub',tok,'full'));
+  const p1=field('input',{type:'password',autocomplete:'new-password'}); p1.dataset.k='p1'; g.append(fld('Contraseña de cifrado',p1));
+  const p2=field('input',{type:'password',autocomplete:'new-password'}); p2.dataset.k='p2'; g.append(fld('Repite la contraseña',p2));
+  const err=el('div','err full'); g.append(err); c.append(g);
+  const r=el('div','row'); r.style.marginTop='8px';
+  const act=btn('Activar sincronización','',null,async()=>{ err.textContent=''; act.disabled=true; const m=await activateSync(tok.value,p1.value,p2.value); act.disabled=false; const bx=document.getElementById('syncBox')||c; if(m) bx.querySelector('.err').textContent=m; else bx.querySelectorAll('input').forEach(i=>{ i.value=''; }); fillSyncBox(bx); }); act.dataset.k='act';
+  const now=btn('Sincronizar ahora','secondary',null,async()=>{ await syncNow({force:true}); fillSyncBox(c); },'refresh'); now.dataset.k='now';
+  const off=btn('Desactivar','danger',null,disableSync); off.dataset.k='off';
+  r.append(act,now,off); c.append(r);
+  const det=el('details','sync-help'); det.append(el('summary','','Cómo crear el token de GitHub'));
+  const ol=el('ol');
+  for(const s of ['Si ya tienes el token del Revisor de Tareas (permiso «Gists: Read and write»), sirve el mismo: pégalo y salta al último paso.',
+    'En el ordenador, entra en github.com e inicia sesión con tu cuenta.',
+    'Pulsa tu foto de perfil (arriba a la derecha) y elige «Settings».',
+    'En el menú de la izquierda, baja hasta el final y pulsa «Developer settings».',
+    'Despliega «Personal access tokens» y pulsa «Fine-grained tokens».',
+    'Pulsa el botón verde «Generate new token».',
+    '«Token name»: «Hábitos sync». «Expiration»: «Custom» y una fecha dentro de un año (anótala: al caducar habrá que crear otro). «Repository access»: «Public repositories (read-only)».',
+    'En «Permissions», pulsa «Add permissions» (o despliega «Account permissions»), marca «Gists» y elige «Read and write». No añadas ningún otro.',
+    'Pulsa «Generate token» y confirma. Copia el token (empieza por github_pat_): GitHub lo muestra una sola vez.',
+    'Pégalo arriba, escribe dos veces la contraseña de cifrado (mínimo 8 caracteres) y pulsa «Activar sincronización».',
+    'En el otro dispositivo repite solo el paso anterior, con el mismo token y la misma contraseña. Pásalos con un gestor de contraseñas, no por correo ni chat.']) ol.append(el('li','',s));
+  det.append(ol); c.append(det);
+  fillSyncBox(c);
+  return c;
+}
 
 /* ================= Navegación ================= */
 const VIEWS=[['today','Hoy','sun'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['habits','Hábitos','checks'],['settings','Ajustes y avisos','sliders'],['help','Instrucciones','help']];
@@ -1076,6 +1350,7 @@ function renderNav(){
     const b=btn('', 'nav-item'+(ui.view===v?' active':''),null,()=>go(v));
     b.append(ic(icon),el('span','nav-label',label));
     if(v==='today'&&tc.total){ const c=el('span','nav-count'+(tc.done===tc.total?' complete':''),`${tc.done}/${tc.total}`); b.append(c); }
+    b.dataset.v=v;
     if(ui.view===v) b.setAttribute('aria-current','page');
     if(document.documentElement.classList.contains('side-closed')) b.title=label;
     nl.append(b);
@@ -1083,7 +1358,7 @@ function renderNav(){
   const bn=$('bottomNav'); bn.replaceChildren();
   const mk=(v,label,icon)=>{ const b=btn('',ui.view===v?'active':'',null,()=>go(v)); b.append(ic(icon),el('span','',label)); if(ui.view===v) b.setAttribute('aria-current','page'); return b; };
   bn.append(mk('today','Hoy','sun'),mk('calendar','Calendario','calendar'),mk('stats','Estadísticas','bar-chart'),mk('tables','Tablas','table'));
-  const more=btn('',['habits','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.append(ic('menu'),el('span','','Más')); bn.append(more);
+  const more=btn('',['habits','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.dataset.v='more'; more.append(ic('menu'),el('span','','Más')); bn.append(more);
 }
 
 /* ================= Repintado ================= */
@@ -1122,10 +1397,11 @@ function renderToday(v){
   nav.append(ms);
   row.append(tt,nav); head.append(row);
 
-  const active=habitsSorted().filter(h=>!h.archived&&inRange(h,d));
+  const active=habitsSorted().filter(h=>!h.archived&&(inRange(h,d)||canBackfill(h,d)));
   const due=[], notDue=[]; let total=0, done=0;
   for(const h of active){
     const s=dayStatus(h,d);
+    if(!inRange(h,d)){ s.before=true; notDue.push([h,s]); continue; }
     if(s.kind==='day'&&!s.scheduled){ notDue.push([h,s]); continue; }
     due.push([h,s]);
     if(!s.counts) continue;
@@ -1184,6 +1460,7 @@ function habitRow(h,s,d){
   if(s.kind==='week') meta.append(el('span','',`${s.week.count}/${s.week.required||s.week.times} ${d>=weekStartOf(today())?'esta semana':'esa semana'}`));
   if(h.kind==='count') meta.append(el('span','',`Objetivo: ${fmtNum(h.target.amount)}${h.target.unit?' '+h.target.unit:''}`));
   if(h.kind==='avoid'&&!s.paused&&s.scheduled!==false) meta.append(el('span','chip'+(log?' slip':' clean'),log?'Recaída':'Sin recaídas'));
+  if(s.before) meta.append(el('span','chip',`Empieza el ${fmtDate(h.startDate)}`));
   if(s.paused){ const c=el('span','chip pause'); c.append(ic('pause'),document.createTextNode(s.skip.reason||'Pausa')); meta.append(c); }
   if(log&&log.note){ const n=el('span',''); n.append(ic('message')); n.title=log.note; n.setAttribute('aria-label','Tiene nota'); meta.append(n); }
   body.append(meta); li.append(body);
@@ -1198,11 +1475,11 @@ function habitRow(h,s,d){
 function toggleDone(h,d){
   if(h.kind==='avoid'){ const slip=!!getLog(h.id,d); commit(slip?'Recaída quitada':'⚠️ Recaída anotada',()=>{ setLog(h.id,d,slip?0:1); }); return; }
   const done=isDoneDay(h,d);
-  commit(done?'Desmarcado':'✅ Hecho',()=>{ setLog(h.id,d,done?0:1); if(!done&&isSkipped(h.id,d)) setSkip(h.id,d,false); });
+  commit(done?'Desmarcado':'✅ Hecho',()=>{ setLog(h.id,d,done?0:1); if(!done&&isSkipped(h.id,d)) setSkip(h.id,d,false); if(!done&&extendStart(h.id,d)) return `✅ Hecho. El hábito empieza ahora el ${fmtDate(d)}`; });
 }
 function bump(h,d,delta){
   const log=getLog(h.id,d), v=Math.max(0,Math.round(((log?log.value:0)+delta)*1000)/1000);
-  commit(null,()=>{ setLog(h.id,d,v); if(v>0&&isSkipped(h.id,d)) setSkip(h.id,d,false); return v>=h.target.amount&&(!log||log.value<h.target.amount)?'✅ Objetivo cumplido':`${h.name}: ${fmtNum(v)}${h.target.unit?' '+h.target.unit:''}`; });
+  commit(null,()=>{ setLog(h.id,d,v); if(v>0&&isSkipped(h.id,d)) setSkip(h.id,d,false); if(v>0) extendStart(h.id,d); return v>=h.target.amount&&(!log||log.value<h.target.amount)?'✅ Objetivo cumplido':`${h.name}: ${fmtNum(v)}${h.target.unit?' '+h.target.unit:''}`; });
 }
 function backupBanner(){
   const s=state.settings; if(!s.backupDays||!state.habits.length) return null;
@@ -1264,7 +1541,7 @@ function openDayDialog(h,d){
       const nt=note.value.trim();
       if(nt&&!(v>0)){ err.textContent=h.kind==='check'?'La nota se guarda en los días hechos':h.kind==='avoid'?'La nota se guarda en los días con recaída':'La nota se guarda en los días con cantidad'; return; }
       closeDialog();
-      commit('Registro guardado',()=>{ setLog(h.id,d,v,nt); setSkip(h.id,d,pc.checked,reason.value.trim()); });
+      commit('Registro guardado',()=>{ setLog(h.id,d,v,nt); setSkip(h.id,d,pc.checked,reason.value.trim()); if(v>0&&extendStart(h.id,d)) return `Registro guardado. El hábito empieza ahora el ${fmtDate(d)}`; });
     },'check'));
     ft.append(r); dlg.append(ft);
   });
@@ -1575,6 +1852,7 @@ function renderSettings(v){
   for(const [k,l] of [[0,'Nunca'],[7,'Cada semana'],[14,'Cada 2 semanas'],[30,'Cada mes']]) bd.append(opt(String(k),l,state.settings.backupDays===k));
   bd.addEventListener('change',()=>setSetting('backupDays',Number(bd.value))); r.append(bd); c.append(r);
   v.append(c);
+  v.append(syncCard());
   // App
   c=el('section','card'); c.append(h2i('Aplicación','monitor-down'));
   if(deferredPrompt){ r=el('div','set-row'); r.append(el('span','lbl','Instalar en este dispositivo'),btn('Instalar app','',null,installApp,'monitor-down')); c.append(r); }
@@ -1791,7 +2069,7 @@ function calCell(d,h,habits){
 function openDay(d,h){
   hideTip();
   if(d>today()) return;
-  if(h){ if(inRange(h,d)) openDayDialog(h,d); return; }
+  if(h){ if(inRange(h,d)||canBackfill(h,d)) openDayDialog(h,d); return; }
   ui.view='today'; saveUI(); lastView=null; selDate=d; renderApp();
 }
 
@@ -1802,7 +2080,7 @@ function heatmap(h,habits,period,key,opts={}){
   let start,end,lo,hi;
   if(period==='12m'){ end=addDaysS(weekStartOf(t),6); start=addDaysS(weekStartOf(t),-52*7); lo=addDaysS(t,-364); hi=t; }
   else { lo=period+'-01-01'; hi=period+'-12-31'; start=weekStartOf(lo); end=addDaysS(weekStartOf(hi),6); }
-  const wrap=el('div','hm'+(opts.numbers?' big':''));
+  const wrap=el('div','hm'+(opts.numbers?' big':'')+(opts.edit?' edit':''));
   const days=el('div','hm-days'); days.append(el('span',''));
   orderedDows().forEach((dw,i)=>days.append(el('span','',i%2===0?DOW_LETTER[dw]:'')));
   const sc=el('div','hm-scroll'); sc.dataset.key=key;
@@ -1833,7 +2111,7 @@ function heatmap(h,habits,period,key,opts={}){
     }
     if(d===t) c.classList.add('today');
     c.setAttribute('data-tip',dayTip(d,info,h));
-    c.addEventListener('click',()=>openDay(d,h));
+    c.addEventListener('click',()=>opts.edit&&h?quickToggle(h,d):openDay(d,h));
     grid.append(c);
   }
   grid.setAttribute('aria-label',`Cuadrícula de ${period==='12m'?'los últimos 12 meses':'el año '+period}: ${done} de ${due} días cumplidos`);
@@ -2113,7 +2391,7 @@ function renderStats(v){
   const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title');
   const h=pickHabit(ui.statHabit);
   tt.append(el('h1','page-title',h?h.name:'Estadísticas')); row.append(tt);
-  if(h){ const act=el('div','head-actions'); act.append(btn('Todos','secondary small',null,()=>{ ui.statHabit=''; saveUI(); renderApp(); },'chev-left'),btn('','secondary small icon','Editar hábito',()=>openHabitEditor(h),'pencil')); row.append(act); }
+  if(h){ const act=el('div','head-actions'); act.append(btn('Todos','secondary small',null,()=>{ ui.statHabit=''; saveUI(); renderApp(); },'chev-left')); if(h.kind!=='avoid') act.append(btn('Rellenar días','secondary small',null,()=>openFillDialog(h),'calendar')); act.append(btn('','secondary small icon','Editar hábito',()=>openHabitEditor(h),'pencil')); row.append(act); }
   head.append(row); head.append(filterBar(true)); v.append(head);
   if(!state.habits.length){ const e=el('div','empty'); e.append(ic('bar-chart'),btn('Crear el primer hábito','',null,()=>openHabitEditor(null),'plus')); v.append(e); return; }
   if(h) renderHabitStats(v,h); else renderGlobalStats(v);
@@ -2167,7 +2445,10 @@ function renderHabitStats(v,h){
       {tools:granSelect(qg,g=>{ ui.qtyGran=g; saveUI(); renderApp(); },'Agrupar la cantidad por',['day','week','month'])}));
   }
   // Calendario con números
-  const cc=el('section','card'); cc.append(h2i('Calendario','calendar')); cc.append(heatmap(h,[h],ui.statPeriod,'hstats',{numbers:true})); v.append(cc);
+  const cc=el('section','card'), chd=el('div','card-head'); chd.append(h2i('Calendario','calendar'));
+  const eb=btn(calEdit?'Terminar':'Editar',calEdit?'small':'secondary small',null,()=>{ calEdit=!calEdit; renderApp(); },calEdit?'check':'pencil'); eb.setAttribute('aria-pressed',String(calEdit)); chd.append(eb); cc.append(chd);
+  if(calEdit) cc.append(el('div','small-print edit-note',h.kind==='count'?'Toca un día para escribir la cantidad.':h.kind==='avoid'?'Toca un día para anotar o quitar una recaída.':'Toca un día para marcarlo o desmarcarlo. Los días anteriores al inicio también se pueden marcar.'));
+  cc.append(heatmap(h,[h],ui.statPeriod,'hstats',{numbers:true,edit:calEdit})); v.append(cc);
   // Mejores rachas
   const sc=el('section','card'); sc.append(h2i(av?'Mejores rachas sin recaer':'Mejores rachas','flame')); sc.append(streakBars(h,st)); v.append(sc);
   // Frecuencia
@@ -2421,7 +2702,7 @@ function renderDaysGrid(v,d){
     nm.append(rg,el('span','nm',h.name)); g.append(nm);
     for(const x of days){
       const c=el('button','dg-cell'); c.type='button'; c.style.setProperty('--c',`var(--hc-${h.color})`);
-      if(!inRange(h,x)){ c.disabled=true; c.classList.add('out'); g.append(c); continue; }
+      if(!inRange(h,x)){ if(canBackfill(h,x)){ c.classList.add('off','before'); c.append(ic('dot')); c.setAttribute('aria-label',`${h.name}, ${fmtDate(x,true)}: antes del inicio`); c.addEventListener('click',()=>h.kind==='count'?openDayDialog(h,x):toggleDone(h,x)); } else { c.disabled=true; c.classList.add('out'); } g.append(c); continue; }
       const info=habitDay(h,x), log=getLog(h.id,x);
       let lab;
       if(h.kind==='count'){ if(log){ c.append(el('span','qty',fmtNum(log.value))); c.classList.add(info.st==='done'?'on':'part'); lab=fmtNum(log.value); } else if(info.st==='pause'){ c.append(ic('pause')); lab='pausa'; } else { c.append(ic(info.st==='off'?'dot':'x')); c.classList.add(info.st==='off'?'off':'no'); lab='sin registro'; } c.addEventListener('click',()=>openDayDialog(h,x)); }
@@ -2434,6 +2715,62 @@ function renderDaysGrid(v,d){
   v.append(g);
 }
 
+
+/* ---- Días pasados ---- */
+let calEdit=false;   // modo Editar del calendario de la ficha (no se guarda)
+function quickToggle(h,d){
+  hideTip();
+  if(d>today()) return;
+  if(h.kind==='count'){ if(inRange(h,d)||canBackfill(h,d)) openDayDialog(h,d); return; }
+  if(!inRange(h,d)&&!canBackfill(h,d)) return;
+  toggleDone(h,d);
+}
+/* Rellenar un periodo de días pasados de una vez (por ejemplo, al pasar el historial de otra app) */
+function openFillDialog(h){
+  const t=today(), sc=h.schedule;
+  const def=sc.type==='weekdays'?sc.days.slice():[0,1,2,3,4,5,6];
+  const sel=new Set(def);
+  openDialog(dlg=>{
+    dlg.append(modalHeader('Rellenar días · '+h.name,h.icon,h.color));
+    const g=el('div','form-grid');
+    const a=field('input',{type:'date',value:addDaysS(t,-30),max:t}), b=field('input',{type:'date',value:addDaysS(t,-1),max:t});
+    g.append(fld('Desde',a),fld('Hasta',b));
+    const dw=el('div','fld full'); dw.append(el('span','lbl','Días de la semana'));
+    const dd=el('div','days');
+    for(const x of orderedDows()){ const bb=btn(DOW_LETTER[x],'',DOW_NAME[x],()=>{ sel.has(x)?sel.delete(x):sel.add(x); bb.setAttribute('aria-pressed',String(sel.has(x))); }); bb.setAttribute('aria-pressed',String(sel.has(x))); dd.append(bb); }
+    dw.append(dd); g.append(dw);
+    let qty=null;
+    if(h.kind==='count'){ qty=field('input',{type:'text',inputMode:'decimal',value:fmtNum(h.target.amount)}); g.append(fld(`Cantidad por día${h.target.unit?' ('+h.target.unit+')':''}`,qty)); }
+    const aw=el('div','fld full'); aw.append(el('span','lbl','Acción'));
+    const seg=el('div','seg'); let mode='mark';
+    const m1=btn('Marcar como hechos','',null,()=>{ mode='mark'; upd(); },'check'), m2=btn('Borrar registros','',null,()=>{ mode='clear'; upd(); },'trash');
+    const upd=()=>{ m1.setAttribute('aria-pressed',String(mode==='mark')); m2.setAttribute('aria-pressed',String(mode==='clear')); if(qty) qty.disabled=mode==='clear'; };
+    upd(); seg.append(m1,m2); aw.append(seg); g.append(aw);
+    const err=el('div','err full'); g.append(err); dlg.append(g);
+    const ft=el('div','modal-footer'); ft.append(el('span'));
+    const r=el('div','row'); r.append(btn('Cancelar','secondary',null,closeDialog),btn('Aplicar','',null,()=>{
+      if(!validYMD(a.value)||!validYMD(b.value)){ err.textContent='Elige las dos fechas'; return; }
+      const to=b.value>t?t:b.value;
+      if(to<a.value){ err.textContent='La fecha final no puede ser anterior'; return; }
+      if(daysBetween(a.value,to)>3660){ err.textContent='Como máximo diez años de una vez'; return; }
+      if(!sel.size){ err.textContent='Elige al menos un día de la semana'; return; }
+      let val=1; if(qty&&mode==='mark'){ val=parseNum(qty.value); if(!(val>0)){ err.textContent='Escribe una cantidad mayor que cero'; return; } val=Math.round(val*1000)/1000; }
+      if(h.endDate&&a.value>h.endDate){ err.textContent='El hábito terminó antes de esas fechas'; return; }
+      closeDialog();
+      commit(null,()=>{
+        let n=0, moved=false;
+        for(let d=a.value; d<=to; d=addDaysS(d,1)){
+          if(!sel.has(dowOf(d))||(h.endDate&&d>h.endDate)) continue;
+          if(mode==='mark'){ setLog(h.id,d,val); n++; } else if(getLog(h.id,d)){ setLog(h.id,d,0); n++; }
+        }
+        if(mode==='mark') moved=extendStart(h.id,a.value);
+        if(!n) return false;
+        return mode==='mark'?`✅ ${pl(n,'día marcado','días marcados')}${moved?'. El hábito empieza ahora el '+fmtDate(a.value):''}`:`🗑️ ${pl(n,'registro borrado','registros borrados')}`;
+      });
+    },'check'));
+    ft.append(r); dlg.append(ft);
+  });
+}
 /* ---- Menú «Más» del móvil ---- */
 function openMoreMenu(){
   openDialog(dlg=>{
@@ -2453,6 +2790,8 @@ function renderHelp(v){
   const sec=(t,parts)=>{ c.append(el('h2','',t)); for(const p of parts){ if(Array.isArray(p)){ const ul=el('ul'); for(const x of p) ul.append(el('li','',x)); c.append(ul); } else c.append(el('p','',p)); } };
   sec('Hoy',['Muestra los hábitos que tocan el día elegido. Toca el círculo para marcarlo; los de cantidad se suman y restan con + y −. Toca el nombre para abrir el detalle del día: nota, cantidad exacta o pausa.','Con las flechas, el selector de fecha o «Ayer» puedes registrar días pasados. Los hábitos que no tocan ese día están en «No tocan hoy» y también se pueden marcar (no suman a la racha).','Todo cambio se puede deshacer con el botón del aviso o con Ctrl+Z.']);
   sec('Tipos de hábito',[['Sí / no: se marca el día que se hace.','Cantidad: se suma una cantidad (vasos, minutos, páginas…); el día cuenta si llega al objetivo.','Evitar: para dejar algo. Solo se marca el día que se cae (recaída); el resto de días programados cuentan solos como días limpios. Hoy no cuenta hasta que termina, salvo que haya recaída.']]);
+  sec('Días pasados',['Puedes registrar cualquier día pasado desde «Hoy» (flechas, selector de fecha o «Ayer»), desde «Varios días», tocando un día del calendario o desde la ficha del hábito.','Si registras un día anterior al inicio del hábito, el inicio se adelanta a ese día. En la ficha, el botón «Editar» del calendario permite marcar y desmarcar días de un toque, y «Rellenar días» marca (o borra) de una vez todos los días de un periodo, eligiendo los días de la semana: útil para pasar el historial de otra app.','En los hábitos «Evitar», los días anteriores al inicio no se rellenan solos: para adelantar el inicio, cambia «Empieza» en el editor.']);
+  sec('Sincronización',['En Ajustes y avisos → Sincronización pegas un token de GitHub (sirve el del Revisor de Tareas) y eliges una contraseña de cifrado. Repite lo mismo en el otro dispositivo con el mismo token y la misma contraseña.','Los datos se guardan cifrados en un Gist secreto de tu cuenta. Se sincroniza al abrir la app, unos segundos después de cada cambio, al volver a la app y cada 3 minutos. En cada hábito, registro o pausa prevalece la versión más reciente, y los borrados también se propagan. No se sincronizan los ajustes ni la interfaz.','Si ves un punto rojo en Ajustes, la sincronización está en pausa (token caducado, contraseña incorrecta…): ábrelo para ver el motivo.']);
   sec('Hoy en varios días',['El botón «Varios días» de «Hoy» muestra los hábitos en filas y los últimos días en columnas (4 en el móvil, 7 en el PC). Toca una casilla para marcarla o desmarcarla; en los de cantidad se abre el detalle. Toca el nombre para ver sus estadísticas.']);
   sec('Calendario',['Con «Todos los hábitos», cada día toma el color de los hábitos que tocaban: todos cumplidos, algunos, ninguno, pausa o no tocaba. Los hábitos de «X veces por semana» y los registros de días que no tocaban solo suman si se hicieron. Toca un día para abrirlo en «Hoy» y editarlo.','Con un hábito elegido se ve cada día: hecho, parcial (cantidad por debajo del objetivo), no cumplido, pausa o no tocaba. En los de «X veces por semana», la última columna muestra la cuota de cada semana. Toca un día para editar su registro.']);
   sec('Ficha del hábito',['Al elegir un hábito en Estadísticas (o tocar su nombre) se ve su ficha: puntuación, historial, calendario, mejores rachas, frecuencia por día de la semana y mes, cumplimiento por día de la semana y por mes y, en los de cantidad, la media diaria frente al objetivo.','La puntuación mide la fuerza del hábito, como en Loop: es una media de lo cumplido en la que pesan más los días recientes (lo de hace unas 2 semanas cuenta la mitad en un hábito diario; en uno menos frecuente, la memoria es más larga). Los días de pausa y los que no tocan no la cambian.']);
@@ -2511,6 +2850,7 @@ async function boot(){
   }
   renderApp();
   startupNotice();
+  if(syncCfg){ startSyncTimer(); syncNow(); }
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/[?&]nosw\b/.test(location.search)){
     navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{});
   }
@@ -2521,6 +2861,7 @@ window.__habitos={
   get state(){ return state; },
   normalizeState, normalizeItem:(x)=>normalizeItem(x,{catIds:new Set(state.categories.map(c=>c.id)),tagIds:new Set(state.tags.map(g=>g.id)),idx:0}),
   isDue, isScheduled, scoreSeries, scoreAt, relations, weekdayRates, buildTable, dayGlobal, habitDay, monthCompliance, globalCompliance, computeStreaks, computeStats, compliance, unitsOf, mergeStates, undo, commit, exportData, parseNum,
+  syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
   flush
