@@ -4,7 +4,7 @@ Seguimiento personal de hábitos con rachas, pausas y estadísticas. Se instala 
 
 **App:** https://carlosmera10.github.io/habitos/
 
-## Qué hace (fase 1)
+## Qué hace
 
 - **Hábitos** de dos tipos: **sí / no** y **cantidad** (con objetivo diario y unidad: vasos, minutos, páginas…).
 - **Programación**: diario, días concretos de la semana, **X veces por semana** o **cada N días**. Si se cambia, los días anteriores se siguen calculando con la programación que tenían entonces.
@@ -20,8 +20,11 @@ Seguimiento personal de hábitos con rachas, pausas y estadísticas. Se instala 
 - **Copias de seguridad**: exportar a JSON e importar con **Fusionar** (por cada hábito, registro o pausa gana la versión más reciente; lo borrado no reaparece) o **Sustituir todo**. Recordatorio de copia configurable.
 - **Avisos** solo con la app abierta: al abrirla, cuántos hábitos quedan pendientes hoy. Con la app cerrada no hay avisos.
 - Tema automático, claro u oscuro; la semana empieza el lunes (se puede cambiar al domingo).
+- **Calendario** (fase 2): vista mensual de todos los hábitos (todos cumplidos, algunos, ninguno, pausa o no tocaba) o de uno solo (hecho, parcial, no cumplido, pausa o no tocaba; en los de «X veces por semana», una columna con la cuota de cada semana). Tocar un día abre «Hoy» en ese día o el detalle del hábito. Debajo, la cuadrícula de los últimos 12 meses.
+- **Estadísticas** (fase 2): cifras (cumplimiento a 30 días, del mes y del año, días perfectos; o racha, mejor racha y registros de un hábito), barras de cumplimiento por mes y cuadrícula anual, para los últimos 12 meses o un año. Descripción al pasar el ratón y «Ver tabla» con los valores. Con «Todos los hábitos», el cumplimiento es la media de los hábitos que tocaban.
+- En el móvil, barra inferior con Hoy, Calendario, Estadísticas, Hábitos y «Más» (Ajustes y avisos, Instrucciones).
 
-Próximas fases: calendario y estadísticas (2), tablas y gráficos (3), importar de Habitica (4), refinamientos (5).
+Próximas fases: tablas y más gráficos (3), importar de Habitica (4), refinamientos (5).
 
 ## Cumplimiento
 
@@ -70,4 +73,4 @@ Se sirve con GitHub Pages desde la rama `main`, carpeta `/ (root)`. Archivos: `i
 
 ## Pruebas
 
-Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
+Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
