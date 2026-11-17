@@ -22,9 +22,18 @@ Seguimiento personal de hábitos con rachas, pausas y estadísticas. Se instala 
 - Tema automático, claro u oscuro; la semana empieza el lunes (se puede cambiar al domingo).
 - **Calendario** (fase 2): vista mensual de todos los hábitos (todos cumplidos, algunos, ninguno, pausa o no tocaba) o de uno solo (hecho, parcial, no cumplido, pausa o no tocaba; en los de «X veces por semana», una columna con la cuota de cada semana). Tocar un día abre «Hoy» en ese día o el detalle del hábito. Debajo, la cuadrícula de los últimos 12 meses.
 - **Estadísticas** (fase 2): cifras (cumplimiento a 30 días, del mes y del año, días perfectos; o racha, mejor racha y registros de un hábito), barras de cumplimiento por mes y cuadrícula anual, para los últimos 12 meses o un año. Descripción al pasar el ratón y «Ver tabla» con los valores. Con «Todos los hábitos», el cumplimiento es la media de los hábitos que tocaban.
-- En el móvil, barra inferior con Hoy, Calendario, Estadísticas, Hábitos y «Más» (Ajustes y avisos, Instrucciones).
+- **Tipo «Evitar»**: para dejar algo. Solo se marca el día que se recae; el resto de días programados cuentan como limpios (hoy cuenta cuando termina).
+- **Hoy en varios días**: hábitos en filas y los últimos días en columnas (4 en el móvil, 7 en el PC), para marcar de un toque, como la lista de Loop.
+- **Ficha de cada hábito** (al estilo de Loop): resumen con la **puntuación** (fuerza del hábito) y su cambio en el mes y el año, puntuación por día, semana, mes, trimestre o año, historial de veces (o cantidad, o recaídas), media diaria frente al objetivo, calendario con números, mejores rachas, frecuencia por día de la semana y mes, cumplimiento por día de la semana y por mes, y cifras (racha, mejor racha, cumplimiento, tendencia, mejor día, mejor mes, días sin recaer).
+- **Estadísticas de todos**: cumplimiento a 30 días y del periodo, tendencia, días perfectos, mejor y peor día, fin de semana frente a entre semana, cumplimiento por mes y por semana, por día de la semana, ranking por cumplimiento o racha, comparación de hábitos o categorías, reparto por categoría y etiqueta, «Hábitos que van juntos» y cuadrícula anual. Filtros de periodo, categoría, etiqueta y archivados.
+- **Tablas** ordenables y exportables a CSV para Excel (separador «;» y coma decimal): resumen, meses, semanas, días de la semana, categorías y etiquetas, rachas, registros (con búsqueda, páginas de 100 y edición) y relaciones entre hábitos. En el móvil, la primera columna queda fija.
+- En el móvil, barra inferior con Hoy, Calendario, Estadísticas, Tablas y «Más» (Hábitos, Ajustes y avisos, Instrucciones).
 
-Próximas fases: tablas y más gráficos (3), importar de Habitica (4), refinamientos (5).
+### Puntuación
+
+Como en Loop: media móvil exponencial de lo cumplido. Cada día (o semana, en «X veces por semana») con obligación aporta 1 si se cumple, 0 si no, o la parte cumplida (cantidad entre objetivo; registros entre cuota). La vida media es de 13/√f días, siendo f las veces esperadas por día: 13 días en un hábito diario, unos 20 en uno de 3 veces por semana. Las pausas y los días que no tocan no la cambian.
+
+Próximas fases: importar de Habitica (4), refinamientos (5).
 
 ## Cumplimiento
 
@@ -73,4 +82,4 @@ Se sirve con GitHub Pages desde la rama `main`, carpeta `/ (root)`. Archivos: `i
 
 ## Pruebas
 
-Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
+Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
