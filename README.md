@@ -7,7 +7,11 @@ Seguimiento personal de hábitos con rachas, pausas y estadísticas. Se instala 
 ## Qué hace
 
 - **Hábitos** de dos tipos: **sí / no** y **cantidad** (con objetivo diario y unidad: vasos, minutos, páginas…).
-- **Programación**: diario, días concretos de la semana, **X veces por semana** o **cada N días**. Si se cambia, los días anteriores se siguen calculando con la programación que tenían entonces.
+- **Programación**:
+  - Días fijos: todos los días, días de la semana, **días del mes** (el 31 cuenta como último día en los meses cortos) o cada N días.
+  - Cuotas: **X veces por semana**, **al mes** (mes natural), **al año** (año natural) o **cada N días** (periodos seguidos de N días desde el inicio).
+  - Si se cambia, los días anteriores se siguen calculando con la programación que tenían entonces.
+- **Para hacerlo fácil** (ideas de *Hábitos atómicos*, Atoms, Productive y Daylio): plantillas al crear, momento del día (Hoy se agrupa en mañana, tarde y noche), señal («Después del café»), **versión mínima** (cuenta como hecho y queda anotada), identidad («Soy una persona que lee»), aviso **«No falles dos veces»**, celebración de **hitos** de racha (3, 7, 14, 21, 30, 50, 66, 100… unidades) y del **día perfecto**, y **ánimo del día** (1 a 5 con nota) con su año por colores y la relación entre tu ánimo y cada hábito.
 - **Hoy**: los hábitos que tocan, con casilla de un toque (o botones + y − en los de cantidad), la racha de cada uno y el progreso semanal de los de «X veces por semana». Flechas, selector de fecha y botón «Ayer» para registrar días pasados. Los que no tocan ese día se pueden desplegar aparte.
 - **Detalle del día** (tocando el nombre): hecho o cantidad exacta, nota y día de pausa con motivo.
 - **Rachas**:
@@ -19,6 +23,7 @@ Seguimiento personal de hábitos con rachas, pausas y estadísticas. Se instala 
 - **Deshacer** en cada cambio (botón del aviso o `Ctrl+Z`).
 - **Copias de seguridad**: exportar a JSON e importar con **Fusionar** (por cada hábito, registro o pausa gana la versión más reciente; lo borrado no reaparece) o **Sustituir todo**. Recordatorio de copia configurable.
 - **Avisos** solo con la app abierta: al abrirla, cuántos hábitos quedan pendientes hoy. Con la app cerrada no hay avisos.
+- **Diseño propio** («cada día es una casilla»): papel con trama de puntos, casillas cuadradas, marcador amarillo para hoy, barra superior en el PC y barra inferior clara en el móvil; «Hoy» como hoja de calendario de taco con la semana en casillas que se llenan con lo cumplido.
 - Tema automático, claro u oscuro; la semana empieza el lunes (se puede cambiar al domingo).
 - **Calendario** (fase 2): vista mensual de todos los hábitos (todos cumplidos, algunos, ninguno, pausa o no tocaba) o de uno solo (hecho, parcial, no cumplido, pausa o no tocaba; en los de «X veces por semana», una columna con la cuota de cada semana). Tocar un día abre «Hoy» en ese día o el detalle del hábito. Debajo, la cuadrícula de los últimos 12 meses.
 - **Estadísticas** (fase 2): cifras (cumplimiento a 30 días, del mes y del año, días perfectos; o racha, mejor racha y registros de un hábito), barras de cumplimiento por mes y cuadrícula anual, para los últimos 12 meses o un año. Descripción al pasar el ratón y «Ver tabla» con los valores. Con «Todos los hábitos», el cumplimiento es la media de los hábitos que tocaban.
