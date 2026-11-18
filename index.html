@@ -20,7 +20,7 @@
   --done:#2e7d58;--done-soft:#e2f0e7;--done-line:#b6d8c3;--miss-soft:#f7e4de;--miss-line:#ecc6bb;
   --heat-off:#e9ece5;--heat-0:#f0d3cb;--heat-1:#cfe6d6;--heat-2:#93c9a8;--heat-3:#4f9e74;--heat-4:#2e7d58;
   --flame:#c86a1a;--pause:#626d66;--pause-soft:#e8ebe4;
-  --mark:#f2d64b;--mark-soft:#fbf1bd;--dot:#d3d9cf;
+  --mark:#f2d64b;--mark-soft:#fbf1bd;--dot:#d3d9cf;--hab-hp:#c4463b;--hab-xp:#c99400;--hab-mp:#3a6db0;
   --nav:#1e2621;--nav-ink:#fbfbf8;
   --m1:#c8553d;--m2:#e0a066;--m3:#b5bab1;--m4:#86c095;--m5:#2e7d58;
   --hc-c1:#3b5fa8;--hc-c2:#2e7d58;--hc-c3:#c0453a;--hc-c4:#cf7629;--hc-c5:#7a52a8;--hc-c6:#1f8686;--hc-c7:#b84a7d;--hc-c8:#97781f;--hc-c9:#56665f;--hc-c10:#5f9426;
@@ -35,7 +35,7 @@
   --done:#56b885;--done-soft:#17291f;--done-line:#2a4a37;--miss-soft:#36211d;--miss-line:#553129;
   --heat-off:#1d241f;--heat-0:#4a2c27;--heat-1:#1d4430;--heat-2:#286b47;--heat-3:#36935f;--heat-4:#5cc48d;
   --flame:#f0a352;--pause:#9aa59d;--pause-soft:#232b25;
-  --mark:#d9c048;--mark-soft:#3a3519;--dot:#222a24;
+  --mark:#d9c048;--mark-soft:#3a3519;--dot:#222a24;--hab-hp:#e0675d;--hab-xp:#dcb43a;--hab-mp:#6d9be0;
   --nav:#e6ebe5;--nav-ink:#121714;
   --m1:#e07a62;--m2:#e6ad78;--m3:#7b847d;--m4:#7cc391;--m5:#56b885;
   --hc-c1:#7e9be0;--hc-c2:#56b885;--hc-c3:#ec7a6c;--hc-c4:#eda15a;--hc-c5:#b18fe3;--hc-c6:#4fc0bd;--hc-c7:#e47fae;--hc-c8:#d3b257;--hc-c9:#98a8a1;--hc-c10:#9bcd5e}
@@ -507,11 +507,11 @@ input.field:focus,select.field:focus,textarea.field:focus{border-color:var(--ink
 .cue{font-style:italic;color:var(--muted)}
 /* Barra superior (PC) */
 .topbar{position:sticky;top:0;z-index:150;background:var(--head-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1.5px dotted var(--line-strong)}
-.topbar-in{max-width:980px;margin:0 auto;padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;gap:22px}
+.topbar-in{max-width:1120px;margin:0 auto;padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;gap:22px}
 .brand{display:flex;align-items:center;gap:9px;padding:0;color:var(--ink);font-weight:800;letter-spacing:-.02em;font-size:1.06rem;white-space:nowrap}
 .brand .mark{width:28px;height:28px;border-radius:8px;background:var(--done);color:#fff;display:grid;place-items:center}
 .topnav{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
-.topnav .nav-item{width:auto;background:transparent;color:var(--muted);padding:8px 11px;border-radius:10px;font-weight:600;gap:7px;box-shadow:none}
+.topnav .nav-item{width:auto;background:transparent;color:var(--muted);padding:8px 9px;border-radius:10px;font-weight:600;gap:7px;box-shadow:none}
 .topnav .nav-item:hover{background:var(--hover);color:var(--ink)}
 .topnav .nav-item.active{color:var(--ink);background:transparent;box-shadow:none}
 .topnav .nav-item.active .nav-label{background:linear-gradient(transparent 55%,var(--mark) 55%,var(--mark) 90%,transparent 90%);padding:0 2px}
@@ -626,6 +626,39 @@ dialog{border-radius:20px;background:var(--panel)}
   .toast-wrap{bottom:calc(84px + env(safe-area-inset-bottom))}
 }
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
+/* Habitica */
+.hab-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-bottom:14px}
+.hab-grid>.card{margin-bottom:0}
+.hab-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.hab-name{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.hab-gold{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}
+.hab-gold b{font-size:1.5rem;font-variant-numeric:tabular-nums;color:var(--ink)}
+.hab-gold span{font-size:.78rem;color:var(--muted)}
+.hab-bars{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.hbar-top{display:flex;justify-content:space-between;font-size:.86rem;color:var(--muted);margin-bottom:3px}
+.hbar-top b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+.hbar-track{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.hbar-fill{height:100%;border-radius:5px}
+.hbar.hp .hbar-fill{background:var(--hab-hp)}
+.hbar.xp .hbar-fill{background:var(--hab-xp)}
+.hbar.mp .hbar-fill{background:var(--hab-mp)}
+.hab-quest{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:.9rem;color:var(--muted);margin-top:6px}
+.hab-tasks{list-style:none;margin:0;padding:0}
+.hab-tasks li{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.hab-tasks li:first-child{border-top:0}
+.ht-name{font-weight:600}
+.ht-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
+.hab-how ul{margin:4px 0 0;padding-left:20px}
+.hab-how li{margin:5px 0;line-height:1.5}
+.ht-act select.field{width:auto;max-width:220px}
+.ht-link{border:0;cursor:pointer;font:inherit;font-size:.82rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ht-link .ic{width:13px;height:13px;flex:none}
+.hab-note{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:var(--panel);border:1px dashed var(--line-strong);color:var(--ink);border-radius:10px;padding:9px 12px;margin-bottom:14px;font:inherit;font-size:.9rem;cursor:pointer}
+.hab-note .ic{flex:none;color:var(--accent)}
+.hab-note:hover{background:var(--hover)}
+@media (max-width:760px){ .hab-grid{grid-template-columns:minmax(0,1fr)} .ht-act{width:100%;margin-left:0;justify-content:flex-start} .ht-act select.field{flex:1 1 140px;max-width:none} }
+@media (min-width:761px) and (max-width:1100px){ .topnav .nav-item:is([data-v=habitica],[data-v=settings],[data-v=help]):not(.active) .nav-label{display:none} }
+@media (min-width:761px) and (max-width:960px){ .topnav .nav-item:not(.active) .nav-label{display:none} .topbar-in{gap:14px;padding:0 20px} }
 </style>
 </head>
 <body>
@@ -687,6 +720,7 @@ dialog{border-radius:20px;background:var(--panel)}
   <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
 </svg>
 
@@ -842,12 +876,25 @@ function normSchedule(s){
   switch(s.type){
     case 'weekdays':{
       const days=[...new Set((Array.isArray(s.days)?s.days:[]).map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<=6))].sort((a,b)=>a-b);
-      if(!days.length||days.length===7) return {type:'daily'};
-      return {type:'weekdays',days};
+      const every=everyOf(s.every,52);
+      if(!days.length||(days.length===7&&every===1)) return {type:'daily'};
+      return every>1?{type:'weekdays',days,every}:{type:'weekdays',days};
     }
     case 'monthDays':{
       const days=[...new Set((Array.isArray(s.days)?s.days:[]).map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=31))].sort((a,b)=>a-b);
-      return days.length?{type:'monthDays',days}:{type:'daily'};
+      const every=everyOf(s.every,120);
+      return days.length?(every>1?{type:'monthDays',days,every}:{type:'monthDays',days}):{type:'daily'};
+    }
+    case 'nthWeekday':{
+      const weeks=[...new Set((Array.isArray(s.weeks)?s.weeks:[]).map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<=4))].sort((a,b)=>a-b);
+      const days=[...new Set((Array.isArray(s.days)?s.days:[]).map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<=6))].sort((a,b)=>a-b);
+      if(!weeks.length||!days.length) return {type:'daily'};
+      return {type:'nthWeekday',weeks,days,every:everyOf(s.every,120)};
+    }
+    case 'yearly':{
+      const m=Math.round(Number(s.month)), d=Math.round(Number(s.day));
+      if(!(m>=1&&m<=12&&d>=1&&d<=31)) return {type:'daily'};
+      return {type:'yearly',month:m,day:d,every:everyOf(s.every,100)};
     }
     case 'timesPerWeek':{ const t=Math.round(Number(s.times)); return {type:'timesPerWeek',times:t>=1?Math.min(t,7):1}; }
     case 'timesPerMonth':{ const t=Math.round(Number(s.times)); return {type:'timesPerMonth',times:t>=1?Math.min(t,31):1}; }
@@ -857,6 +904,8 @@ function normSchedule(s){
     default: return {type:'daily'};
   }
 }
+function everyOf(v,max){ const n=Math.round(Number(v)); return n>=1?Math.min(n,max):1; }
+const monthsBetween=(a,b)=>(Number(b.slice(0,4))-Number(a.slice(0,4)))*12+(Number(b.slice(5,7))-Number(a.slice(5,7)));
 const sameSchedule=(a,b)=>JSON.stringify(normSchedule(a))===JSON.stringify(normSchedule(b));
 /* Deja el historial de programaciones ordenado, sin duplicados y empezando en startDate */
 function fixHistory(h,fallback){
@@ -945,8 +994,8 @@ function normalizeState(x){
   st.moods=byNewest(moods,m=>m.date);
   const hb=x.habitica&&typeof x.habitica==='object'?x.habitica:{};
   st.habitica={userId:typeof hb.userId==='string'?hb.userId:null,lastImport:isoOr(hb.lastImport,null),
-    map:(Array.isArray(hb.map)?hb.map:[]).filter(m=>m&&typeof m.habiticaId==='string'&&hm.has(m.habitId)),
-    history:(Array.isArray(hb.history)?hb.history:[]).filter(e=>e&&typeof e.habiticaId==='string'&&typeof e.period==='string'&&Number.isFinite(Number(e.value)))};
+    map:(Array.isArray(hb.map)?hb.map:[]).filter(m=>m&&typeof m.habiticaId==='string'&&m.habiticaId&&hm.has(m.habitId)).map(m=>({habiticaId:m.habiticaId.slice(0,80),habitId:m.habitId,kind:['daily','up','down'].includes(m.kind)?m.kind:(hm.get(m.habitId).kind==='avoid'?'down':'daily'),name:typeof m.name==='string'?m.name.slice(0,200):'',missing:m.missing===true,updatedAt:isoOr(m.updatedAt,EPOCH)})).filter((m,i,a)=>a.findIndex(o=>o.habitId===m.habitId)===i),
+    history:(Array.isArray(hb.history)?hb.history:[]).filter(e=>e&&typeof e.habiticaId==='string'&&typeof e.period==='string'&&Number.isFinite(Number(e.value))).map(e=>({habiticaId:e.habiticaId,kind:['daily','up','down'].includes(e.kind)?e.kind:'daily',period:String(e.period).slice(0,7),value:Number(e.value)}))};
   const s=x.settings&&typeof x.settings==='object'?x.settings:{};
   st.settings={weekStart:[0,1].includes(Number(s.weekStart))?Number(s.weekStart):1,
     lastBackup:isoOr(s.lastBackup,null),backupDays:[0,7,14,30].includes(Number(s.backupDays))?Number(s.backupDays):7,
@@ -982,12 +1031,18 @@ function scheduleEntryAt(h,d){ const hs=h.scheduleHistory; let e=hs[0]; for(let 
 /* ¿Le toca ese día por su programación? (sin tener en cuenta las pausas) */
 function isScheduled(h,d){
   if(!inRange(h,d)) return false;
-  const e=scheduleEntryAt(h,d), s=e.schedule;
+  return dueFixed(scheduleEntryAt(h,d),d);
+}
+/* Días fijos con las mismas reglas que Habitica: semanas de 7 días y meses naturales contados desde el inicio de la programación */
+function dueFixed(e,d){
+  const s=e.schedule;
   switch(s.type){
     case 'daily': return true;
-    case 'weekdays': return s.days.includes(dowOf(d));
+    case 'weekdays': return s.days.includes(dowOf(d))&&(!(s.every>1)||Math.floor(daysBetween(e.from,d)/7)%s.every===0);
     case 'everyN': return daysBetween(e.from,d)%s.n===0;
-    case 'monthDays': return monthDayDue(s,d);
+    case 'monthDays': return monthDayDue(s,d)&&(!(s.every>1)||monthsBetween(e.from,d)%s.every===0);
+    case 'nthWeekday': return s.weeks.includes(Math.floor((Number(d.slice(8))-1)/7))&&s.days.includes(dowOf(d))&&monthsBetween(e.from,d)%s.every===0;
+    case 'yearly': { const dom=Number(d.slice(8)), dim=dimOf(d); return Number(d.slice(5,7))===s.month&&(dom===s.day||(s.day>dim&&dom===dim))&&(Number(d.slice(0,4))-Number(e.from.slice(0,4)))%s.every===0; }
     default: return false;   // cuotas («X veces por semana/mes/año/cada N días»): no tienen días fijos
   }
 }
@@ -1040,7 +1095,7 @@ function unitsOf(h){
       const s=ymd(d), e=scheduleEntryAt(h,s), sc=e.schedule;
       if(isQuota(sc)){ const [a,b]=periodOf(e,s), k=e.from+'|'+a; if(!periods.has(k)){ periods.add(k); units.push(evalPeriod(h,e,a,b,t)); } continue; }
       let due;
-      if(sc.type==='daily') due=true; else if(sc.type==='weekdays') due=sc.days.includes(d.getDay()); else if(sc.type==='monthDays') due=monthDayDue(sc,s); else due=daysBetween(e.from,s)%sc.n===0;
+      due=dueFixed(e,s);
       if(!due) continue;
       if(h.kind==='avoid'){ units.push({kind:'day',start:s,end:s,status:isSkipped(h.id,s)?'skip':getLog(h.id,s)?'missed':(s===t?'pending':'done')}); continue; }
       const done=isDoneDay(h,s);
@@ -1113,16 +1168,19 @@ function dayStatus(h,d){
 function scheduleText(s){
   switch(s.type){
     case 'daily': return 'Todos los días';
-    case 'weekdays': return orderedDows().filter(d=>s.days.includes(d)).map(d=>DOW_ABBR[d]).join(', ');
+    case 'weekdays': return orderedDows().filter(d=>s.days.includes(d)).map(d=>DOW_ABBR[d]).join(', ')+(s.every>1?`, cada ${s.every} semanas`:'');
+    case 'nthWeekday': return cap(listY(s.weeks.map(w=>ORDINAL[w]))+' '+listY(s.days.map(d=>DOW_NAME[d])))+(s.every>1?` cada ${s.every} meses`:' de cada mes');
+    case 'yearly': return (s.every>1?`Cada ${s.every} años`:'Cada año')+` el ${s.day} de ${MONTHS[s.month-1]}`;
     case 'timesPerWeek': return s.times===1?'1 vez por semana':`${s.times} veces por semana`;
     case 'timesPerMonth': return s.times===1?'1 vez al mes':`${s.times} veces al mes`;
     case 'timesPerYear': return s.times===1?'1 vez al año':`${s.times} veces al año`;
     case 'timesPerDays': return `${pl(s.times,'vez','veces')} cada ${s.days} días`;
-    case 'monthDays': return (s.days.length===1?'Día ':'Días ')+listY(s.days.map(String))+' de cada mes';
+    case 'monthDays': return (s.days.length===1?'Día ':'Días ')+listY(s.days.map(String))+(s.every>1?` cada ${s.every} meses`:' de cada mes');
     case 'everyN': return `Cada ${s.n} días`;
   }
   return '';
 }
+const ORDINAL=['primer','segundo','tercer','cuarto','quinto'];
 const orderedDows=()=>{ const ws=weekStartDay(); return [0,1,2,3,4,5,6].map(i=>(i+ws)%7); };
 const UNIT_NAMES={day:['día','días'],week:['semana','semanas'],month:['mes','meses'],year:['año','años'],block:['periodo','periodos']};
 const streakUnit=(n,kind)=>pl(n,...(UNIT_NAMES[kind]||UNIT_NAMES.day));
@@ -1180,8 +1238,12 @@ function mergeStates(a,b){
     for(const it of b[name]){ const k=kf(it), p=m.get(k); if(!p||it.updatedAt>p.updatedAt||(it.updatedAt===p.updatedAt&&JSON.stringify(it)>JSON.stringify(p))) m.set(k,it); }
     out[name]=[...m.values()].filter(it=>{ const t=del[pre+kf(it)]; return !t||t<it.updatedAt; });
   }
-  const seen=new Set(out.habitica.map.map(x=>x.habiticaId));
-  for(const x of b.habitica.map) if(!seen.has(x.habiticaId)) out.habitica.map.push(x);
+  /* Enlaces con Habitica: por tarea y botón, gana el más reciente; los quitados no vuelven */
+  const lk=x=>x.habiticaId+'|'+x.kind, lm=new Map();
+  for(const x of a.habitica.map.concat(b.habitica.map)){ const p=lm.get(lk(x)); if(!p||x.updatedAt>p.updatedAt) lm.set(lk(x),x); }
+  out.habitica.map=[...lm.values()].filter(x=>{ const t=del['hlink:'+lk(x)]; return !t||t<x.updatedAt; });
+  const hk=e=>e.habiticaId+'|'+e.kind+'|'+e.period, seenH=new Set(out.habitica.history.map(hk));
+  for(const e of b.habitica.history) if(!seenH.has(hk(e))) out.habitica.history.push(e);
   out.deleted=del;
   return normalizeState(out);
 }
@@ -1275,7 +1337,7 @@ function commit(msg,fn){
   const r=fn();
   if(r===false) return false;
   undoStack.push(snap); if(undoStack.length>60) undoStack.shift();
-  touch(); save(); renderApp(); if(typeof scheduleSync==='function') scheduleSync();
+  touch(); save(); renderApp(); if(typeof scheduleSync==='function') scheduleSync(); if(habCfg) scheduleHabSync();
   const m=typeof r==='string'?r:msg;
   if(m) showToast(m,{action:'Deshacer',fn:undo,undo:true,timeout:8000}); else hideUndoToast();
   return true;
@@ -1289,7 +1351,7 @@ function undo(quiet=false){
   const now=nowIso(), cur=keyed(state), prev=keyed(st);
   for(const [k,it] of prev){ const c=cur.get(k); if(!c||JSON.stringify(c)!==JSON.stringify(it)){ it.updatedAt=now; delete st.deleted[k]; } }
   for(const k of cur.keys()) if(!prev.has(k)) st.deleted[k]=now;
-  state=st; touch(); save(); renderApp(); scheduleSync();
+  state=st; touch(); save(); renderApp(); scheduleSync(); if(habCfg) scheduleHabSync();
   if(!quiet) showToast('↩️ Cambio deshecho');
   return true;
 }
@@ -1552,9 +1614,444 @@ function syncCard(){
   return c;
 }
 
+/* ================= Habitica (fase 4) ================= */
+/* Habitica es el juego; Hábitos, el archivo y las estadísticas. Se concilia en los dos sentidos:
+   - De Habitica a Hábitos: diarias y hábitos enlazados, con su historial diario.
+   - De Hábitos a Habitica: lo marcado aquí el día que Habitica tiene abierto se puntúa allí, sin duplicar.
+   Nunca se llama al cambio de día de Habitica (POST /cron): lo hace Habitica al abrirla, con «Registrar la actividad de ayer». */
+const HAB_KEY='habitos_v1_hab', HAB_API='https://habitica.com/api/v3';
+function loadHabCfg(){ try{ const c=JSON.parse(localStorage.getItem(HAB_KEY)); if(c&&typeof c==='object'&&c.userId&&c.token) return c; }catch(e){} return null; }
+let habCfg=loadHabCfg();
+function saveHabCfg(){ try{ if(habCfg) localStorage.setItem(HAB_KEY,JSON.stringify(habCfg)); else localStorage.removeItem(HAB_KEY); }catch(e){} }
+const habRt={busy:false,again:false,status:habCfg?'ok':'off',err:null,user:null,party:null,tasks:null,crons:[],timer:null,retryAt:0,remaining:null,cronPending:false,waiting:0,last:null};
+async function hab(path,opts={}){
+  let res;
+  try{
+    res=await fetch(HAB_API+path,{method:opts.method||'GET',cache:'no-store',
+      headers:{'x-api-user':habCfg.userId,'x-api-key':habCfg.token,'x-client':habCfg.userId+'-habitos'}});
+  }catch(e){ throw syncErr('network','No se ha podido conectar con Habitica. Comprueba la conexión.'); }
+  const rem=res.headers.get('x-ratelimit-remaining'); if(rem!=null&&rem!=='') habRt.remaining=Number(rem);
+  if(res.status===401) throw syncErr('token','El ID de usuario o el token de Habitica no son correctos (o el token se ha regenerado).');
+  if(res.status===429){ const ra=Math.max(5,Number(res.headers.get('retry-after'))||60); habRt.retryAt=Date.now()+ra*1000; throw syncErr('limit',`Habitica limita las peticiones por minuto; se reintentará dentro de ${ra} s.`); }
+  let j=null; try{ j=await res.json(); }catch(e){}
+  if(!res.ok||!j||j.success===false) throw syncErr('http',j&&j.message?'Habitica: '+j.message:`Habitica ha respondido con un error (${res.status}).`);
+  return j.data;
+}
+/* ---- Días de Habitica: con su zona horaria y su inicio de día personalizado ---- */
+const habDayStart=()=>{ const n=habRt.user&&habRt.user.preferences?Number(habRt.user.preferences.dayStart):0; return Number.isFinite(n)?Math.max(0,Math.min(23,n)):0; };
+const habTzo=ms=>{ const n=habRt.user&&habRt.user.preferences?Number(habRt.user.preferences.timezoneOffset):NaN; return Number.isFinite(n)?n:new Date(ms).getTimezoneOffset(); };
+const ymdUTC=d=>`${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
+/* Fecha de Habitica de un instante (con o sin restar las horas del inicio de día) */
+const habDateOf=(ms,ds=true)=>ymdUTC(new Date(ms-habTzo(ms)*60e3-(ds?habDayStart()*3600e3:0)));
+const habDayOf=ms=>habDateOf(ms,true);
+const msOf=v=>typeof v==='number'?v:Date.parse(v);
+/* Cambios de día conocidos: cada uno deja una entrada en el historial de experiencia */
+function buildCrons(u){
+  const c=[]; const hx=u&&u.history&&Array.isArray(u.history.exp)?u.history.exp:[];
+  for(const e of hx){ const ms=msOf(e&&e.date); if(Number.isFinite(ms)) c.push(ms); }
+  const lc=msOf(u&&u.lastCron); if(Number.isFinite(lc)) c.push(lc);
+  habRt.crons=[...new Set(c)].sort((a,b)=>a-b);
+}
+function lastCronBefore(ms){ const c=habRt.crons; let lo=0,hi=c.length-1,r=null; while(lo<=hi){ const m=(lo+hi)>>1; if(c[m]<=ms){ r=c[m]; lo=m+1; } else hi=m-1; } return r; }
+/* Día que Habitica tenía abierto en un instante: el del último cambio de día anterior.
+   Si no hay ninguno cercano (historial antiguo comprimido), el día del propio instante. */
+function openDayAt(ms){ const r=lastCronBefore(ms); return r!=null&&ms-r<48*3600e3?habDayOf(r):habDayOf(ms); }
+const habOpenDay=()=>habRt.crons.length?habDayOf(habRt.crons[habRt.crons.length-1]):habDayOf(Date.now());
+/* Una diaria sin marcar se anota al cambiar de día y corresponde al día que se cerró */
+function closedDayAt(ms){
+  const c=habRt.crons; let best=null;
+  for(let i=c.length-1;i>=0;i--){ const dd=Math.abs(c[i]-ms); if(dd<=10*60e3&&(best==null||dd<Math.abs(best-ms))) best=c[i]; if(c[i]<ms-10*60e3) break; }
+  if(best!=null){ const prev=lastCronBefore(best-1); if(prev!=null&&best-prev<40*864e5) return habDayOf(prev); }
+  return addDaysS(habDayOf(ms),-1);
+}
+/* ---- Programación de una diaria de Habitica en Hábitos ---- */
+const HAB_DOW={su:0,m:1,t:2,w:3,th:4,f:5,s:6};
+const habStartDate=t=>{ const ms=msOf(t.startDate||t.createdAt); return Number.isFinite(ms)?habDateOf(ms,false):today(); };
+function habSchedule(t){
+  const X=Math.round(Number(t.everyX)), rep=t.repeat||{}, sd=habStartDate(t);
+  const days=Object.keys(HAB_DOW).filter(k=>rep[k]).map(k=>HAB_DOW[k]);
+  if(!(X>=1)) return {schedule:{type:'daily'},grey:true};
+  switch(t.frequency){
+    case 'daily': return {schedule:X===1?{type:'daily'}:normSchedule({type:'everyN',n:X})};
+    case 'weekly': return days.length?{schedule:normSchedule({type:'weekdays',days,every:X})}:{schedule:{type:'daily'},grey:true};
+    case 'monthly':
+      if(Array.isArray(t.weeksOfMonth)&&t.weeksOfMonth.length) return days.length?{schedule:normSchedule({type:'nthWeekday',weeks:t.weeksOfMonth,days,every:X})}:{schedule:{type:'daily'},grey:true};
+      return {schedule:normSchedule({type:'monthDays',days:Array.isArray(t.daysOfMonth)&&t.daysOfMonth.length?t.daysOfMonth:[Number(sd.slice(8))],every:X})};
+    case 'yearly': return {schedule:normSchedule({type:'yearly',month:Number(sd.slice(5,7)),day:Number(sd.slice(8)),every:X})};
+  }
+  return {schedule:{type:'daily'}};
+}
+/* ---- Historial de Habitica por días ---- */
+/* Las entradas sin «completed» (diarias) o sin «scoredUp/scoredDown» (hábitos) son medias comprimidas de meses o años: no tienen días */
+const habPeriod=ms=>habDateOf(ms,true).slice(0,7);
+/* Diarias: cada marca deja una entrada al marcarla (día abierto en ese momento); cada fallo, una al cambiar de día (día que se cerró) */
+function habDailyDays(t){
+  const out=new Map(), old=[];
+  for(const e of (Array.isArray(t.history)?t.history:[])){
+    const ms=msOf(e&&e.date); if(!Number.isFinite(ms)) continue;
+    if(!('completed' in e)){ old.push({period:habPeriod(ms),value:Number(e.value)||0}); continue; }
+    if(e.completed) out.set(openDayAt(ms),true);
+    else { const d=closedDayAt(ms); if(!out.get(d)) out.set(d,false); }
+  }
+  out.set(habOpenDay(),!!t.completed);
+  return {days:out,old};
+}
+/* Hábitos: una entrada por día con las veces que se pulsó + y − */
+function habHabitDays(t){
+  const out=new Map(), old=[];
+  for(const e of (Array.isArray(t.history)?t.history:[])){
+    const ms=msOf(e&&e.date); if(!Number.isFinite(ms)) continue;
+    if(!('scoredUp' in e)&&!('scoredDown' in e)){ old.push({period:habPeriod(ms),value:Number(e.value)||0}); continue; }
+    const d=habDayOf(ms), c=out.get(d)||{up:0,down:0}; c.up+=Number(e.scoredUp)||0; c.down+=Number(e.scoredDown)||0; out.set(d,c);
+  }
+  return {days:out,old};
+}
+/* ---- Conciliar: lo que viene de Habitica se aplica aquí; devuelve lo que hay que enviar ---- */
+const habLinks=()=>state.habitica.map.filter(m=>habitById(m.habitId));
+const changedAfter=(hid,d,since)=>{ if(!since) return false; const l=getLog(hid,d); if(l) return l.updatedAt>since; const t=state.deleted['log:'+hid+'|'+d]; return !!t&&t>since; };
+function habPut(h,d,v,stamp){
+  setLog(h.id,d,v,null,false);
+  const l=state.logs.find(x=>x.habitId===h.id&&x.date===d); if(l){ l.source='habitica'; l.updatedAt=stamp; }
+  if(d<h.startDate) extendStart(h.id,d);
+}
+function reconcile(dailys,habits,since,stamp){
+  const byId=new Map(dailys.concat(habits).map(t=>[t.id||t._id,t]));
+  const t0=today(), od=habOpenDay(), hd=habDayOf(Date.now()), push=[];
+  let imported=0, removed=0, other=0;
+  for(const m of habLinks()){
+    const t=byId.get(m.habiticaId), h=state.habits.find(x=>x.id===m.habitId);
+    m.missing=!t; if(!t) continue;
+    if(m.kind==='daily'){
+      /* El nombre y la programación los manda Habitica */
+      if(t.text&&t.text!==m.name){ if(!m.name||h.name===m.name){ h.name=String(t.text).slice(0,120); h.updatedAt=stamp; other++; } m.name=t.text; m.updatedAt=stamp; }
+      const conv=habSchedule(t);
+      if(!sameSchedule(conv.schedule,h.schedule)){ const from=h.startDate>t0?h.startDate:t0; h.scheduleHistory=h.scheduleHistory.filter(e=>e.from<from); h.scheduleHistory.push({from,schedule:conv.schedule}); h.schedule=conv.schedule; fixHistory(h,conv.schedule); h.updatedAt=stamp; other++; }
+      const {days}=habDailyDays(t);
+      for(const [d,done] of days){
+        if(d>t0||d===od) continue;
+        const l=getLog(h.id,d);
+        if(done&&!l&&!changedAfter(h.id,d,since)){ habPut(h,d,1,stamp); imported++; }
+        else if(!done&&l&&l.source==='habitica'&&!changedAfter(h.id,d,since)){ setLog(h.id,d,0); removed++; }
+      }
+      /* Día abierto en Habitica: es el único en que se puede marcar allí */
+      if(od<=t0){
+        const l=getLog(h.id,od), hdone=!!t.completed;
+        if(l&&!hdone){
+          if(l.source==='habitica'&&!changedAfter(h.id,od,since)){ setLog(h.id,od,0); removed++; }   // desmarcada en Habitica
+          else push.push({t,h,dir:'up',times:1,d:od});
+        } else if(!l&&hdone){
+          if(changedAfter(h.id,od,since)) push.push({t,h,dir:'down',times:1,d:od});   // desmarcada aquí
+          else { habPut(h,od,1,stamp); imported++; }
+        } else if(l&&hdone&&l.source!=='habitica'){ l.source='habitica'; l.updatedAt=stamp; }
+      }
+    } else {
+      const {days}=habHabitDays(t), up=m.kind==='up', cnt=h.kind==='count';
+      const nOf=c=>c?(up?c.up:c.down):0, vOf=l=>l?(cnt?l.value:1):0;
+      for(const [d,c] of days){
+        if(d>t0||d===hd) continue;
+        const n=nOf(c), l=getLog(h.id,d);
+        if(n>vOf(l)&&!changedAfter(h.id,d,since)&&(cnt||!l)){ habPut(h,d,cnt?n:1,stamp); imported++; }
+      }
+      /* Hoy en Habitica (los hábitos no esperan al cambio de día: cuentan para la fecha del momento) */
+      if(hd<=t0){
+        const n=nOf(days.get(hd)), l=getLog(h.id,hd), v=vOf(l);
+        if(v>n&&(l.source!=='habitica'||changedAfter(h.id,hd,since))) push.push({t,h,dir:up?'up':'down',times:Math.min(10,Math.round(v-n)),d:hd});
+        else if(n>v&&!changedAfter(h.id,hd,since)){ habPut(h,hd,cnt?n:1,stamp); imported++; }
+        else if(l&&v===n&&l.source!=='habitica'){ l.source='habitica'; l.updatedAt=stamp; }
+      }
+    }
+  }
+  /* Marcas de hoy que esperan a que Habitica empiece el día */
+  habRt.cronPending=od<t0;
+  habRt.waiting=habRt.cronPending?habLinks().filter(m=>m.kind==='daily'&&getLog(m.habitId,t0)).length:0;
+  return {push,imported,removed,other};
+}
+/* Los cambios que llegan de Habitica no pasan por «Deshacer» (vienen de fuera, como la sincronización) */
+function habApply(changed){
+  if(changed) undoStack.length=0;
+  touch(); save(); if(typeof scheduleSync==='function'&&syncCfg) scheduleSync();
+  if(!$('dlg').open) renderApp(); else renderPending=true;
+}
+async function habSync(opts={}){
+  if(!habCfg||!ready) return {ok:false};
+  if(habRt.busy){ habRt.again=true; return {ok:false,busy:true}; }
+  if(habRt.retryAt&&Date.now()<habRt.retryAt&&!opts.force) return {ok:false};
+  habRt.busy=true; setHabStatus('syncing');
+  const since=habCfg.lastPull||'', stamp=nowIso();
+  let res={ok:true}; const gains={exp:0,gp:0,drops:[],sent:0,lvl:false};
+  try{
+    const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,purchased.plan,items.currentPet,items.currentMount');
+    habRt.user=user; buildCrons(user);
+    const dailys=await hab('/tasks/user?type=dailys'), habits=await hab('/tasks/user?type=habits');
+    habRt.tasks={dailys,habits};
+    let party=null; if(user.party&&user.party._id){ try{ party=await hab('/groups/party'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; } }
+    habRt.party=party;
+    const r=reconcile(dailys,habits,since,stamp);
+    habApply(r.imported+r.removed+r.other>0);
+    /* Enviar: solo lo que falta en Habitica, y nunca más de lo que permite el límite por minuto */
+    try{
+      for(const op of r.push){
+        for(let i=0;i<op.times;i++){
+          if(habRt.remaining!=null&&habRt.remaining<3) throw syncErr('limit','Habitica limita las peticiones por minuto; el resto se enviará en la próxima sincronización.');
+          const out=await hab(`/tasks/${encodeURIComponent(op.t.id||op.t._id)}/score/${op.dir}`,{method:'POST'});
+          gains.sent++;
+          const st=habRt.user.stats||(habRt.user.stats={});
+          if(out){
+            if(Number(out.lvl)>Number(st.lvl)) gains.lvl=true;
+            else gains.exp+=(Number(out.exp)||0)-(Number(st.exp)||0);
+            gains.gp+=(Number(out.gp)||0)-(Number(st.gp)||0);
+            for(const k of ['hp','mp','exp','gp','lvl']) if(out[k]!=null) st[k]=out[k];
+            const tmp=out._tmp||{};
+            if(tmp.drop&&tmp.drop.dialog) gains.drops.push(stripTags(tmp.drop.dialog));
+            if(tmp.quest&&typeof tmp.quest.progressDelta==='number'&&habRt.user.party&&habRt.user.party.quest&&habRt.user.party.quest.progress) habRt.user.party.quest.progress.up=(Number(habRt.user.party.quest.progress.up)||0)+tmp.quest.progressDelta;
+          }
+        }
+        if(op.dir==='up'&&op.t.type==='daily') op.t.completed=true;
+        if(op.dir==='down'&&op.t.type==='daily') op.t.completed=false;
+        const l=getLog(op.h.id,op.d); if(l){ l.source='habitica'; l.updatedAt=stamp; }
+      }
+    } finally { if(gains.sent){ touch(); save(); if(syncCfg) scheduleSync(); } }
+    habCfg.lastPull=stamp; habCfg.snap=habSnap(); saveHabCfg();
+    habRt.err=null; habRt.last={at:stamp,imported:r.imported,removed:r.removed,sent:gains.sent};
+    res={ok:true,imported:r.imported,removed:r.removed,sent:gains.sent};
+  }catch(e){
+    res={ok:false,err:e}; habRt.err={kind:e.kind||'unknown',msg:e.kind?e.message:'Error inesperado al hablar con Habitica.'}; if(!e.kind) console.error(e);
+    if(!opts.quiet&&e.kind==='token') showToast('⚠️ '+habRt.err.msg,{action:'Abrir Habitica',fn:()=>go('habitica'),timeout:15000});
+  }finally{
+    habRt.busy=false;
+    if(gains.sent&&!opts.silent){
+      let msg=`Habitica: ${pl(gains.sent,'marca enviada','marcas enviadas')}`;
+      const bits=[]; if(gains.lvl) bits.push('¡subes de nivel!'); else if(Math.round(gains.exp)) bits.push(`${gains.exp>0?'+':'−'}${fmtNum(Math.abs(Math.round(gains.exp)))} exp`);
+      if(Math.abs(gains.gp)>=0.05) bits.push(`${gains.gp>0?'+':'−'}${fmtNum(Math.abs(Math.round(gains.gp*10)/10))} oro`);
+      if(bits.length) msg+=` (${bits.join(', ')})`;
+      if(gains.drops.length) msg+='. '+gains.drops[0];
+      showToast('⭐ '+msg,{timeout:8000});
+    }
+    setHabStatus(res.ok?'ok':'error');
+    if(habRt.again){ habRt.again=false; scheduleHabSync(2000); }
+  }
+  return res;
+}
+const stripTags=s=>String(s).replace(/<[^>]*>/g,'').slice(0,160);
+function scheduleHabSync(delay=2500){ if(!habCfg) return; clearTimeout(habRt.timer); habRt.timer=setTimeout(()=>habSync(),delay); }
+function setHabStatus(s){ habRt.status=s; if(ready&&!$('dlg').open&&(ui.view==='habitica'||ui.view==='today')) renderApp(); else if(ready) renderNav(); }
+function habSnap(){
+  const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null;
+  return {name:u.profile&&u.profile.name||'',stats:{hp:st.hp,maxHealth:st.maxHealth,exp:st.exp,toNextLevel:st.toNextLevel,mp:st.mp,maxMP:st.maxMP,gp:st.gp,lvl:st.lvl,class:st.class},
+    pet:u.items&&u.items.currentPet||'',mount:u.items&&u.items.currentMount||'',party:!!(habRt.party),partyName:habRt.party&&habRt.party.name||'',
+    quest:q&&q.key?{key:q.key,active:!!q.active,progress:q.progress||{}}:null,questMine:u.party&&u.party.quest&&u.party.quest.progress||null,at:nowIso()};
+}
+let habTimer=null;
+function startHabTimer(){ clearInterval(habTimer); if(habCfg) habTimer=setInterval(()=>{ if(document.visibilityState==='visible') habSync({quiet:true}); },180000); }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&habCfg&&ready) scheduleHabSync(1200); });
+window.addEventListener('online',()=>{ if(habCfg&&ready) scheduleHabSync(1000); });
+
+/* ---- Importar y enlazar ---- */
+function habTaskKinds(t){ if(t.type==='daily') return ['daily']; const k=[]; if(t.up!==false) k.push('up'); if(t.down) k.push('down'); return k.length?k:['up']; }
+const habLinked=(id,kind)=>state.habitica.map.find(m=>m.habiticaId===id&&m.kind===kind&&habitById(m.habitId));
+/* Crea los hábitos de una tarea de Habitica (dos si el hábito tiene + y −) y trae su historial */
+function habImport(t){
+  const id=t.id||t._id, kinds=habTaskKinds(t), made=[];
+  let logs=0, olds=0;
+  for(const kind of kinds){
+    if(habLinked(id,kind)) continue;
+    const order=state.habits.length?Math.max(...state.habits.map(q=>q.order))+1:0, now=nowIso();
+    const color=HABIT_COLORS[state.habits.length%HABIT_COLORS.length];
+    const base={id:newId(),description:String(t.notes||'').slice(0,2000),order,color,createdAt:now,updatedAt:now,tags:[],categoryId:null,tod:'any'};
+    let x;
+    if(kind==='daily'){
+      const conv=habSchedule(t), sd=habStartDate(t);
+      x=Object.assign(base,{name:t.text||'Diaria',kind:'check',icon:'check',schedule:conv.schedule,scheduleHistory:[{from:sd,schedule:conv.schedule}],startDate:sd,archived:!!conv.grey});
+    } else {
+      const {days}=habHabitDays(t); let first=habStartDate(t); for(const d of days.keys()) if(d<first) first=d;
+      const both=kinds.length>1, up=kind==='up';
+      x=Object.assign(base,{name:(t.text||'Hábito')+(both?(up?' (+)':' (−)'):''),kind:up?'count':'avoid',target:up?{amount:1,unit:'veces'}:null,icon:up?'check':'ban',schedule:{type:'daily'},scheduleHistory:[{from:first,schedule:{type:'daily'}}],startDate:first});
+    }
+    const n=normalizeItem(x,{catIds:new Set(state.categories.map(c=>c.id)),tagIds:new Set(state.tags.map(g=>g.id)),idx:order});
+    if(!n) continue;
+    state.habits.push(n); delete state.deleted['habit:'+n.id];
+    state.habitica.map.push({habiticaId:id,habitId:n.id,kind,name:t.text||'',updatedAt:now}); delete state.deleted['hlink:'+id+'|'+kind];
+    const r=habBackfill(t,n,kind); logs+=r.logs; olds+=r.olds;
+    made.push(n);
+  }
+  return {made,logs,olds};
+}
+/* Enlaza una tarea con un hábito que ya existe y completa su historial (sin tocar lo que ya hay) */
+function habLink(t,kind,h){
+  const id=t.id||t._id;
+  const now=nowIso();
+  for(const m of state.habitica.map) if(m.habitId===h.id&&!(m.habiticaId===id&&m.kind===kind)) state.deleted['hlink:'+m.habiticaId+'|'+m.kind]=now;
+  state.habitica.map=state.habitica.map.filter(m=>!(m.habiticaId===id&&m.kind===kind)&&m.habitId!==h.id);
+  state.habitica.map.push({habiticaId:id,habitId:h.id,kind,name:t.text||'',updatedAt:now}); delete state.deleted['hlink:'+id+'|'+kind];
+  return habBackfill(t,h,kind);
+}
+function habBackfill(t,h,kind){
+  const id=t.id||t._id, t0=today(), stamp=nowIso(); let logs=0;
+  const r=kind==='daily'?habDailyDays(t):habHabitDays(t);
+  for(const [d,v] of r.days){
+    if(d>t0) continue;
+    const n=kind==='daily'?(v?1:0):(kind==='up'?v.up:v.down);
+    if(!n||getLog(h.id,d)) continue;
+    habPut(h,d,h.kind==='count'?n:1,stamp); logs++;
+  }
+  /* Medias de periodos antiguos (Habitica ya no guarda sus días): aparte, sin inventar días */
+  state.habitica.history=state.habitica.history.filter(e=>!(e.habiticaId===id&&e.kind===kind));
+  const agg=new Map(); for(const e of r.old){ const a=agg.get(e.period)||{s:0,n:0}; a.s+=e.value; a.n++; agg.set(e.period,a); }
+  for(const [period,a] of agg) state.habitica.history.push({habiticaId:id,kind,period,value:Math.round(a.s/a.n*1000)/1000});
+  return {logs,olds:agg.size};
+}
+function habUnlink(m){ const h=habitById(m.habitId); commit(`Enlace con Habitica quitado${h?` («${h.name}» se conserva)`:''}`,()=>{ state.deleted['hlink:'+m.habiticaId+'|'+m.kind]=nowIso(); state.habitica.map=state.habitica.map.filter(x=>!(x.habiticaId===m.habiticaId&&x.kind===m.kind)); }); }
+function habImportMany(){
+  const tk=habRt.tasks; if(!tk) return;
+  commit(null,()=>{ let made=0,logs=0,olds=0; for(const t of tk.dailys.concat(tk.habits)){ const r=habImport(t); made+=r.made.length; logs+=r.logs; olds+=r.olds; } if(!made) return false;
+    return `Importados ${pl(made,'hábito','hábitos')} con ${pl(logs,'día registrado','días registrados')}${olds?` (y ${pl(olds,'mes antiguo','meses antiguos')} solo con media)`:''}`; });
+  scheduleHabSync(600);
+}
+const habLinkOf=hid=>state.habitica.map.find(m=>m.habitId===hid);
+
+/* ---- Pantalla Habitica ---- */
+function habBar(label,val,max,cls){
+  const w=el('div','hbar '+cls), top=el('div','hbar-top');
+  const v=Number(val)||0, mx=Number(max)||0;
+  top.append(el('span','',label),el('b','',mx?`${fmtNum(Math.floor(v))} / ${fmtNum(Math.round(mx))}`:fmtNum(Math.floor(v))));
+  const tr=el('div','hbar-track'), f=el('div','hbar-fill'); f.style.width=(mx?Math.max(0,Math.min(100,v/mx*100)):0)+'%'; tr.append(f);
+  tr.setAttribute('role','progressbar'); tr.setAttribute('aria-label',label); tr.setAttribute('aria-valuemin','0'); tr.setAttribute('aria-valuemax',String(Math.round(mx))); tr.setAttribute('aria-valuenow',String(Math.floor(v)));
+  w.append(top,tr); return w;
+}
+const prettyKey=k=>String(k||'').replace(/([a-z])([A-Z0-9])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/^./,c=>c.toUpperCase());
+const CLASS_NAMES={warrior:'Guerrero',rogue:'Pícaro',wizard:'Mago',healer:'Sanador'};
+const HAB_KIND_TXT={daily:'Diaria',up:'Hábito, botón +',down:'Hábito, botón −'};
+function habStatusLine(){
+  if(!habCfg) return '';
+  if(habRt.status==='syncing') return 'Sincronizando con Habitica…';
+  if(habRt.status==='error'&&habRt.err) return habRt.err.msg;
+  if(habRt.cronPending) return habRt.waiting?`Habitica aún no ha empezado el día de hoy: ${pl(habRt.waiting,'marca espera','marcas esperan')} a que lo abras allí.`:'Habitica aún no ha empezado el día de hoy: ábrela para empezarlo.';
+  return '';
+}
+function renderHabitica(v){
+  const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title'); tt.append(el('h1','page-title','Habitica'));
+  if(habCfg) tt.append(el('p','page-sub','Habitica pone el juego; aquí se guardan el historial y las estadísticas.'));
+  row.append(tt);
+  if(habCfg){ const act=el('div','head-actions'); const sb=btn(habRt.busy?'Sincronizando…':'Sincronizar ahora','secondary',null,()=>habSync({force:true}),'refresh'); sb.disabled=habRt.busy; act.append(sb); row.append(act); }
+  head.append(row); v.append(head);
+  if(!habCfg){ v.append(habConnectCard()); return; }
+  if(habRt.status==='error'&&habRt.err){ const b=el('div','banner'); const sp=el('span'); sp.append(ic('alert'),document.createTextNode(' '+habRt.err.msg)); b.append(sp); v.append(b); }
+  if(habRt.cronPending){
+    const b=el('div','banner'); const sp=el('span');
+    sp.append(ic('sun'),document.createTextNode(` Habitica aún no ha empezado el día de hoy. Ábrela (web o app) para empezarlo y revisar lo de ayer en «Registrar la actividad de ayer»; después se enviarán ${habRt.waiting?pl(habRt.waiting,'marca de hoy','marcas de hoy'):'las marcas de hoy'}. Lo que marques aquí para ayer sí se envía ya.`));
+    b.append(sp); v.append(b);
+  }
+  const snap=habRt.user?habSnap():(habCfg.snap||null);
+  const grid=el('div','hab-grid');
+  if(snap){
+    const s=snap.stats||{}, c=el('section','card hab-char');
+    const top=el('div','hab-top'); const nm=el('div');
+    nm.append(el('div','hab-name',snap.name||'Tu personaje'),el('div','muted',`Nivel ${s.lvl!=null?s.lvl:'—'}${s.class?', '+(CLASS_NAMES[s.class]||s.class):''}`));
+    top.append(nm);
+    const gold=el('div','hab-gold'); gold.append(el('b','',fmtNum(Math.floor(Number(s.gp)||0))),el('span','','monedas de oro')); top.append(gold);
+    c.append(top);
+    const bars=el('div','hab-bars'); bars.append(habBar('Vida',s.hp,s.maxHealth||50,'hp'),habBar('Experiencia',s.exp,s.toNextLevel,'xp'),habBar('Maná',s.mp,s.maxMP,'mp')); c.append(bars);
+    const extra=el('div','hmeta'); if(snap.pet) extra.append(el('span','',`Mascota: ${prettyKey(snap.pet)}`)); if(snap.mount) extra.append(el('span','',`Montura: ${prettyKey(snap.mount)}`)); if(extra.childNodes.length) c.append(extra);
+    if(!habRt.user) c.append(el('p','small-print','Datos de la última sincronización.'));
+    grid.append(c);
+    const q=snap.quest, qc=el('section','card'); qc.append(h2i(snap.partyName?`Misión de ${snap.partyName}`:'Misión del grupo','flame'));
+    if(!snap.party&&!q) qc.append(el('p','muted','No estás en ningún grupo. En Habitica, entra en «Grupo» para crear uno o aceptar una invitación.'));
+    else if(!q) qc.append(el('p','muted','No hay ninguna misión en curso.'));
+    else {
+      qc.append(el('div','hab-name',prettyKey(q.key)));
+      const m2=el('div','hab-quest'); m2.append(el('span','chip'+(q.active?' clean':''),q.active?'En curso':'Esperando a que empiece'));
+      const p=q.progress||{};
+      if(Number.isFinite(Number(p.hp))) m2.append(el('span','',`Vida del jefe: ${fmtNum(Math.round(p.hp*10)/10)}`));
+      if(p.collect&&typeof p.collect==='object') for(const [k,n] of Object.entries(p.collect)) m2.append(el('span','',`${prettyKey(k)}: ${n}`));
+      const mine=snap.questMine||{};
+      if(Number(mine.up)) m2.append(el('span','',`Tu daño acumulado hoy: ${fmtNum(Math.round(mine.up*10)/10)}`));
+      if(Number(mine.collectedItems)) m2.append(el('span','',`Objetos encontrados hoy: ${mine.collectedItems}`));
+      qc.append(m2);
+      qc.append(el('p','small-print','El daño y los objetos se aplican cuando Habitica cambia de día.'));
+    }
+    grid.append(qc);
+  } else grid.append(el('div','empty',habRt.busy?'Cargando tu personaje…':'Pulsa «Sincronizar ahora» para cargar tu personaje.'));
+  v.append(grid);
+  // Tareas
+  const tc=el('section','card'); tc.append(h2i('Diarias y hábitos de Habitica','link'));
+  const tk=habRt.tasks;
+  if(!tk) tc.append(el('p','muted',habRt.busy?'Cargando tareas…':'Pulsa «Sincronizar ahora» para ver tus tareas.'));
+  else {
+    const all=tk.dailys.map(t=>({t,label:'Diaria'})).concat(tk.habits.map(t=>({t,label:'Hábito'})));
+    let unl=0; for(const {t} of all) for(const k of habTaskKinds(t)) if(!habLinked(t.id||t._id,k)) unl++;
+    tc.append(el('p','muted small',all.length?'«Importar» crea el hábito aquí con su historial. «Enlazar con…» lo une a un hábito que ya tengas (por ejemplo, uno que llevabas en Streaks o Loop) y completa los días que falten. Los hábitos con + y − se separan en dos: uno de cantidad (+) y uno de «Evitar» (−).':'No tienes diarias ni hábitos en Habitica.'));
+    if(unl>1){ const r=el('div','row'); r.style.margin='4px 0 10px'; r.append(btn(`Importar las ${unl} sin enlazar`,'',null,habImportMany,'download')); tc.append(r); }
+    const ul=el('ul','hab-tasks'); const used=new Set(state.habitica.map.filter(x=>habitById(x.habitId)).map(x=>x.habitId));
+    for(const {t,label} of all){
+      for(const k of habTaskKinds(t)){
+        const li=el('li'), info=el('div','grow'), id=t.id||t._id, m=habLinked(id,k);
+        const conv=k==='daily'?habSchedule(t):null, kl=k==='daily'?(conv.grey?'nunca toca (en gris en Habitica); se importa archivada':scheduleText(conv.schedule)):HAB_KIND_TXT[k];
+        info.append(el('div','ht-name',t.text||'(sin nombre)'),el('div','muted small',k==='daily'?`${label}: ${kl}`:kl));
+        li.append(info);
+        const act=el('div','ht-act');
+        if(m){ const h=habitById(m.habitId); const lk=el('button','chip clean ht-link'); lk.type='button'; lk.title='Abrir sus estadísticas'; lk.append(ic('link'),document.createTextNode(h.name)); lk.addEventListener('click',()=>openHabitStats(h)); act.append(lk,btn('','ghost small icon','Quitar el enlace',()=>habUnlink(m),'x')); }
+        else {
+          const sel=field('select'); sel.setAttribute('aria-label',`Enlazar «${t.text}» con`); sel.append(opt('','Enlazar con…'));
+          for(const h of habitsSorted()) if(!used.has(h.id)&&!h.archived&&(k==='daily'?h.kind==='check':k==='up'?h.kind!=='avoid':h.kind==='avoid')) sel.append(opt(h.id,h.name));
+          sel.addEventListener('change',()=>{ const h=habitById(sel.value); if(!h) return; commit(null,()=>{ const r=habLink(t,k,h); return `«${h.name}» enlazado: ${pl(r.logs,'día traído','días traídos')} de Habitica`; }); scheduleHabSync(600); });
+          act.append(sel,btn('Importar','secondary small',null,()=>{ commit(null,()=>{ const r=habImport(t); if(!r.made.length) return false; return `Importado: ${r.made.map(x=>`«${x.name}»`).join(' y ')} con ${pl(r.logs,'día registrado','días registrados')}`; }); scheduleHabSync(600); },'download'));
+        }
+        li.append(act); ul.append(li);
+      }
+    }
+    tc.append(ul);
+    const gone=state.habitica.map.filter(m=>m.missing&&habitById(m.habitId));
+    if(gone.length){ tc.append(el('p','small-print',`Ya no están en Habitica (se conservan aquí): ${gone.map(m=>habitById(m.habitId).name).join(', ')}.`)); }
+  }
+  v.append(tc);
+  // Cómo funciona y conexión
+  const hc=el('section','card hab-how'); hc.append(h2i('Cómo se reparten','help'));
+  const ul2=el('ul');
+  for(const s of ['Marca donde quieras: lo que marques en Habitica aparece aquí y lo que marques aquí se puntúa en Habitica (con su experiencia, oro, objetos y daño al jefe). Antes de enviar se comprueba lo que ya hay en Habitica, así que no se duplica.',
+    'Habitica solo deja marcar el día que tiene abierto. Si aún no lo ha empezado (no la has abierto hoy), lo de hoy espera; lo de ayer se envía como si usaras «Registrar la actividad de ayer». Los días anteriores solo se guardan aquí.',
+    'El nombre y la programación de las diarias enlazadas se cambian en Habitica; aquí se actualizan solos.',
+    'Hábitos nunca empieza el día de Habitica ni lo cierra: eso solo lo hace Habitica al abrirla.']) ul2.append(el('li','',s));
+  hc.append(ul2); v.append(hc);
+  const sc=el('section','card'); sc.append(h2i('Conexión','refresh'));
+  const last=habCfg.lastPull?new Date(habCfg.lastPull):null;
+  sc.append(el('p','muted',last?`Última sincronización: ${ymd(last)===today()?'hoy':fmtDate(ymd(last))}, a las ${pad(last.getHours())}:${pad(last.getMinutes())}.${habRt.last?` Traídos: ${habRt.last.imported}. Enviados: ${habRt.last.sent}.`:''} Se sincroniza al abrir la app, tras cada cambio y cada 3 minutos.`:'Todavía no se ha sincronizado.'));
+  if(habRt.user) sc.append(el('p','small-print',`Inicio de día en Habitica: ${pad(habDayStart())}:00. Día abierto en Habitica: ${fmtDate(habOpenDay())}.`));
+  const r=el('div','row'); r.append(btn('Desconectar','danger',null,()=>{ if(!confirm('Se borran de este dispositivo el ID y el token de Habitica. Los hábitos, los registros y los enlaces se conservan. ¿Desconectar?')) return; clearInterval(habTimer); clearTimeout(habRt.timer); habCfg=null; saveHabCfg(); Object.assign(habRt,{user:null,tasks:null,party:null,status:'off',err:null,cronPending:false}); renderApp(); },'x')); sc.append(r);
+  v.append(sc);
+}
+function habConnectCard(){
+  const c=el('section','card'); c.append(h2i('Conectar con Habitica','link'));
+  c.append(el('p','muted','Con la conexión, lo que marques aquí se puntúa en Habitica y lo que marques allí aparece aquí, con su historial.'));
+  const g=el('div','form-grid');
+  const uid=field('input',{type:'text',autocomplete:'off',spellcheck:false,placeholder:'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}); g.append(fld('ID de usuario',uid,'full'));
+  const tok=field('input',{type:'password',autocomplete:'off',spellcheck:false}); g.append(fld('Token de la API',tok,'full'));
+  const err=el('div','err full'); err.id='habErr'; g.append(err); c.append(g);
+  const r=el('div','row'); r.style.marginTop='8px';
+  const go2=btn('Conectar','',null,async()=>{
+    err.textContent=''; const u=uid.value.trim(), k=tok.value.trim();
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u)){ err.textContent='El ID de usuario tiene 36 caracteres: letras, números y guiones.'; uid.focus(); return; }
+    if(!/^[0-9a-f-]{36}$/i.test(k)){ err.textContent='El token tiene 36 caracteres: pégalo completo.'; tok.focus(); return; }
+    habCfg={userId:u,token:k,lastPull:''}; go2.disabled=true; go2.textContent='Conectando…';
+    const res=await habSync({force:true,quiet:true});
+    if(!res.ok){ const m=res.err&&res.err.kind?res.err.message:'No se ha podido conectar.'; habCfg=null; Object.assign(habRt,{status:'off',err:null,user:null,tasks:null}); renderApp(); const e2=$('habErr'); if(e2) e2.textContent=m; return; }
+    saveHabCfg(); startHabTimer(); renderApp(); showToast('Conectado con Habitica');
+  },'link');
+  r.append(go2); c.append(r);
+  const det=el('details','sync-help'); det.open=true; det.append(el('summary','','Dónde están el ID y el token'));
+  const ol=el('ol');
+  for(const s of ['En el ordenador, entra en habitica.com e inicia sesión (en la app del móvil está en Menú → Ajustes → API, pero copiar es más fácil en el PC).',
+    'Pulsa el icono de tu usuario, arriba a la derecha, y elige «Ajustes».',
+    'Entra en la pestaña «API» (o abre directamente habitica.com/user/settings/api).',
+    'En «ID de usuario», pulsa copiar y pégalo arriba.',
+    'En «Token de la API», pulsa «Mostrar token de la API», cópialo y pégalo arriba. No se lo des a nadie: da acceso completo a tu cuenta. Si se expone, en esa misma página puedes generar uno nuevo, y el antiguo deja de valer.',
+    'Pulsa «Conectar». El ID y el token se guardan solo en este dispositivo: no entran en las copias, en lo exportado ni en el Gist. Para usarlo en el otro dispositivo, conéctalo allí igual; los enlaces entre tareas y hábitos sí se sincronizan.']) ol.append(el('li','',s));
+  det.append(ol); c.append(det);
+  return c;
+}
+
 /* ================= Navegación ================= */
 const NAV_SHORT={settings:'Ajustes',help:'Ayuda',stats:'Estadísticas'};
-const VIEWS=[['today','Hoy','sun'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['habits','Hábitos','checks'],['settings','Ajustes y avisos','sliders'],['help','Instrucciones','help']];
+const VIEWS=[['today','Hoy','sun'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['habits','Hábitos','checks'],['habitica','Habitica','shield'],['settings','Ajustes y avisos','sliders'],['help','Instrucciones','help']];
 function go(v){ if(ui.view!==v){ ui.view=v; saveUI(); lastView=null; } if(v==='today') selDate=null; renderApp(); }
 function todayCounts(){
   const t=today(); let total=0,done=0;
@@ -1566,7 +2063,7 @@ function renderNav(){
   const tc=todayCounts();
   for(const [v,label,icon] of VIEWS){
     const b=btn('', 'nav-item'+(ui.view===v?' active':''),null,()=>go(v));
-    b.append(ic(icon),el('span','nav-label',NAV_SHORT[v]||label)); if(NAV_SHORT[v]) b.setAttribute('aria-label',label);
+    b.append(ic(icon),el('span','nav-label',NAV_SHORT[v]||label)); b.setAttribute('aria-label',label); b.title=label;
     if(v==='today'&&tc.total){ const c=el('span','nav-count'+(tc.done===tc.total?' complete':''),`${tc.done}/${tc.total}`); b.append(c); }
     b.dataset.v=v;
     if(ui.view===v) b.setAttribute('aria-current','page');
@@ -1575,7 +2072,7 @@ function renderNav(){
   const bn=$('bottomNav'); bn.replaceChildren();
   const mk=(v,label,icon)=>{ const b=btn('',ui.view===v?'active':'',null,()=>go(v)); b.append(ic(icon),el('span','',label)); if(ui.view===v) b.setAttribute('aria-current','page'); return b; };
   bn.append(mk('today','Hoy','sun'),mk('calendar','Calendario','calendar'),mk('stats','Estadísticas','bar-chart'),mk('tables','Tablas','table'));
-  const more=btn('',['habits','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.dataset.v='more'; more.append(ic('menu'),el('span','','Más')); bn.append(more);
+  const more=btn('',['habits','habitica','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.dataset.v='more'; more.append(ic('menu'),el('span','','Más')); bn.append(more);
 }
 
 /* ================= Repintado ================= */
@@ -1591,6 +2088,7 @@ function renderApp(){
   else if(ui.view==='tables') renderTables(v);
   else if(ui.view==='habits') renderHabits(v);
   else if(ui.view==='settings') renderSettings(v);
+  else if(ui.view==='habitica') renderHabitica(v);
   else renderHelp(v);
   /* Volver a pintar reinicia el desplazamiento: se restaura */
   if(sameView) window.scrollTo(0,sy); else window.scrollTo(0,0);
@@ -1647,6 +2145,7 @@ function renderToday(v){
   }
   v.append(head);
   const bn=backupBanner(); if(bn) v.append(bn);
+  { const hs=habStatusLine(); if(hs&&habRt.status!=='syncing'){ const b=el('button','hab-note'); b.type='button'; b.append(ic(habRt.status==='error'?'alert':'shield'),el('span','',hs)); b.addEventListener('click',()=>go('habitica')); v.append(b); } }
 
   if(!state.habits.length){
     const e=el('div','empty'); e.append(ic('grid'),btn('Crear el primer hábito','',null,()=>openHabitEditor(null),'plus')); v.append(e); return;
@@ -1837,7 +2336,7 @@ function openHabitEditor(h){
   const isNew=!h, t=today();
   const draft=h?clone(h):{name:'',description:'',categoryId:null,tags:[],color:HABIT_COLORS[state.habits.length%HABIT_COLORS.length],icon:'check',kind:'check',target:null,schedule:{type:'daily'},startDate:t,endDate:null,identity:'',cue:'',mini:'',tod:'any'};
   let sched=normSchedule(draft.schedule);
-  const tmp={weekdays:sched.type==='weekdays'?sched.days.slice():[1,3,5],monthDays:sched.type==='monthDays'?sched.days.slice():[1],times:isQuota(sched)?sched.times:3,n:sched.type==='everyN'?sched.n:2,blockDays:sched.type==='timesPerDays'?sched.days:14};
+  const tmp={weekdays:sched.type==='weekdays'?sched.days.slice():[1,3,5],monthDays:sched.type==='monthDays'?sched.days.slice():[1],times:isQuota(sched)?sched.times:3,n:sched.type==='everyN'?sched.n:2,blockDays:sched.type==='timesPerDays'?sched.days:14,weekEvery:sched.every||1,monthEvery:sched.every||1,nthWeeks:sched.type==='nthWeekday'?sched.weeks.slice():[0],nthDays:sched.type==='nthWeekday'?sched.days.slice():[1],yMonth:sched.type==='yearly'?sched.month:Number(draft.startDate.slice(5,7)),yDay:sched.type==='yearly'?sched.day:Number(draft.startDate.slice(8)),yEvery:sched.type==='yearly'?sched.every:1};
   openDialog(dlg=>{
     dlg.append(modalHeader(isNew?'Nuevo hábito':'Editar hábito'));
     const g=el('div','form-grid');
@@ -1864,12 +2363,13 @@ function openHabitEditor(h){
     const sw=el('div','fld full');
     const stype=field('select'); stype.id='fProg';
     const og1=document.createElement('optgroup'); og1.label='Días fijos';
-    for(const [k,l] of [['daily','Todos los días'],['weekdays','Días de la semana'],['monthDays','Días del mes'],['everyN','Cada N días']]) og1.append(opt(k,l,sched.type===k));
+    for(const [k,l] of [['daily','Todos los días'],['weekdays','Días de la semana'],['monthDays','Días del mes'],['nthWeekday','Día de la semana del mes (p. ej., primer lunes)'],['everyN','Cada N días'],['yearly','Una fecha al año']]) og1.append(opt(k,l,sched.type===k));
     const og2=document.createElement('optgroup'); og2.label='Cuota (cualquier día)'; og2.dataset.g='quota';
     for(const [k,l] of [['timesPerWeek','Veces por semana'],['timesPerMonth','Veces al mes'],['timesPerYear','Veces al año'],['timesPerDays','Veces cada N días']]) og2.append(opt(k,l,sched.type===k));
     stype.append(og1,og2);
     stype.addEventListener('change',()=>{ sched={type:stype.value}; updS(); });
     const lb=el('label',null,'Programación'); lb.htmlFor='fProg'; sw.append(lb,stype);
+    const hl=h&&habLinkOf(h.id); if(hl&&hl.kind==='daily') sw.append(el('p','small-print','Enlazado con una diaria de Habitica: la programación se cambia allí y aquí se actualiza al sincronizar.'));
     const sx=el('div','sched-x'); sw.append(sx); g.append(sw);
     const numIn=(val,min,max,label,on)=>{ const n=field('input',{type:'number',min,max,value:val}); n.classList.add('num'); n.setAttribute('aria-label',label); n.addEventListener('input',()=>on(n.value)); return n; };
     function updS(){
@@ -1878,11 +2378,24 @@ function openHabitEditor(h){
       if(t2==='weekdays'){
         const dd=el('div','days');
         for(const dw of orderedDows()){ const b=btn(DOW_LETTER[dw],'',DOW_NAME[dw],()=>{ const i=tmp.weekdays.indexOf(dw); if(i>=0) tmp.weekdays.splice(i,1); else tmp.weekdays.push(dw); b.setAttribute('aria-pressed',String(tmp.weekdays.includes(dw))); }); b.setAttribute('aria-pressed',String(tmp.weekdays.includes(dw))); dd.append(b); }
-        sx.append(dd);
+        const r=el('div','row'); r.style.marginTop='8px'; r.append(el('span','muted','Cada'),numIn(tmp.weekEvery,1,52,'Cada cuántas semanas',v=>{ tmp.weekEvery=v; }),el('span','muted','semanas'));
+        sx.append(dd,r);
+      } else if(t2==='nthWeekday'){
+        const ww=el('div','days');
+        for(let w=0;w<5;w++){ const b=btn(`${w+1}.º`,'',`${cap(ORDINAL[w])} del mes`,()=>{ const i=tmp.nthWeeks.indexOf(w); if(i>=0) tmp.nthWeeks.splice(i,1); else tmp.nthWeeks.push(w); b.setAttribute('aria-pressed',String(tmp.nthWeeks.includes(w))); }); b.setAttribute('aria-pressed',String(tmp.nthWeeks.includes(w))); ww.append(b); }
+        const dd=el('div','days'); dd.style.marginTop='6px';
+        for(const dw of orderedDows()){ const b=btn(DOW_LETTER[dw],'',DOW_NAME[dw],()=>{ const i=tmp.nthDays.indexOf(dw); if(i>=0) tmp.nthDays.splice(i,1); else tmp.nthDays.push(dw); b.setAttribute('aria-pressed',String(tmp.nthDays.includes(dw))); }); b.setAttribute('aria-pressed',String(tmp.nthDays.includes(dw))); dd.append(b); }
+        const r=el('div','row'); r.style.marginTop='8px'; r.append(el('span','muted','Cada'),numIn(tmp.monthEvery,1,120,'Cada cuántos meses',v=>{ tmp.monthEvery=v; }),el('span','muted','meses'));
+        sx.append(ww,dd,r);
+      } else if(t2==='yearly'){
+        const r=el('div','row'); const ms=field('select'); ms.setAttribute('aria-label','Mes'); ms.style.width='auto'; MONTHS.forEach((mn,i)=>ms.append(opt(String(i+1),mn,tmp.yMonth===i+1))); ms.addEventListener('change',()=>{ tmp.yMonth=Number(ms.value); });
+        r.append(el('span','muted','El día'),numIn(tmp.yDay,1,31,'Día del año',v=>{ tmp.yDay=v; }),el('span','muted','de'),ms,el('span','muted','cada'),numIn(tmp.yEvery,1,100,'Cada cuántos años',v=>{ tmp.yEvery=v; }),el('span','muted','años'));
+        sx.append(r);
       } else if(t2==='monthDays'){
         const dd=el('div','mdays');
         for(let i=1;i<=31;i++){ const b=btn(String(i),'',`Día ${i}${i>28?' (o el último del mes)':''}`,()=>{ const k=tmp.monthDays.indexOf(i); if(k>=0) tmp.monthDays.splice(k,1); else tmp.monthDays.push(i); b.setAttribute('aria-pressed',String(tmp.monthDays.includes(i))); }); b.setAttribute('aria-pressed',String(tmp.monthDays.includes(i))); dd.append(b); }
-        sx.append(dd);
+        const r=el('div','row'); r.style.marginTop='8px'; r.append(el('span','muted','Cada'),numIn(tmp.monthEvery,1,120,'Cada cuántos meses',v=>{ tmp.monthEvery=v; }),el('span','muted','meses'));
+        sx.append(dd,r);
       } else if(t2==='everyN'){
         const r=el('div','row'); r.append(el('span','muted','Cada'),numIn(tmp.n,2,365,'Cada cuántos días',v=>{ tmp.n=v; }),el('span','muted','días')); sx.append(r);
       } else if(t2==='timesPerWeek'){
@@ -1948,8 +2461,11 @@ function openHabitEditor(h){
       if(kind==='count'){ const a=parseNum(amt.value); if(!(a>0)){ err.textContent='El objetivo tiene que ser mayor que cero'; amt.focus(); return; } target={amount:Math.round(a*1000)/1000,unit:unit.value.trim()}; }
       let s;
       const T=sched.type, nt=Math.round(Number(tmp.times));
-      if(T==='weekdays'){ if(!tmp.weekdays.length){ err.textContent='Elige al menos un día'; return; } s={type:'weekdays',days:tmp.weekdays.slice()}; }
-      else if(T==='monthDays'){ if(!tmp.monthDays.length){ err.textContent='Elige al menos un día del mes'; return; } s={type:'monthDays',days:tmp.monthDays.slice()}; }
+      const we=Math.round(Number(tmp.weekEvery)), me=Math.round(Number(tmp.monthEvery)), ye=Math.round(Number(tmp.yEvery));
+      if(T==='weekdays'){ if(!tmp.weekdays.length){ err.textContent='Elige al menos un día'; return; } if(!(we>=1&&we<=52)){ err.textContent='Cada 1 a 52 semanas'; return; } s={type:'weekdays',days:tmp.weekdays.slice(),every:we}; }
+      else if(T==='monthDays'){ if(!tmp.monthDays.length){ err.textContent='Elige al menos un día del mes'; return; } if(!(me>=1&&me<=120)){ err.textContent='Cada 1 a 120 meses'; return; } s={type:'monthDays',days:tmp.monthDays.slice(),every:me}; }
+      else if(T==='nthWeekday'){ if(!tmp.nthWeeks.length||!tmp.nthDays.length){ err.textContent='Elige la semana del mes y el día de la semana'; return; } if(!(me>=1&&me<=120)){ err.textContent='Cada 1 a 120 meses'; return; } s={type:T,weeks:tmp.nthWeeks.slice(),days:tmp.nthDays.slice(),every:me}; }
+      else if(T==='yearly'){ const yd=Math.round(Number(tmp.yDay)); if(!(yd>=1&&yd<=31)){ err.textContent='Elige un día del 1 al 31'; return; } if(!(ye>=1&&ye<=100)){ err.textContent='Cada 1 a 100 años'; return; } s={type:T,month:tmp.yMonth,day:yd,every:ye}; }
       else if(T==='everyN'){ const n=Math.round(Number(tmp.n)); if(!(n>=2&&n<=365)){ err.textContent='Cada 2 a 365 días'; return; } s={type:'everyN',n}; }
       else if(T==='timesPerWeek'){ if(!(nt>=1&&nt<=7)){ err.textContent='Entre 1 y 7 veces por semana'; return; } s={type:T,times:nt}; }
       else if(T==='timesPerMonth'){ if(!(nt>=1&&nt<=31)){ err.textContent='Entre 1 y 31 veces al mes'; return; } s={type:T,times:nt}; }
@@ -2176,6 +2692,8 @@ function renderSettings(v){
   bd.addEventListener('change',()=>setSetting('backupDays',Number(bd.value))); r.append(bd); c.append(r);
   v.append(c);
   v.append(syncCard());
+  { const hc=el('section','card'); hc.append(h2i('Habitica','shield'));
+    const rr=el('div','set-row'); rr.append(el('span','lbl',habCfg?(habRt.user&&habRt.user.profile?`Conectado como ${habRt.user.profile.name}`:'Conectado'):'Sin conectar: marca en las dos apps y conserva aquí las estadísticas'),btn(habCfg?'Abrir Habitica':'Conectar','secondary',null,()=>go('habitica'),'shield')); hc.append(rr); v.append(hc); }
   // App
   c=el('section','card'); c.append(h2i('Aplicación','monitor-down'));
   if(deferredPrompt){ r=el('div','set-row'); r.append(el('span','lbl','Instalar en este dispositivo'),btn('Instalar app','',null,installApp,'monitor-down')); c.append(r); }
@@ -2532,7 +3050,7 @@ function periodOptions(){
   return ys;
 }
 /* Frecuencia esperada (veces por día) de una programación */
-function freqOf(s){ switch(s.type){ case 'weekdays': return s.days.length/7; case 'everyN': return 1/s.n; case 'monthDays': return s.days.length/30.44; case 'timesPerWeek': return s.times/7; case 'timesPerMonth': return s.times/30.44; case 'timesPerYear': return s.times/365.25; case 'timesPerDays': return s.times/s.days; default: return 1; } }
+function freqOf(s){ switch(s.type){ case 'weekdays': return s.days.length/7/(s.every||1); case 'everyN': return 1/s.n; case 'monthDays': return s.days.length/30.44/(s.every||1); case 'nthWeekday': return s.weeks.length*s.days.length/30.44/s.every; case 'yearly': return 1/365.25/s.every; case 'timesPerWeek': return s.times/7; case 'timesPerMonth': return s.times/30.44; case 'timesPerYear': return s.times/365.25; case 'timesPerDays': return s.times/s.days; default: return 1; } }
 
 /* ---- Puntuación (fuerza del hábito), como en Loop: media móvil exponencial de lo cumplido ----
    Vida media de 13/√f días (f = veces esperadas por día). Cada día o semana programada aporta 1 si se cumple,
@@ -3141,7 +3659,7 @@ function openMoreMenu(){
     dlg.append(modalHeader('Más'));
     const l=el('div','menu-list');
     const it=(v,label,icon)=>btn(label,'',null,()=>{ closeDialog(); go(v); },icon);
-    l.append(it('habits','Hábitos','checks'),it('settings','Ajustes y avisos','sliders'),it('help','Instrucciones','help'));
+    l.append(it('habits','Hábitos','checks'),it('habitica','Habitica','shield'),it('settings','Ajustes y avisos','sliders'),it('help','Instrucciones','help'));
     if(deferredPrompt) l.append(btn('Instalar app','',null,()=>{ closeDialog(); installApp(); },'monitor-down'));
     dlg.append(l);
   });
@@ -3155,6 +3673,7 @@ function renderHelp(v){
   sec('Hoy',['Muestra los hábitos que tocan el día elegido. Toca el círculo para marcarlo; los de cantidad se suman y restan con + y −. Toca el nombre para abrir el detalle del día: nota, cantidad exacta o pausa.','Con las flechas, el selector de fecha o «Ayer» puedes registrar días pasados. Los hábitos que no tocan ese día están en «No tocan hoy» y también se pueden marcar (no suman a la racha).','Todo cambio se puede deshacer con el botón del aviso o con Ctrl+Z.']);
   sec('Tipos de hábito',[['Sí / no: se marca el día que se hace.','Cantidad: se suma una cantidad (vasos, minutos, páginas…); el día cuenta si llega al objetivo.','Evitar: para dejar algo. Solo se marca el día que se cae (recaída); el resto de días programados cuentan solos como días limpios. Hoy no cuenta hasta que termina, salvo que haya recaída.']]);
   sec('Días pasados',['Puedes registrar cualquier día pasado desde «Hoy» (flechas, selector de fecha o «Ayer»), desde «Varios días», tocando un día del calendario o desde la ficha del hábito.','Si registras un día anterior al inicio del hábito, el inicio se adelanta a ese día. En la ficha, el botón «Editar» del calendario permite marcar y desmarcar días de un toque, y «Rellenar días» marca (o borra) de una vez todos los días de un periodo, eligiendo los días de la semana: útil para pasar el historial de otra app.','En los hábitos «Evitar», los días anteriores al inicio no se rellenan solos: para adelantar el inicio, cambia «Empieza» en el editor.']);
+  sec('Habitica',['En la pantalla Habitica (en el móvil, en Más) pegas tu ID de usuario y tu token de la API. Están en habitica.com → icono de usuario → Ajustes → pestaña API. Se guardan solo en ese dispositivo; en el otro hay que conectarlo igual.','«Importar» crea el hábito con su historial; «Enlazar con…» lo une a uno que ya tengas y completa los días que falten. Los hábitos de Habitica con + y − se separan en dos: uno de cantidad (+) y uno de «Evitar» (−).','Marca donde quieras: lo de Habitica aparece aquí y lo de aquí se puntúa allí, sin duplicar. Habitica solo admite marcas del día que tiene abierto: si no la has abierto hoy, lo de hoy espera (lo verás en «Hoy») y lo de ayer se envía como «Registrar la actividad de ayer». Los días anteriores solo se guardan aquí.','El nombre y la programación de las diarias se cambian en Habitica. Si alguna vez se expone el token, genera otro en esa página de la API y vuelve a conectar.']);
   sec('Sincronización',['En Ajustes y avisos → Sincronización pegas un token de GitHub (sirve el del Revisor de Tareas) y eliges una contraseña de cifrado. Repite lo mismo en el otro dispositivo con el mismo token y la misma contraseña.','Los datos se guardan cifrados en un Gist secreto de tu cuenta. Se sincroniza al abrir la app, unos segundos después de cada cambio, al volver a la app y cada 3 minutos. En cada hábito, registro o pausa prevalece la versión más reciente, y los borrados también se propagan. No se sincronizan los ajustes ni la interfaz.','Si ves un punto rojo en Ajustes, la sincronización está en pausa (token caducado, contraseña incorrecta…): ábrelo para ver el motivo.']);
   sec('Hoy en varios días',['El botón «Varios días» de «Hoy» muestra los hábitos en filas y los últimos días en columnas (4 en el móvil, 7 en el PC). Toca una casilla para marcarla o desmarcarla; en los de cantidad se abre el detalle. Toca el nombre para ver sus estadísticas.']);
   sec('Calendario',['Con «Todos los hábitos», cada día toma el color de los hábitos que tocaban: todos cumplidos, algunos, ninguno, pausa o no tocaba. Los hábitos de «X veces por semana» y los registros de días que no tocaban solo suman si se hicieron. Toca un día para abrirlo en «Hoy» y editarlo.','Con un hábito elegido se ve cada día: hecho, parcial (cantidad por debajo del objetivo), no cumplido, pausa o no tocaba. En los de «X veces por semana», la última columna muestra la cuota de cada semana. Toca un día para editar su registro.']);
@@ -3226,6 +3745,7 @@ async function boot(){
   renderApp();
   startupNotice();
   if(syncCfg){ startSyncTimer(); syncNow(); }
+  if(habCfg){ startHabTimer(); scheduleHabSync(syncCfg?4000:600); }
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/[?&]nosw\b/.test(location.search)){
     navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{});
   }
@@ -3237,6 +3757,8 @@ window.__habitos={
   normalizeState, normalizeItem:(x)=>normalizeItem(x,{catIds:new Set(state.categories.map(c=>c.id)),tagIds:new Set(state.tags.map(g=>g.id)),idx:0}),
   isDue, isScheduled, moodStats, scoreSeries, scoreAt, relations, weekdayRates, buildTable, dayGlobal, habitDay, monthCompliance, globalCompliance, computeStreaks, computeStats, compliance, unitsOf, mergeStates, undo, commit, exportData, parseNum,
   syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
+  mark(hid,d,v){ return commit('Marcado',()=>setLog(hid,d,v)); },
+  habSync, get habRt(){ return habRt; }, get habCfg(){ return habCfg; }, scheduleText, habSchedule:t=>habSchedule(t).schedule, habDailyDays:t=>Object.fromEntries(habDailyDays(t).days), habHabitDays:t=>Object.fromEntries(habHabitDays(t).days), habDayOf, habOpenDay, dueFixed, normSchedule,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
   flush
