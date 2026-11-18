@@ -94,19 +94,20 @@ En **Ajustes y avisos → Sincronización (PC y móvil)**, con los pasos para cr
 
 ## Habitica
 
-Pantalla **Habitica** (en el PC, en la barra superior; en el móvil, en **Más**). Habitica pone el juego (recompensas, mascotas, equipo, poderes, misiones y grupo) y Hábitos guarda el historial y las estadísticas.
+Se marca **solo en Habitica**; Hábitos **importa** y analiza. Solo se hacen lecturas: nunca se puntúa, nunca se llama a `POST /cron` ni se cambia nada allí. Pantalla **Habitica** (en el PC, en la barra superior; en el móvil, en **Más**).
 
-**Conectar:** en habitica.com → icono de usuario → **Ajustes** → pestaña **API** (o `https://habitica.com/user/settings/api`): copia el **ID de usuario** y el **Token de la API** («Mostrar token de la API») y pégalos en la pantalla Habitica → **Conectar**.
+**Conectar:** habitica.com → icono de usuario → **Ajustes** → pestaña **API** (o `https://habitica.com/user/settings/api`): copia el **ID de usuario** y el **Token de la API** («Mostrar token de la API») y pégalos en la pantalla Habitica → **Conectar**.
 
-- El ID y el token se guardan **solo en el `localStorage` de ese dispositivo** (`habitos_v1_hab`): no entran en el estado, las copias, lo exportado ni el Gist. Si el token se expone, se regenera en esa misma página de Habitica. Cada petición lleva la cabecera `x-client` obligatoria (`<ID>-habitos`).
-- **Importar** crea los hábitos con su historial; **Enlazar con…** une una tarea a un hábito que ya existe y completa los días que falten sin tocar los que hay. Los enlaces (y sus quitas) se sincronizan por el Gist.
-- **Diarias** → hábitos sí/no con la programación de Habitica: cada X días, días de la semana cada X semanas, días del mes o N-ésimo día de la semana cada X meses, y cada X años (mismas reglas que Habitica, ancladas en su fecha de inicio). Una diaria «en gris» (cada 0) se importa archivada. El nombre y la programación los manda Habitica: si cambian allí, aquí se actualizan desde ese día.
-- **Hábitos con + y −** → dos hábitos: «(+)» de cantidad (veces al día) y «(−)» de «Evitar» (cada pulsación de − es una recaída).
-- **Historial:** cada marca de una diaria cuenta para el día que Habitica tenía abierto al marcarla (con su zona horaria, el inicio de día personalizado y los cambios de día de `history.exp`); cada fallo, para el día que se cerró. Lo que Habitica ya comprimió en medias mensuales o anuales no tiene días: se guarda aparte (`habitica.history`) y no se inventan días.
-- **Doble sentido (opción c):** se marca en cualquiera de las dos. Al abrir la app, unos segundos después de cada cambio, al volver a ella y cada 3 minutos se trae lo de Habitica y se envía lo que falte, **comprobando antes lo que ya hay allí** (sin duplicados). Desmarcar o «Deshacer» aquí desmarca allí, y al revés. El aviso muestra la experiencia, el oro y los objetos ganados.
-- Habitica solo deja puntuar el **día que tiene abierto**. Si aún no lo ha empezado, las marcas de hoy esperan (lo indica «Hoy») y lo de ayer se envía como «Registrar la actividad de ayer». Los días anteriores solo se guardan aquí. Los hábitos +/− cuentan para la fecha del momento.
-- **Nunca** se llama a `POST /cron`: el cambio de día lo hace Habitica al abrirla. Si Habitica limita las peticiones (429), se espera lo que indique `Retry-After`.
-- Panel de solo lectura: nombre, nivel y clase; vida, experiencia y maná; oro; mascota y montura; misión del grupo (vida del jefe u objetos, y tu daño acumulado del día).
+- El ID y el token se guardan **solo en el `localStorage` de ese dispositivo** (`habitos_v1_hab`): no entran en el estado, las copias, lo exportado ni el Gist. Si el token se expone, se regenera en esa misma página. Cada petición lleva `x-client` (`<ID>-habitos`). Los nombres en español de huevos, pociones, comida y misiones se piden a `/content?language=es` y se guardan 30 días (`habitos_v1_habnames`).
+- Se importa al abrir la app, al volver a ella y cada 3 minutos (y con «Importar ahora»). Si Habitica limita las peticiones (429), se espera lo que indique `Retry-After`.
+- **Importar** crea los hábitos con su historial; **Enlazar con…** une una tarea a un hábito que ya existe, **conserva lo que había** y añade los días de Habitica. Los enlaces (y sus quitas) se sincronizan por el Gist.
+- En los hábitos enlazados manda Habitica: en cada día que Habitica conoce, el registro queda como allí (marcado, desmarcado o con su número). No se marcan desde Hábitos (aparece la etiqueta «Habitica» y un aviso); al quitar el enlace vuelven a ser normales.
+- **Diarias** → hábitos sí/no con la programación de Habitica: cada X días, días de la semana cada X semanas, días del mes o N-ésimo día de la semana cada X meses, y cada X años (mismas reglas que Habitica). Una diaria «en gris» se importa archivada. El nombre y la programación siguen a Habitica.
+- **Hábitos** → «+» como cantidad (veces al día), «−» como «Evitar» con el número de veces del día; los que tienen **+ y −** se importan como dos y su ficha añade el **balance + / −**: proporción a favor, días ganados y perdidos, + y − al día, días sin −, tendencia, color del valor en Habitica, gráfico divergente por día, semana o mes, y medias por día de la semana.
+- **Historial:** cada marca de una diaria cuenta para el día que Habitica tenía abierto (zona horaria, inicio de día personalizado y cambios de día de `history.exp`); cada fallo, para el día que se cerró. Lo que Habitica ya comprimió en medias no tiene días: se guarda aparte (`habitica.history`).
+- **Panel:** nombre, nivel y clase; vida, experiencia y maná; oro; mascota y montura; misión del grupo.
+- **Establo:** huevos que se pueden eclosionar (las pociones mágicas y raras solo con huevos normales; incluye las mascotas que ya son montura) y mascotas que la comida que tienes puede convertir en montura (favorita +5, otra +2, mágicas cualquier comida; raras y especiales no se alimentan), con sillas de montar. «Hoy» avisa si hay algo.
+- **Guía** «Cómo crear cada frecuencia en Habitica», con los pasos en la web y en Android.
 
 ## Días pasados
 
@@ -124,4 +125,4 @@ Se sirve con GitHub Pages desde la rama `main`, carpeta `/ (root)`. Archivos: `i
 
 ## Pruebas
 
-Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `syncNow`, `fingerprint`, `habSync`, `habRt`, `habSchedule`, `habDailyDays`, `habHabitDays`, `dueFixed`, `normSchedule`, `mark(id, fecha, valor)`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
+Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `syncNow`, `fingerprint`, `habSync`, `habRt`, `stableInfo`, `pmStats`, `habAlerts`, `habSchedule`, `habDailyDays`, `habHabitDays`, `dueFixed`, `normSchedule`, `mark(id, fecha, valor)`, `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.

@@ -20,7 +20,7 @@
   --done:#2e7d58;--done-soft:#e2f0e7;--done-line:#b6d8c3;--miss-soft:#f7e4de;--miss-line:#ecc6bb;
   --heat-off:#e9ece5;--heat-0:#f0d3cb;--heat-1:#cfe6d6;--heat-2:#93c9a8;--heat-3:#4f9e74;--heat-4:#2e7d58;
   --flame:#c86a1a;--pause:#626d66;--pause-soft:#e8ebe4;
-  --mark:#f2d64b;--mark-soft:#fbf1bd;--dot:#d3d9cf;--hab-hp:#c4463b;--hab-xp:#c99400;--hab-mp:#3a6db0;
+  --mark:#f2d64b;--mark-soft:#fbf1bd;--dot:#d3d9cf;--hab-hp:#c4463b;--hab-xp:#c99400;--hab-mp:#3a6db0;--hv-1:#8c1c1c;--hv-2:#d13b3b;--hv-3:#e8833a;--hv-4:#e8c43a;--hv-5:#3f9d5a;--hv-6:#4fb0c6;--hv-7:#3466b5;
   --nav:#1e2621;--nav-ink:#fbfbf8;
   --m1:#c8553d;--m2:#e0a066;--m3:#b5bab1;--m4:#86c095;--m5:#2e7d58;
   --hc-c1:#3b5fa8;--hc-c2:#2e7d58;--hc-c3:#c0453a;--hc-c4:#cf7629;--hc-c5:#7a52a8;--hc-c6:#1f8686;--hc-c7:#b84a7d;--hc-c8:#97781f;--hc-c9:#56665f;--hc-c10:#5f9426;
@@ -627,6 +627,27 @@ dialog{border-radius:20px;background:var(--panel)}
 }
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
+.hab-tag{display:inline-flex;align-items:center;gap:4px;font-size:.76rem;color:var(--muted)}
+.hab-tag .ic{width:12px;height:12px}
+.legend .lgi i.dot{border-radius:50%;width:9px;height:9px;background:var(--ink);border:0}
+.pm-net{fill:var(--ink);stroke:var(--panel);stroke-width:1.5}
+svg .gl0{stroke:var(--ink);stroke-width:1;opacity:.55}
+.hab-stable .st-sec+.st-sec{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.hab-stable h3{font-size:1rem;margin:0 0 2px}
+.st-list{list-style:none;margin:8px 0 0;padding:0}
+.st-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+.st-list li:first-child{border-top:0}
+.st-bar{height:6px;margin-top:4px;max-width:220px}
+.st-bar .hbar-fill{background:var(--hab-xp)}
+.freq-list{margin-top:8px}
+.freq{border-top:1px solid var(--line);padding:2px 0}
+.freq summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;cursor:pointer;list-style:none}
+.freq summary::-webkit-details-marker{display:none}
+.freq summary::after{content:'+';color:var(--muted);font-weight:600;margin-left:4px}
+.freq[open] summary::after{content:'−'}
+.fq-what{font-weight:600;flex:1}
+.freq p{margin:0 0 8px;line-height:1.5}
+.hab-guide .sync-help{margin-top:8px}
 .hab-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-bottom:14px}
 .hab-grid>.card{margin-bottom:0}
 .hab-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
@@ -721,6 +742,7 @@ dialog{border-radius:20px;background:var(--panel)}
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-paw" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
 </svg>
 
@@ -979,7 +1001,7 @@ function normalizeState(x){
     let v=l.value==null?1:parseNum(l.value);
     if(!(v>0)) continue;
     const h=hm.get(l.habitId);
-    v=h.kind==='count'?Math.round(v*1000)/1000:1;
+    v=h.kind==='count'?Math.round(v*1000)/1000:h.kind==='avoid'?Math.min(999,Math.max(1,Math.round(v))):1;
     logs.push({habitId:l.habitId,date:l.date,value:v,mini:h.kind==='check'&&l.mini===true,note:typeof l.note==='string'?l.note.slice(0,1000):'',source:l.source==='habitica'?'habitica':'app',updatedAt:isoOr(l.updatedAt,EPOCH)});
   }
   st.logs=byNewest(logs,logKey);
@@ -1337,7 +1359,7 @@ function commit(msg,fn){
   const r=fn();
   if(r===false) return false;
   undoStack.push(snap); if(undoStack.length>60) undoStack.shift();
-  touch(); save(); renderApp(); if(typeof scheduleSync==='function') scheduleSync(); if(habCfg) scheduleHabSync();
+  touch(); save(); renderApp(); if(typeof scheduleSync==='function') scheduleSync();
   const m=typeof r==='string'?r:msg;
   if(m) showToast(m,{action:'Deshacer',fn:undo,undo:true,timeout:8000}); else hideUndoToast();
   return true;
@@ -1351,7 +1373,7 @@ function undo(quiet=false){
   const now=nowIso(), cur=keyed(state), prev=keyed(st);
   for(const [k,it] of prev){ const c=cur.get(k); if(!c||JSON.stringify(c)!==JSON.stringify(it)){ it.updatedAt=now; delete st.deleted[k]; } }
   for(const k of cur.keys()) if(!prev.has(k)) st.deleted[k]=now;
-  state=st; touch(); save(); renderApp(); scheduleSync(); if(habCfg) scheduleHabSync();
+  state=st; touch(); save(); renderApp(); scheduleSync();
   if(!quiet) showToast('↩️ Cambio deshecho');
   return true;
 }
@@ -1615,22 +1637,18 @@ function syncCard(){
 }
 
 /* ================= Habitica (fase 4) ================= */
-/* Habitica es el juego; Hábitos, el archivo y las estadísticas. Se concilia en los dos sentidos:
-   - De Habitica a Hábitos: diarias y hábitos enlazados, con su historial diario.
-   - De Hábitos a Habitica: lo marcado aquí el día que Habitica tiene abierto se puntúa allí, sin duplicar.
-   Nunca se llama al cambio de día de Habitica (POST /cron): lo hace Habitica al abrirla, con «Registrar la actividad de ayer». */
-const HAB_KEY='habitos_v1_hab', HAB_API='https://habitica.com/api/v3';
+/* Se marca solo en Habitica; Hábitos importa (diarias y hábitos enlazados, con su historial) y analiza.
+   Solo se hacen lecturas: nunca se puntúa, ni se cambia de día (POST /cron), ni se toca nada en Habitica. */
+const HAB_KEY='habitos_v1_hab', HAB_NAMES_KEY='habitos_v1_habnames', HAB_API='https://habitica.com/api/v3';
 function loadHabCfg(){ try{ const c=JSON.parse(localStorage.getItem(HAB_KEY)); if(c&&typeof c==='object'&&c.userId&&c.token) return c; }catch(e){} return null; }
 let habCfg=loadHabCfg();
 function saveHabCfg(){ try{ if(habCfg) localStorage.setItem(HAB_KEY,JSON.stringify(habCfg)); else localStorage.removeItem(HAB_KEY); }catch(e){} }
-const habRt={busy:false,again:false,status:habCfg?'ok':'off',err:null,user:null,party:null,tasks:null,crons:[],timer:null,retryAt:0,remaining:null,cronPending:false,waiting:0,last:null};
+const habRt={busy:false,again:false,status:habCfg?'ok':'off',err:null,user:null,party:null,tasks:null,crons:[],timer:null,retryAt:0,last:null};
 async function hab(path,opts={}){
   let res;
   try{
-    res=await fetch(HAB_API+path,{method:opts.method||'GET',cache:'no-store',
-      headers:{'x-api-user':habCfg.userId,'x-api-key':habCfg.token,'x-client':habCfg.userId+'-habitos'}});
+    res=await fetch(HAB_API+path,{cache:'no-store',headers:opts.anon?{'x-client':habCfg.userId+'-habitos'}:{'x-api-user':habCfg.userId,'x-api-key':habCfg.token,'x-client':habCfg.userId+'-habitos'}});
   }catch(e){ throw syncErr('network','No se ha podido conectar con Habitica. Comprueba la conexión.'); }
-  const rem=res.headers.get('x-ratelimit-remaining'); if(rem!=null&&rem!=='') habRt.remaining=Number(rem);
   if(res.status===401) throw syncErr('token','El ID de usuario o el token de Habitica no son correctos (o el token se ha regenerado).');
   if(res.status===429){ const ra=Math.max(5,Number(res.headers.get('retry-after'))||60); habRt.retryAt=Date.now()+ra*1000; throw syncErr('limit',`Habitica limita las peticiones por minuto; se reintentará dentro de ${ra} s.`); }
   let j=null; try{ j=await res.json(); }catch(e){}
@@ -1641,7 +1659,6 @@ async function hab(path,opts={}){
 const habDayStart=()=>{ const n=habRt.user&&habRt.user.preferences?Number(habRt.user.preferences.dayStart):0; return Number.isFinite(n)?Math.max(0,Math.min(23,n)):0; };
 const habTzo=ms=>{ const n=habRt.user&&habRt.user.preferences?Number(habRt.user.preferences.timezoneOffset):NaN; return Number.isFinite(n)?n:new Date(ms).getTimezoneOffset(); };
 const ymdUTC=d=>`${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
-/* Fecha de Habitica de un instante (con o sin restar las horas del inicio de día) */
 const habDateOf=(ms,ds=true)=>ymdUTC(new Date(ms-habTzo(ms)*60e3-(ds?habDayStart()*3600e3:0)));
 const habDayOf=ms=>habDateOf(ms,true);
 const msOf=v=>typeof v==='number'?v:Date.parse(v);
@@ -1653,8 +1670,7 @@ function buildCrons(u){
   habRt.crons=[...new Set(c)].sort((a,b)=>a-b);
 }
 function lastCronBefore(ms){ const c=habRt.crons; let lo=0,hi=c.length-1,r=null; while(lo<=hi){ const m=(lo+hi)>>1; if(c[m]<=ms){ r=c[m]; lo=m+1; } else hi=m-1; } return r; }
-/* Día que Habitica tenía abierto en un instante: el del último cambio de día anterior.
-   Si no hay ninguno cercano (historial antiguo comprimido), el día del propio instante. */
+/* Día que Habitica tenía abierto en un instante: el del último cambio de día anterior (si es cercano) */
 function openDayAt(ms){ const r=lastCronBefore(ms); return r!=null&&ms-r<48*3600e3?habDayOf(r):habDayOf(ms); }
 const habOpenDay=()=>habRt.crons.length?habDayOf(habRt.crons[habRt.crons.length-1]):habDayOf(Date.now());
 /* Una diaria sin marcar se anota al cambiar de día y corresponde al día que se cerró */
@@ -1706,65 +1722,43 @@ function habHabitDays(t){
   }
   return {days:out,old};
 }
-/* ---- Conciliar: lo que viene de Habitica se aplica aquí; devuelve lo que hay que enviar ---- */
+/* ---- Importar: Habitica manda en los días que tiene; lo que había aquí antes de enlazar se conserva ---- */
 const habLinks=()=>state.habitica.map.filter(m=>habitById(m.habitId));
-const changedAfter=(hid,d,since)=>{ if(!since) return false; const l=getLog(hid,d); if(l) return l.updatedAt>since; const t=state.deleted['log:'+hid+'|'+d]; return !!t&&t>since; };
+const habLinkOf=hid=>state.habitica.map.find(m=>m.habitId===hid);
+const habLocalName=(text,kind,both)=>(text||(kind==='daily'?'Diaria':'Hábito'))+(both?(kind==='up'?' (+)':' (−)'):'');
 function habPut(h,d,v,stamp){
   setLog(h.id,d,v,null,false);
   const l=state.logs.find(x=>x.habitId===h.id&&x.date===d); if(l){ l.source='habitica'; l.updatedAt=stamp; }
   if(d<h.startDate) extendStart(h.id,d);
 }
-function reconcile(dailys,habits,since,stamp){
+/* Deja el día como dice Habitica: devuelve 1 si ha cambiado algo */
+function habSetDay(h,d,v,stamp){
+  const l=getLog(h.id,d);
+  if(v>0){ if(l&&l.source!=='habitica') return 0; if(l&&l.value===v) return 0; habPut(h,d,v,stamp); return 1; }
+  if(l&&l.source==='habitica'){ setLog(h.id,d,0); return 1; }
+  return 0;
+}
+const habDayValue=(h,kind,c)=>{ const n=c?(kind==='up'?c.up:c.down):0; return h.kind==='check'?(n>0?1:0):n; };
+function reconcile(dailys,habits,stamp){
   const byId=new Map(dailys.concat(habits).map(t=>[t.id||t._id,t]));
-  const t0=today(), od=habOpenDay(), hd=habDayOf(Date.now()), push=[];
-  let imported=0, removed=0, other=0;
+  const t0=today(); let changed=0, other=0;
   for(const m of habLinks()){
     const t=byId.get(m.habiticaId), h=state.habits.find(x=>x.id===m.habitId);
-    m.missing=!t; if(!t) continue;
+    if(m.missing!==!t){ m.missing=!t; }
+    if(!t) continue;
+    const both=t.type==='habit'&&t.up!==false&&!!t.down;
+    /* El nombre lo manda Habitica (si no lo has cambiado aquí) */
+    if(t.text&&t.text!==m.name){ if(!m.name||h.name===habLocalName(m.name,m.kind,both)){ h.name=habLocalName(t.text,m.kind,both).slice(0,120); h.updatedAt=stamp; other++; } m.name=t.text; m.updatedAt=stamp; }
     if(m.kind==='daily'){
-      /* El nombre y la programación los manda Habitica */
-      if(t.text&&t.text!==m.name){ if(!m.name||h.name===m.name){ h.name=String(t.text).slice(0,120); h.updatedAt=stamp; other++; } m.name=t.text; m.updatedAt=stamp; }
       const conv=habSchedule(t);
       if(!sameSchedule(conv.schedule,h.schedule)){ const from=h.startDate>t0?h.startDate:t0; h.scheduleHistory=h.scheduleHistory.filter(e=>e.from<from); h.scheduleHistory.push({from,schedule:conv.schedule}); h.schedule=conv.schedule; fixHistory(h,conv.schedule); h.updatedAt=stamp; other++; }
-      const {days}=habDailyDays(t);
-      for(const [d,done] of days){
-        if(d>t0||d===od) continue;
-        const l=getLog(h.id,d);
-        if(done&&!l&&!changedAfter(h.id,d,since)){ habPut(h,d,1,stamp); imported++; }
-        else if(!done&&l&&l.source==='habitica'&&!changedAfter(h.id,d,since)){ setLog(h.id,d,0); removed++; }
-      }
-      /* Día abierto en Habitica: es el único en que se puede marcar allí */
-      if(od<=t0){
-        const l=getLog(h.id,od), hdone=!!t.completed;
-        if(l&&!hdone){
-          if(l.source==='habitica'&&!changedAfter(h.id,od,since)){ setLog(h.id,od,0); removed++; }   // desmarcada en Habitica
-          else push.push({t,h,dir:'up',times:1,d:od});
-        } else if(!l&&hdone){
-          if(changedAfter(h.id,od,since)) push.push({t,h,dir:'down',times:1,d:od});   // desmarcada aquí
-          else { habPut(h,od,1,stamp); imported++; }
-        } else if(l&&hdone&&l.source!=='habitica'){ l.source='habitica'; l.updatedAt=stamp; }
-      }
+      for(const [d,done] of habDailyDays(t).days) if(d<=t0) changed+=habSetDay(h,d,done?1:0,stamp);
     } else {
-      const {days}=habHabitDays(t), up=m.kind==='up', cnt=h.kind==='count';
-      const nOf=c=>c?(up?c.up:c.down):0, vOf=l=>l?(cnt?l.value:1):0;
-      for(const [d,c] of days){
-        if(d>t0||d===hd) continue;
-        const n=nOf(c), l=getLog(h.id,d);
-        if(n>vOf(l)&&!changedAfter(h.id,d,since)&&(cnt||!l)){ habPut(h,d,cnt?n:1,stamp); imported++; }
-      }
-      /* Hoy en Habitica (los hábitos no esperan al cambio de día: cuentan para la fecha del momento) */
-      if(hd<=t0){
-        const n=nOf(days.get(hd)), l=getLog(h.id,hd), v=vOf(l);
-        if(v>n&&(l.source!=='habitica'||changedAfter(h.id,hd,since))) push.push({t,h,dir:up?'up':'down',times:Math.min(10,Math.round(v-n)),d:hd});
-        else if(n>v&&!changedAfter(h.id,hd,since)){ habPut(h,hd,cnt?n:1,stamp); imported++; }
-        else if(l&&v===n&&l.source!=='habitica'){ l.source='habitica'; l.updatedAt=stamp; }
-      }
+      for(const [d,c] of habHabitDays(t).days) if(d<=t0) changed+=habSetDay(h,d,habDayValue(h,m.kind,c),stamp);
+      m.value=Math.round((Number(t.value)||0)*100)/100;
     }
   }
-  /* Marcas de hoy que esperan a que Habitica empiece el día */
-  habRt.cronPending=od<t0;
-  habRt.waiting=habRt.cronPending?habLinks().filter(m=>m.kind==='daily'&&getLog(m.habitId,t0)).length:0;
-  return {push,imported,removed,other};
+  return {changed,other};
 }
 /* Los cambios que llegan de Habitica no pasan por «Deshacer» (vienen de fuera, como la sincronización) */
 function habApply(changed){
@@ -1772,100 +1766,151 @@ function habApply(changed){
   touch(); save(); if(typeof scheduleSync==='function'&&syncCfg) scheduleSync();
   if(!$('dlg').open) renderApp(); else renderPending=true;
 }
+/* Nombres en español de huevos, pociones, comida y misiones (se guardan 30 días en este dispositivo) */
+let habNames=(()=>{ try{ const n=JSON.parse(localStorage.getItem(HAB_NAMES_KEY)); if(n&&n.eggs) return n; }catch(e){} return null; })();
+async function habLoadNames(){
+  if(habNames&&Date.now()-Date.parse(habNames.at)<30*864e5) return;
+  try{
+    const c=await hab('/content?language=es',{anon:true});
+    const pick=o=>{ const r={}; for(const [k,v] of Object.entries(o||{})) if(v&&typeof v.text==='string') r[k]=v.text; return r; };
+    habNames={at:nowIso(),eggs:pick(c.eggs),potions:pick(c.hatchingPotions),food:pick(c.food),quests:pick(c.quests)};
+    try{ localStorage.setItem(HAB_NAMES_KEY,JSON.stringify(habNames)); }catch(e){}
+  }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
+}
 async function habSync(opts={}){
   if(!habCfg||!ready) return {ok:false};
   if(habRt.busy){ habRt.again=true; return {ok:false,busy:true}; }
   if(habRt.retryAt&&Date.now()<habRt.retryAt&&!opts.force) return {ok:false};
   habRt.busy=true; setHabStatus('syncing');
-  const since=habCfg.lastPull||'', stamp=nowIso();
-  let res={ok:true}; const gains={exp:0,gp:0,drops:[],sent:0,lvl:false};
+  const stamp=nowIso(); let res={ok:true};
   try{
-    const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,purchased.plan,items.currentPet,items.currentMount');
+    const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,items.currentPet,items.currentMount,items.eggs,items.hatchingPotions,items.food,items.pets,items.mounts');
     habRt.user=user; buildCrons(user);
     const dailys=await hab('/tasks/user?type=dailys'), habits=await hab('/tasks/user?type=habits');
     habRt.tasks={dailys,habits};
     let party=null; if(user.party&&user.party._id){ try{ party=await hab('/groups/party'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; } }
     habRt.party=party;
-    const r=reconcile(dailys,habits,since,stamp);
-    habApply(r.imported+r.removed+r.other>0);
-    /* Enviar: solo lo que falta en Habitica, y nunca más de lo que permite el límite por minuto */
-    try{
-      for(const op of r.push){
-        for(let i=0;i<op.times;i++){
-          if(habRt.remaining!=null&&habRt.remaining<3) throw syncErr('limit','Habitica limita las peticiones por minuto; el resto se enviará en la próxima sincronización.');
-          const out=await hab(`/tasks/${encodeURIComponent(op.t.id||op.t._id)}/score/${op.dir}`,{method:'POST'});
-          gains.sent++;
-          const st=habRt.user.stats||(habRt.user.stats={});
-          if(out){
-            if(Number(out.lvl)>Number(st.lvl)) gains.lvl=true;
-            else gains.exp+=(Number(out.exp)||0)-(Number(st.exp)||0);
-            gains.gp+=(Number(out.gp)||0)-(Number(st.gp)||0);
-            for(const k of ['hp','mp','exp','gp','lvl']) if(out[k]!=null) st[k]=out[k];
-            const tmp=out._tmp||{};
-            if(tmp.drop&&tmp.drop.dialog) gains.drops.push(stripTags(tmp.drop.dialog));
-            if(tmp.quest&&typeof tmp.quest.progressDelta==='number'&&habRt.user.party&&habRt.user.party.quest&&habRt.user.party.quest.progress) habRt.user.party.quest.progress.up=(Number(habRt.user.party.quest.progress.up)||0)+tmp.quest.progressDelta;
-          }
-        }
-        if(op.dir==='up'&&op.t.type==='daily') op.t.completed=true;
-        if(op.dir==='down'&&op.t.type==='daily') op.t.completed=false;
-        const l=getLog(op.h.id,op.d); if(l){ l.source='habitica'; l.updatedAt=stamp; }
-      }
-    } finally { if(gains.sent){ touch(); save(); if(syncCfg) scheduleSync(); } }
+    await habLoadNames();
+    const r=reconcile(dailys,habits,stamp);
+    habApply(r.changed+r.other>0);
     habCfg.lastPull=stamp; habCfg.snap=habSnap(); saveHabCfg();
-    habRt.err=null; habRt.last={at:stamp,imported:r.imported,removed:r.removed,sent:gains.sent};
-    res={ok:true,imported:r.imported,removed:r.removed,sent:gains.sent};
+    habRt.err=null; habRt.last={at:stamp,changed:r.changed};
+    res={ok:true,changed:r.changed};
   }catch(e){
     res={ok:false,err:e}; habRt.err={kind:e.kind||'unknown',msg:e.kind?e.message:'Error inesperado al hablar con Habitica.'}; if(!e.kind) console.error(e);
     if(!opts.quiet&&e.kind==='token') showToast('⚠️ '+habRt.err.msg,{action:'Abrir Habitica',fn:()=>go('habitica'),timeout:15000});
   }finally{
-    habRt.busy=false;
-    if(gains.sent&&!opts.silent){
-      let msg=`Habitica: ${pl(gains.sent,'marca enviada','marcas enviadas')}`;
-      const bits=[]; if(gains.lvl) bits.push('¡subes de nivel!'); else if(Math.round(gains.exp)) bits.push(`${gains.exp>0?'+':'−'}${fmtNum(Math.abs(Math.round(gains.exp)))} exp`);
-      if(Math.abs(gains.gp)>=0.05) bits.push(`${gains.gp>0?'+':'−'}${fmtNum(Math.abs(Math.round(gains.gp*10)/10))} oro`);
-      if(bits.length) msg+=` (${bits.join(', ')})`;
-      if(gains.drops.length) msg+='. '+gains.drops[0];
-      showToast('⭐ '+msg,{timeout:8000});
-    }
-    setHabStatus(res.ok?'ok':'error');
+    habRt.busy=false; setHabStatus(res.ok?'ok':'error');
     if(habRt.again){ habRt.again=false; scheduleHabSync(2000); }
   }
   return res;
 }
-const stripTags=s=>String(s).replace(/<[^>]*>/g,'').slice(0,160);
 function scheduleHabSync(delay=2500){ if(!habCfg) return; clearTimeout(habRt.timer); habRt.timer=setTimeout(()=>habSync(),delay); }
 function setHabStatus(s){ habRt.status=s; if(ready&&!$('dlg').open&&(ui.view==='habitica'||ui.view==='today')) renderApp(); else if(ready) renderNav(); }
 function habSnap(){
-  const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null;
+  const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null, it=u.items||{};
   return {name:u.profile&&u.profile.name||'',stats:{hp:st.hp,maxHealth:st.maxHealth,exp:st.exp,toNextLevel:st.toNextLevel,mp:st.mp,maxMP:st.maxMP,gp:st.gp,lvl:st.lvl,class:st.class},
-    pet:u.items&&u.items.currentPet||'',mount:u.items&&u.items.currentMount||'',party:!!(habRt.party),partyName:habRt.party&&habRt.party.name||'',
-    quest:q&&q.key?{key:q.key,active:!!q.active,progress:q.progress||{}}:null,questMine:u.party&&u.party.quest&&u.party.quest.progress||null,at:nowIso()};
+    pet:it.currentPet||'',mount:it.currentMount||'',party:!!habRt.party,partyName:habRt.party&&habRt.party.name||'',
+    quest:q&&q.key?{key:q.key,active:!!q.active,progress:q.progress||{}}:null,questMine:u.party&&u.party.quest&&u.party.quest.progress||null,
+    items:{eggs:it.eggs||{},hatchingPotions:it.hatchingPotions||{},food:it.food||{},pets:it.pets||{},mounts:it.mounts||{}},at:nowIso()};
 }
 let habTimer=null;
 function startHabTimer(){ clearInterval(habTimer); if(habCfg) habTimer=setInterval(()=>{ if(document.visibilityState==='visible') habSync({quiet:true}); },180000); }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&habCfg&&ready) scheduleHabSync(1200); });
 window.addEventListener('online',()=>{ if(habCfg&&ready) scheduleHabSync(1000); });
+/* Los hábitos enlazados se marcan en Habitica */
+function habLocked(h){
+  if(!h||!habLinkOf(h.id)) return false;
+  showToast('Este hábito se marca en Habitica: aquí se importa solo',{action:'Abrir Habitica',fn:()=>window.open('https://habitica.com/','_blank','noopener'),timeout:6000});
+  return true;
+}
+
+/* ---- Establo: huevos que se pueden eclosionar y mascotas que se pueden convertir en monturas ---- */
+const DROP_EGGS=['Wolf','TigerCub','PandaCub','LionCub','Fox','FlyingPig','Dragon','Cactus','BearCub'];
+const QUEST_EGGS=['Gryphon','Hedgehog','Deer','Egg','Rat','Octopus','Seahorse','Parrot','Rooster','Spider','Owl','Penguin','TRex','Rock','Bunny','Slime','Sheep','Cuttlefish','Whale','Cheetah','Horse','Frog','Snake','Unicorn','Sabretooth','Monkey','Snail','Falcon','Treeling','Axolotl','Turtle','Armadillo','Cow','Beetle','Ferret','Sloth','Triceratops','GuineaPig','Peacock','Butterfly','Nudibranch','Hippo','Yarn','Pterodactyl','Badger','Squirrel','SeaSerpent','Kangaroo','Alligator','Velociraptor','Dolphin','Robot','Giraffe','Chameleon','Crab','Raccoon','Dog','Cat','Otter','Alpaca','Platypus'];
+const DROP_POTIONS=['Base','White','Desert','Red','Shade','Skeleton','Zombie','CottonCandyPink','CottonCandyBlue','Golden'];
+const WACKY_POTIONS=['Veggie','Dessert','VirtualPet','TeaShop','Fungi','Cryptid','Alien'];
+const FOOD_TARGET={Meat:'Base',Milk:'White',Potatoe:'Desert',Strawberry:'Red',Chocolate:'Shade',Fish:'Skeleton',RottenMeat:'Zombie',CottonCandyPink:'CottonCandyPink',CottonCandyBlue:'CottonCandyBlue',Honey:'Golden'};
+const foodTarget=k=>FOOD_TARGET[k]||(/^(Cake|Candy|Pie)_(\w+)$/.test(k)?k.split('_')[1]:null);
+const ES_EGGS={Wolf:'Lobo',TigerCub:'Cachorro de tigre',PandaCub:'Cachorro de panda',LionCub:'Cachorro de león',Fox:'Zorro',FlyingPig:'Cerdo volador',Dragon:'Dragón',Cactus:'Cactus',BearCub:'Osezno'};
+const ES_POTIONS={Base:'Básica',White:'Blanca',Desert:'Desierto',Red:'Roja',Shade:'Sombra',Skeleton:'Esqueleto',Zombie:'Zombi',CottonCandyPink:'Algodón de azúcar rosa',CottonCandyBlue:'Algodón de azúcar azul',Golden:'Dorada'};
+const ES_FOOD={Meat:'Carne',Milk:'Leche',Potatoe:'Patata',Strawberry:'Fresa',Chocolate:'Chocolate',Fish:'Pescado',RottenMeat:'Carne podrida',CottonCandyPink:'Algodón de azúcar rosa',CottonCandyBlue:'Algodón de azúcar azul',Honey:'Miel',Saddle:'Silla de montar mágica'};
+const prettyKey=k=>String(k||'').replace(/([a-z])([A-Z0-9])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/^./,c=>c.toUpperCase());
+const nmEgg=k=>(habNames&&habNames.eggs[k])||ES_EGGS[k]||prettyKey(k);
+const nmPot=k=>(habNames&&habNames.potions[k])||ES_POTIONS[k]||prettyKey(k);
+const nmFood=k=>(habNames&&habNames.food[k])||ES_FOOD[k]||prettyKey(k);
+const nmQuest=k=>(habNames&&habNames.quests[k])||prettyKey(k);
+const nmPet=key=>{ const [e,p]=String(key).split('-'); return `${nmEgg(e)} (${nmPot(p)})`; };
+const isPremiumPot=p=>!DROP_POTIONS.includes(p)&&!WACKY_POTIONS.includes(p);
+function stableInfo(items){
+  const eggs=items.eggs||{}, pots=items.hatchingPotions||{}, food=items.food||{}, pets=items.pets||{}, mounts=items.mounts||{};
+  /* Eclosionar: un huevo y una poción; las pociones mágicas y raras solo valen con huevos normales; no se puede tener la mascota ya */
+  const combos=[];
+  for(const [e,ne] of Object.entries(eggs)){ if(!(ne>0)) continue;
+    for(const [p,np] of Object.entries(pots)){ if(!(np>0)) continue;
+      if(!DROP_POTIONS.includes(p)&&!DROP_EGGS.includes(e)) continue;
+      const key=`${e}-${p}`; if(pets[key]>0) continue;
+      combos.push({key,egg:e,potion:p,again:pets[key]===-1||!!mounts[key]});
+    }
+  }
+  combos.sort((a,b)=>(a.again-b.again)||nmPet(a.key).localeCompare(nmPet(b.key),'es'));
+  /* Cuántas se pueden eclosionar a la vez (cada huevo y cada poción sirven una vez) */
+  const le=Object.assign({},eggs), lp=Object.assign({},pots); let hatchMax=0;
+  for(const c of combos) if(le[c.egg]>0&&lp[c.potion]>0){ le[c.egg]--; lp[c.potion]--; hatchMax++; }
+  /* Alimentar: mascotas sin montura; con su comida favorita (o cualquiera si es mágica) suman 5, con otra 2; a 50 se convierten en montura */
+  const growing=[];
+  for(const [key,v] of Object.entries(pets)){
+    const [e,p]=key.split('-'); if(!(v>0)||mounts[key]||!p) continue;
+    if(WACKY_POTIONS.includes(p)) continue;
+    if(!(DROP_EGGS.includes(e)||QUEST_EGGS.includes(e))) continue;
+    if(!DROP_POTIONS.includes(p)&&!(isPremiumPot(p)&&DROP_EGGS.includes(e))) continue;
+    growing.push({key,value:v,potion:p,premium:!DROP_POTIONS.includes(p),need:Math.ceil((50-v)/5)});
+  }
+  const foodLeft={}; let foodTotal=0, saddles=Number(food.Saddle)||0;
+  for(const [k,n] of Object.entries(food)) if(n>0&&k!=='Saddle'){ foodLeft[k]=n; foodTotal+=n; }
+  const favOf=p=>Object.keys(foodLeft).filter(k=>foodTarget(k)===p);
+  growing.sort((a,b)=>a.need-b.need);
+  for(const g of growing){
+    const favs=g.premium?Object.keys(foodLeft):favOf(g.potion);
+    g.have=favs.reduce((s,k)=>s+(foodLeft[k]||0),0); g.favs=g.premium?[]:favs.length?favs:Object.keys(FOOD_TARGET).filter(k=>FOOD_TARGET[k]===g.potion);
+    g.canMount=g.have>=g.need;
+    if(g.canMount){ let n=g.need; for(const k of (g.premium?Object.keys(foodLeft):favs)){ const u=Math.min(n,foodLeft[k]||0); foodLeft[k]-=u; n-=u; if(!n) break; } }
+  }
+  const mountable=growing.filter(g=>g.canMount);
+  return {combos,hatchMax,growing,mountable,foodTotal,saddles,food};
+}
+function habAlerts(){
+  const snap=habRt.user?habSnap():(habCfg&&habCfg.snap);
+  if(!snap||!snap.items) return null;
+  const s=stableInfo(snap.items); const out=[];
+  const nNew=s.combos.filter(c=>!c.again).length;
+  if(s.hatchMax) out.push(nNew?`puedes eclosionar ${pl(Math.min(s.hatchMax,nNew),'mascota nueva','mascotas nuevas')}`:`puedes eclosionar ${pl(s.hatchMax,'mascota','mascotas')} que ya criaste`);
+  if(s.mountable.length) out.push(`tu comida alcanza para ${pl(s.mountable.length,'montura','monturas')}`);
+  else if(s.foodTotal&&s.growing.length) out.push(`tienes ${pl(s.foodTotal,'pieza','piezas')} de comida para tus mascotas`);
+  if(s.saddles) out.push(`tienes ${pl(s.saddles,'silla de montar','sillas de montar')}`);
+  return out.length?{text:cap(listY(out)),s}:null;
+}
 
 /* ---- Importar y enlazar ---- */
 function habTaskKinds(t){ if(t.type==='daily') return ['daily']; const k=[]; if(t.up!==false) k.push('up'); if(t.down) k.push('down'); return k.length?k:['up']; }
 const habLinked=(id,kind)=>state.habitica.map.find(m=>m.habiticaId===id&&m.kind===kind&&habitById(m.habitId));
 /* Crea los hábitos de una tarea de Habitica (dos si el hábito tiene + y −) y trae su historial */
 function habImport(t){
-  const id=t.id||t._id, kinds=habTaskKinds(t), made=[];
+  const id=t.id||t._id, kinds=habTaskKinds(t), made=[], both=kinds.length>1;
   let logs=0, olds=0;
   for(const kind of kinds){
     if(habLinked(id,kind)) continue;
     const order=state.habits.length?Math.max(...state.habits.map(q=>q.order))+1:0, now=nowIso();
     const color=HABIT_COLORS[state.habits.length%HABIT_COLORS.length];
-    const base={id:newId(),description:String(t.notes||'').slice(0,2000),order,color,createdAt:now,updatedAt:now,tags:[],categoryId:null,tod:'any'};
+    const base={id:newId(),name:habLocalName(t.text,kind,both),description:String(t.notes||'').slice(0,2000),order,color,createdAt:now,updatedAt:now,tags:[],categoryId:null,tod:'any'};
     let x;
     if(kind==='daily'){
       const conv=habSchedule(t), sd=habStartDate(t);
-      x=Object.assign(base,{name:t.text||'Diaria',kind:'check',icon:'check',schedule:conv.schedule,scheduleHistory:[{from:sd,schedule:conv.schedule}],startDate:sd,archived:!!conv.grey});
+      x=Object.assign(base,{kind:'check',icon:'check',schedule:conv.schedule,scheduleHistory:[{from:sd,schedule:conv.schedule}],startDate:sd,archived:!!conv.grey});
     } else {
       const {days}=habHabitDays(t); let first=habStartDate(t); for(const d of days.keys()) if(d<first) first=d;
-      const both=kinds.length>1, up=kind==='up';
-      x=Object.assign(base,{name:(t.text||'Hábito')+(both?(up?' (+)':' (−)'):''),kind:up?'count':'avoid',target:up?{amount:1,unit:'veces'}:null,icon:up?'check':'ban',schedule:{type:'daily'},scheduleHistory:[{from:first,schedule:{type:'daily'}}],startDate:first});
+      const up=kind==='up';
+      x=Object.assign(base,{kind:up?'count':'avoid',target:up?{amount:1,unit:'veces'}:null,icon:up?'plus':'minus',schedule:{type:'daily'},scheduleHistory:[{from:first,schedule:{type:'daily'}}],startDate:first});
     }
     const n=normalizeItem(x,{catIds:new Set(state.categories.map(c=>c.id)),tagIds:new Set(state.tags.map(g=>g.id)),idx:order});
     if(!n) continue;
@@ -1878,8 +1923,7 @@ function habImport(t){
 }
 /* Enlaza una tarea con un hábito que ya existe y completa su historial (sin tocar lo que ya hay) */
 function habLink(t,kind,h){
-  const id=t.id||t._id;
-  const now=nowIso();
+  const id=t.id||t._id, now=nowIso();
   for(const m of state.habitica.map) if(m.habitId===h.id&&!(m.habiticaId===id&&m.kind===kind)) state.deleted['hlink:'+m.habiticaId+'|'+m.kind]=now;
   state.habitica.map=state.habitica.map.filter(m=>!(m.habiticaId===id&&m.kind===kind)&&m.habitId!==h.id);
   state.habitica.map.push({habiticaId:id,habitId:h.id,kind,name:t.text||'',updatedAt:now}); delete state.deleted['hlink:'+id+'|'+kind];
@@ -1889,10 +1933,10 @@ function habBackfill(t,h,kind){
   const id=t.id||t._id, t0=today(), stamp=nowIso(); let logs=0;
   const r=kind==='daily'?habDailyDays(t):habHabitDays(t);
   for(const [d,v] of r.days){
-    if(d>t0) continue;
-    const n=kind==='daily'?(v?1:0):(kind==='up'?v.up:v.down);
-    if(!n||getLog(h.id,d)) continue;
-    habPut(h,d,h.kind==='count'?n:1,stamp); logs++;
+    if(d>t0||getLog(h.id,d)) continue;
+    const n=kind==='daily'?(v?1:0):habDayValue(h,kind,v);
+    if(!n) continue;
+    habPut(h,d,n,stamp); logs++;
   }
   /* Medias de periodos antiguos (Habitica ya no guarda sus días): aparte, sin inventar días */
   state.habitica.history=state.habitica.history.filter(e=>!(e.habiticaId===id&&e.kind===kind));
@@ -1900,14 +1944,97 @@ function habBackfill(t,h,kind){
   for(const [period,a] of agg) state.habitica.history.push({habiticaId:id,kind,period,value:Math.round(a.s/a.n*1000)/1000});
   return {logs,olds:agg.size};
 }
-function habUnlink(m){ const h=habitById(m.habitId); commit(`Enlace con Habitica quitado${h?` («${h.name}» se conserva)`:''}`,()=>{ state.deleted['hlink:'+m.habiticaId+'|'+m.kind]=nowIso(); state.habitica.map=state.habitica.map.filter(x=>!(x.habiticaId===m.habiticaId&&x.kind===m.kind)); }); }
+function habUnlink(m){ const h=habitById(m.habitId); commit(`Enlace con Habitica quitado${h?`: «${h.name}» se conserva y vuelve a marcarse aquí`:''}`,()=>{ state.deleted['hlink:'+m.habiticaId+'|'+m.kind]=nowIso(); state.habitica.map=state.habitica.map.filter(x=>!(x.habiticaId===m.habiticaId&&x.kind===m.kind)); }); }
 function habImportMany(){
   const tk=habRt.tasks; if(!tk) return;
   commit(null,()=>{ let made=0,logs=0,olds=0; for(const t of tk.dailys.concat(tk.habits)){ const r=habImport(t); made+=r.made.length; logs+=r.logs; olds+=r.olds; } if(!made) return false;
     return `Importados ${pl(made,'hábito','hábitos')} con ${pl(logs,'día registrado','días registrados')}${olds?` (y ${pl(olds,'mes antiguo','meses antiguos')} solo con media)`:''}`; });
   scheduleHabSync(600);
 }
-const habLinkOf=hid=>state.habitica.map.find(m=>m.habitId===hid);
+
+/* ---- Hábitos con + y −: análisis conjunto ---- */
+/* Pareja de un hábito importado de Habitica con los dos botones */
+function pmPair(hid){
+  const m=habLinkOf(hid); if(!m||m.kind==='daily') return null;
+  const up=state.habitica.map.find(x=>x.habiticaId===m.habiticaId&&x.kind==='up'), dn=state.habitica.map.find(x=>x.habiticaId===m.habiticaId&&x.kind==='down');
+  const hu=up&&habitById(up.habitId), hd=dn&&habitById(dn.habitId);
+  if(!hu||!hd) return null;
+  return {up:hu,down:hd,habiticaId:m.habiticaId,name:m.name||hu.name.replace(/ \(\+\)$/,''),value:Number.isFinite(dn.value)?dn.value:up.value};
+}
+const pmVal=(h,d)=>{ const l=getLog(h.id,d); return l?(h.kind==='check'?1:l.value):0; };
+function pmStats(p,a,b){
+  const start=p.up.startDate<p.down.startDate?p.up.startDate:p.down.startDate, t=today();
+  const from=a>start?a:start, to=b>t?t:b;
+  const r={days:0,plus:0,minus:0,favor:0,against:0,even:0,active:0,clean:0,wd:Array.from({length:7},()=>({n:0,plus:0,minus:0}))};
+  if(from>to) return r;
+  for(let d=from;d<=to;d=addDaysS(d,1)){
+    const u=pmVal(p.up,d), m=pmVal(p.down,d), w=r.wd[dowOf(d)];
+    r.days++; r.plus+=u; r.minus+=m; w.n++; w.plus+=u; w.minus+=m;
+    if(u||m) r.active++;
+    if(!m) r.clean++;
+    if(u>m) r.favor++; else if(m>u) r.against++; else if(u||m) r.even++;
+  }
+  /* Rachas sin − (desde el inicio, no solo en el periodo) */
+  let cur=0,best=0,run=0;
+  for(let d=start;d<=t;d=addDaysS(d,1)){ if(pmVal(p.down,d)){ run=0; } else { run++; if(run>best) best=run; } }
+  cur=run; r.cleanCur=cur; r.cleanBest=best;
+  return r;
+}
+/* Colores de Habitica según el valor de la tarea */
+function habValueColor(v){
+  if(v<-20) return ['Rojo oscuro','var(--hv-1)']; if(v<-10) return ['Rojo','var(--hv-2)']; if(v<-1) return ['Naranja','var(--hv-3)'];
+  if(v<1) return ['Amarillo','var(--hv-4)']; if(v<5) return ['Verde','var(--hv-5)']; if(v<10) return ['Azul claro','var(--hv-6)']; return ['Azul','var(--hv-7)'];
+}
+/* Barras divergentes: + hacia arriba, − hacia abajo, con el balance como punto */
+function divergingChart(container,items,{title=''}={}){
+  const {W,H}=chartBox(container,230), ml=40, mr=8, mt=16, mb=24, pw=W-ml-mr, ph=H-mt-mb, band=pw/items.length, bw=Math.max(2,Math.min(22,band*0.62));
+  const mx=niceMax(Math.max(1,...items.map(i=>Math.max(i.plus||0,i.minus||0))));
+  const y0=mt+ph/2, sc=(ph/2)/mx;
+  const svg=svgEl('svg',{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:'img'});
+  svg.setAttribute('aria-label',title+'. '+items.filter(i=>i.plus!=null).map(i=>`${i.full||i.label}: ${fmtNum(i.plus)} a favor, ${fmtNum(i.minus)} en contra`).join('; '));
+  for(const g of [mx,mx/2,0,-mx/2,-mx]){ const y=y0-g*sc; svg.append(svgEl('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:g===0?'gl0':'gl'})); const t=svgEl('text',{x:ml-6,y:y+4,'text-anchor':'end',class:'ax'}); t.textContent=(g>0?'+':g<0?'−':'')+fmtNum(Math.round(Math.abs(g)*10)/10); svg.append(t); }
+  xLabels(svg,items,{ml,band,H});
+  items.forEach((it,i)=>{
+    if(it.plus==null) return;
+    const cx=ml+band*i+band/2, x=cx-bw/2;
+    const tip=`${it.full||it.label}: +${fmtNum(it.plus)} / −${fmtNum(it.minus)} (balance ${it.plus-it.minus>0?'+':it.plus-it.minus<0?'−':''}${fmtNum(Math.abs(Math.round((it.plus-it.minus)*10)/10))})`;
+    svg.append(svgEl('rect',{x:ml+band*i,y:mt,width:band,height:ph,class:'hit','data-tip':tip}));
+    const hu=it.plus*sc, hd=it.minus*sc, r1=Math.min(4,hu,bw/2), r2=Math.min(4,hd,bw/2);
+    if(hu>0) svg.append(svgEl('path',{d:`M${x},${y0-1} V${y0-hu+r1} Q${x},${y0-hu} ${x+r1},${y0-hu} H${x+bw-r1} Q${x+bw},${y0-hu} ${x+bw},${y0-hu+r1} V${y0-1} Z`,fill:'var(--done)',class:'bar','data-tip':tip}));
+    if(hd>0) svg.append(svgEl('path',{d:`M${x},${y0+1} V${y0+hd-r2} Q${x},${y0+hd} ${x+r2},${y0+hd} H${x+bw-r2} Q${x+bw},${y0+hd} ${x+bw},${y0+hd-r2} V${y0+1} Z`,fill:'var(--danger)',class:'bar','data-tip':tip}));
+    if(band>=10&&(it.plus||it.minus)) svg.append(svgEl('circle',{cx,cy:y0-(it.plus-it.minus)*sc,r:Math.min(3.5,band/4),class:'pm-net','data-tip':tip}));
+  });
+  container.replaceChildren(svg);
+}
+function pmLegend(){ const l=el('div','legend'); for(const [c,t] of [['var(--done)','+ a favor'],['var(--danger)','− en contra']]){ const s=el('span','lgi'); const sw=el('i'); sw.style.background=c; s.append(sw,document.createTextNode(t)); l.append(s); } const s=el('span','lgi'); const sw=el('i','dot'); s.append(sw,document.createTextNode('balance del día')); l.append(s); return l; }
+function pmCards(v,p){
+  const [a,b]=periodBounds(), s=pmStats(p,a,b), prev=pmStats(p,addDaysS(today(),-59),addDaysS(today(),-30)), last=pmStats(p,addDaysS(today(),-29),today());
+  const head=el('section','card pm-card'); head.append(h2i(`Balance + / − de «${p.name}»`,'activity'));
+  head.append(el('p','muted small','En Habitica es un solo hábito con dos botones; aquí se analizan juntos. Cada día suma lo que pulsaste en + y en −.'));
+  const share=s.plus+s.minus?s.plus/(s.plus+s.minus):null, shareL=last.plus+last.minus?last.plus/(last.plus+last.minus):null, shareP=prev.plus+prev.minus?prev.plus/(prev.plus+prev.minus):null;
+  const list=[
+    ['A favor',share==null?'—':fmtPct0(share),'De todas las pulsaciones, las de +'],
+    ['Días ganados',s.days?fmtPct0(s.favor/s.days):'—',`${pl(s.favor,'día','días')} con más + que −`],
+    ['Días perdidos',s.days?fmtPct0(s.against/s.days):'—',`${pl(s.against,'día','días')} con más − que +`],
+    ['+ al día',s.days?fmtNum(Math.round(s.plus/s.days*10)/10):'—',`${fmtNum(s.plus)} en total`],
+    ['− al día',s.days?fmtNum(Math.round(s.minus/s.days*10)/10):'—',`${fmtNum(s.minus)} en total`],
+    ['Sin −',pl(s.cleanCur||0,'día','días'),`Mejor: ${pl(s.cleanBest||0,'día','días')}`],
+    ['Tendencia',shareL==null||shareP==null?'—':fmtPts(shareL-shareP),'«A favor» en 30 días frente a los 30 anteriores'],
+  ];
+  if(Number.isFinite(p.value)){ const [cn]=habValueColor(p.value); list.push(['En Habitica',cn,`Valor de la tarea: ${fmtNum(p.value)}`]); }
+  head.append(tilesOf(list)); v.append(head);
+  const g=ui.pmGran||'day';
+  const items=buckets(g,a).map(x=>{ if(x.a>today()) return Object.assign(x,{plus:null,minus:null}); const st=pmStats(p,x.a,x.b); return st.days?Object.assign(x,{plus:st.plus,minus:st.minus}):Object.assign(x,{plus:null,minus:null}); });
+  const ch=mount(v,chartCard('+ y − por '+({day:'día',week:'semana',month:'mes'}[g]),'bar-chart',c=>divergingChart(c,items,{title:'+ y −'}),
+    {tools:granSelect(g,x=>{ ui.pmGran=x; saveUI(); renderApp(); },'Agrupar + y − por',['day','week','month']),table:miniTable(['Periodo','+','−','Balance'],items.filter(x=>x.plus!=null).map(x=>[x.full||x.label,fmtNum(x.plus),fmtNum(x.minus),fmtNum(x.plus-x.minus)]))}));
+  ch.querySelector('.card-head').after(pmLegend());
+  const wd=orderedDows().map(d=>{ const w=s.wd[d]; return {label:DOW_ABBR[d],full:cap(DOW_NAME[d])+' (media)',plus:w.n?Math.round(w.plus/w.n*100)/100:null,minus:w.n?Math.round(w.minus/w.n*100)/100:null}; });
+  let worst=null; for(const x of wd) if(x.minus!=null&&x.minus>0&&(!worst||x.minus>worst.minus)) worst=x;
+  let bestD=null; for(const x of wd) if(x.plus!=null&&(x.plus-x.minus)>0&&(!bestD||x.plus-x.minus>bestD.plus-bestD.minus)) bestD=x;
+  const note=[worst?`Los − se concentran el ${worst.full.split(' ')[0].toLowerCase()} (${fmtNum(worst.minus)} de media)`:'',bestD?`tu mejor día es el ${bestD.full.split(' ')[0].toLowerCase()}`:''].filter(Boolean).join('; ');
+  const wc=mount(v,chartCard('+ y − por día de la semana','calendar',c=>divergingChart(c,wd,{title:'Media por día de la semana'}),{note:note?cap(note)+'.':''}));
+  wc.querySelector('.card-head').after(pmLegend());
+}
 
 /* ---- Pantalla Habitica ---- */
 function habBar(label,val,max,cls){
@@ -1918,29 +2045,46 @@ function habBar(label,val,max,cls){
   tr.setAttribute('role','progressbar'); tr.setAttribute('aria-label',label); tr.setAttribute('aria-valuemin','0'); tr.setAttribute('aria-valuemax',String(Math.round(mx))); tr.setAttribute('aria-valuenow',String(Math.floor(v)));
   w.append(top,tr); return w;
 }
-const prettyKey=k=>String(k||'').replace(/([a-z])([A-Z0-9])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/^./,c=>c.toUpperCase());
 const CLASS_NAMES={warrior:'Guerrero',rogue:'Pícaro',wizard:'Mago',healer:'Sanador'};
 const HAB_KIND_TXT={daily:'Diaria',up:'Hábito, botón +',down:'Hábito, botón −'};
-function habStatusLine(){
-  if(!habCfg) return '';
-  if(habRt.status==='syncing') return 'Sincronizando con Habitica…';
-  if(habRt.status==='error'&&habRt.err) return habRt.err.msg;
-  if(habRt.cronPending) return habRt.waiting?`Habitica aún no ha empezado el día de hoy: ${pl(habRt.waiting,'marca espera','marcas esperan')} a que lo abras allí.`:'Habitica aún no ha empezado el día de hoy: ábrela para empezarlo.';
-  return '';
+function habStatusLine(){ return habCfg&&habRt.status==='error'&&habRt.err?habRt.err.msg:''; }
+function stableCard(items){
+  const s=stableInfo(items), c=el('section','card hab-stable'); c.append(h2i('Establo','paw'));
+  const nNew=s.combos.filter(x=>!x.again);
+  const sec=(title,sub)=>{ const d=el('div','st-sec'); d.append(el('h3','',title)); if(sub) d.append(el('p','muted small',sub)); return d; };
+  // Eclosionar
+  const e1=sec(s.hatchMax?`Huevos para eclosionar: ${s.hatchMax} ${s.hatchMax===1?'mascota':'mascotas'} a la vez`:'Huevos para eclosionar','En Habitica: Inventario → Objetos, toca el huevo y elige la poción (o Establo → arrastra la poción al huevo).');
+  if(!s.combos.length) e1.append(el('p','muted',Object.values(items.eggs||{}).some(n=>n>0)?'Tienes huevos, pero ninguna poción que sirva para una mascota que no tengas.':'No tienes huevos con poción disponible.'));
+  else { const ul=el('ul','st-list'); for(const x of s.combos.slice(0,12)){ const li=el('li'); li.append(el('span','',nmPet(x.key)),el('span','chip'+(x.again?'':' clean'),x.again?'Ya es montura: la recuperas':'Nueva')); ul.append(li); } if(s.combos.length>12) ul.append(el('li','muted',`y ${s.combos.length-12} combinaciones más`)); e1.append(ul); }
+  if(nNew.length&&s.hatchMax<nNew.length) e1.append(el('p','small-print','Cada huevo y cada poción sirven una vez: elige qué combinaciones te interesan.'));
+  c.append(e1);
+  // Alimentar
+  const e2=sec(s.mountable.length?`Comida: ${pl(s.mountable.length,'mascota puede','mascotas pueden')} convertirse en montura`:'Comida para mascotas','En Habitica: Establo → Mascotas, arrastra la comida a la mascota (en Android, toca la mascota → Alimentar). La favorita suma 5 y las demás 2; a 50 se convierte en montura.');
+  if(!s.growing.length) e2.append(el('p','muted','No tienes mascotas creciendo.'));
+  else {
+    const ul=el('ul','st-list');
+    for(const g of s.growing.slice().sort((a,b)=>(b.canMount-a.canMount)||(a.need-b.need)).slice(0,10)){
+      const li=el('li'), t=el('div','grow'); t.append(el('span','',nmPet(g.key)),el('span','muted small',` ${g.value}/50`));
+      const bar=el('div','hbar-track st-bar'); const f=el('div','hbar-fill'); f.style.width=Math.min(100,g.value*2)+'%'; bar.append(f); t.append(bar);
+      li.append(t,el('span','chip'+(g.canMount?' clean':''),g.canMount?`Montura con ${g.need} de ${g.premium?'cualquier comida':listY(g.favs.slice(0,2).map(nmFood))}`:g.premium?`Faltan ${g.need} de cualquier comida`:`Faltan ${g.need} de ${listY(g.favs.slice(0,2).map(nmFood))} (tienes ${g.have})`));
+      ul.append(li);
+    }
+    e2.append(ul);
+  }
+  const inv=Object.entries(s.food).filter(([k,n])=>n>0&&k!=='Saddle').sort((a,b)=>b[1]-a[1]);
+  if(inv.length) e2.append(el('p','small-print','Tu comida: '+inv.map(([k,n])=>`${nmFood(k)} ${n}`).join(', ')+'.'));
+  if(s.saddles) e2.append(el('p','small-print',`Sillas de montar mágicas: ${s.saddles} (convierten cualquier mascota en montura al instante).`));
+  c.append(e2);
+  return c;
 }
 function renderHabitica(v){
   const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title'); tt.append(el('h1','page-title','Habitica'));
-  if(habCfg) tt.append(el('p','page-sub','Habitica pone el juego; aquí se guardan el historial y las estadísticas.'));
+  if(habCfg) tt.append(el('p','page-sub','Se marca en Habitica; aquí se importa y se analiza.'));
   row.append(tt);
-  if(habCfg){ const act=el('div','head-actions'); const sb=btn(habRt.busy?'Sincronizando…':'Sincronizar ahora','secondary',null,()=>habSync({force:true}),'refresh'); sb.disabled=habRt.busy; act.append(sb); row.append(act); }
+  if(habCfg){ const act=el('div','head-actions'); const sb=btn(habRt.busy?'Importando…':'Importar ahora','secondary',null,()=>habSync({force:true}),'refresh'); sb.disabled=habRt.busy; act.append(sb); row.append(act); }
   head.append(row); v.append(head);
-  if(!habCfg){ v.append(habConnectCard()); return; }
+  if(!habCfg){ v.append(habConnectCard()); v.append(habFreqGuide()); return; }
   if(habRt.status==='error'&&habRt.err){ const b=el('div','banner'); const sp=el('span'); sp.append(ic('alert'),document.createTextNode(' '+habRt.err.msg)); b.append(sp); v.append(b); }
-  if(habRt.cronPending){
-    const b=el('div','banner'); const sp=el('span');
-    sp.append(ic('sun'),document.createTextNode(` Habitica aún no ha empezado el día de hoy. Ábrela (web o app) para empezarlo y revisar lo de ayer en «Registrar la actividad de ayer»; después se enviarán ${habRt.waiting?pl(habRt.waiting,'marca de hoy','marcas de hoy'):'las marcas de hoy'}. Lo que marques aquí para ayer sí se envía ya.`));
-    b.append(sp); v.append(b);
-  }
   const snap=habRt.user?habSnap():(habCfg.snap||null);
   const grid=el('div','hab-grid');
   if(snap){
@@ -1951,14 +2095,14 @@ function renderHabitica(v){
     const gold=el('div','hab-gold'); gold.append(el('b','',fmtNum(Math.floor(Number(s.gp)||0))),el('span','','monedas de oro')); top.append(gold);
     c.append(top);
     const bars=el('div','hab-bars'); bars.append(habBar('Vida',s.hp,s.maxHealth||50,'hp'),habBar('Experiencia',s.exp,s.toNextLevel,'xp'),habBar('Maná',s.mp,s.maxMP,'mp')); c.append(bars);
-    const extra=el('div','hmeta'); if(snap.pet) extra.append(el('span','',`Mascota: ${prettyKey(snap.pet)}`)); if(snap.mount) extra.append(el('span','',`Montura: ${prettyKey(snap.mount)}`)); if(extra.childNodes.length) c.append(extra);
-    if(!habRt.user) c.append(el('p','small-print','Datos de la última sincronización.'));
+    const extra=el('div','hmeta'); if(snap.pet) extra.append(el('span','',`Mascota: ${nmPet(snap.pet)}`)); if(snap.mount) extra.append(el('span','',`Montura: ${nmPet(snap.mount)}`)); if(extra.childNodes.length) c.append(extra);
+    if(!habRt.user) c.append(el('p','small-print','Datos de la última importación.'));
     grid.append(c);
     const q=snap.quest, qc=el('section','card'); qc.append(h2i(snap.partyName?`Misión de ${snap.partyName}`:'Misión del grupo','flame'));
     if(!snap.party&&!q) qc.append(el('p','muted','No estás en ningún grupo. En Habitica, entra en «Grupo» para crear uno o aceptar una invitación.'));
     else if(!q) qc.append(el('p','muted','No hay ninguna misión en curso.'));
     else {
-      qc.append(el('div','hab-name',prettyKey(q.key)));
+      qc.append(el('div','hab-name',nmQuest(q.key)));
       const m2=el('div','hab-quest'); m2.append(el('span','chip'+(q.active?' clean':''),q.active?'En curso':'Esperando a que empiece'));
       const p=q.progress||{};
       if(Number.isFinite(Number(p.hp))) m2.append(el('span','',`Vida del jefe: ${fmtNum(Math.round(p.hp*10)/10)}`));
@@ -1970,28 +2114,33 @@ function renderHabitica(v){
       qc.append(el('p','small-print','El daño y los objetos se aplican cuando Habitica cambia de día.'));
     }
     grid.append(qc);
-  } else grid.append(el('div','empty',habRt.busy?'Cargando tu personaje…':'Pulsa «Sincronizar ahora» para cargar tu personaje.'));
+  } else grid.append(el('div','empty',habRt.busy?'Cargando tu personaje…':'Pulsa «Importar ahora» para cargar tu personaje.'));
   v.append(grid);
+  if(snap&&snap.items) v.append(stableCard(snap.items));
   // Tareas
   const tc=el('section','card'); tc.append(h2i('Diarias y hábitos de Habitica','link'));
   const tk=habRt.tasks;
-  if(!tk) tc.append(el('p','muted',habRt.busy?'Cargando tareas…':'Pulsa «Sincronizar ahora» para ver tus tareas.'));
+  if(!tk) tc.append(el('p','muted',habRt.busy?'Cargando tareas…':'Pulsa «Importar ahora» para ver tus tareas.'));
   else {
     const all=tk.dailys.map(t=>({t,label:'Diaria'})).concat(tk.habits.map(t=>({t,label:'Hábito'})));
     let unl=0; for(const {t} of all) for(const k of habTaskKinds(t)) if(!habLinked(t.id||t._id,k)) unl++;
-    tc.append(el('p','muted small',all.length?'«Importar» crea el hábito aquí con su historial. «Enlazar con…» lo une a un hábito que ya tengas (por ejemplo, uno que llevabas en Streaks o Loop) y completa los días que falten. Los hábitos con + y − se separan en dos: uno de cantidad (+) y uno de «Evitar» (−).':'No tienes diarias ni hábitos en Habitica.'));
+    tc.append(el('p','muted small',all.length?'«Importar» crea el hábito aquí con su historial. «Enlazar con…» lo une a un hábito que ya tengas (por ejemplo, uno que llevabas en Streaks o Loop): se conserva lo que había y se añaden los días de Habitica. Los hábitos con + y − se importan como dos (uno para cada botón) y se analizan juntos en «Ver balance».':'No tienes diarias ni hábitos en Habitica.'));
     if(unl>1){ const r=el('div','row'); r.style.margin='4px 0 10px'; r.append(btn(`Importar las ${unl} sin enlazar`,'',null,habImportMany,'download')); tc.append(r); }
     const ul=el('ul','hab-tasks'); const used=new Set(state.habitica.map.filter(x=>habitById(x.habitId)).map(x=>x.habitId));
     for(const {t,label} of all){
-      for(const k of habTaskKinds(t)){
-        const li=el('li'), info=el('div','grow'), id=t.id||t._id, m=habLinked(id,k);
+      const kinds=habTaskKinds(t), both=kinds.length>1, id=t.id||t._id;
+      for(const k of kinds){
+        const li=el('li'), info=el('div','grow'), m=habLinked(id,k);
         const conv=k==='daily'?habSchedule(t):null, kl=k==='daily'?(conv.grey?'nunca toca (en gris en Habitica); se importa archivada':scheduleText(conv.schedule)):HAB_KIND_TXT[k];
         info.append(el('div','ht-name',t.text||'(sin nombre)'),el('div','muted small',k==='daily'?`${label}: ${kl}`:kl));
         li.append(info);
         const act=el('div','ht-act');
-        if(m){ const h=habitById(m.habitId); const lk=el('button','chip clean ht-link'); lk.type='button'; lk.title='Abrir sus estadísticas'; lk.append(ic('link'),document.createTextNode(h.name)); lk.addEventListener('click',()=>openHabitStats(h)); act.append(lk,btn('','ghost small icon','Quitar el enlace',()=>habUnlink(m),'x')); }
-        else {
-          const sel=field('select'); sel.setAttribute('aria-label',`Enlazar «${t.text}» con`); sel.append(opt('','Enlazar con…'));
+        if(m){
+          const h=habitById(m.habitId); const lk=el('button','chip clean ht-link'); lk.type='button'; lk.title='Abrir sus estadísticas'; lk.append(ic('link'),document.createTextNode(h.name)); lk.addEventListener('click',()=>openHabitStats(h)); act.append(lk);
+          if(both&&k==='up'&&pmPair(h.id)) act.append(btn('Ver balance','secondary small',null,()=>openHabitStats(h),'activity'));
+          act.append(btn('','ghost small icon','Quitar el enlace',()=>habUnlink(m),'x'));
+        } else {
+          const sel=field('select'); sel.setAttribute('aria-label',`Enlazar «${t.text}»${both?(k==='up'?' (+)':' (−)'):''} con`); sel.append(opt('','Enlazar con…'));
           for(const h of habitsSorted()) if(!used.has(h.id)&&!h.archived&&(k==='daily'?h.kind==='check':k==='up'?h.kind!=='avoid':h.kind==='avoid')) sel.append(opt(h.id,h.name));
           sel.addEventListener('change',()=>{ const h=habitById(sel.value); if(!h) return; commit(null,()=>{ const r=habLink(t,k,h); return `«${h.name}» enlazado: ${pl(r.logs,'día traído','días traídos')} de Habitica`; }); scheduleHabSync(600); });
           act.append(sel,btn('Importar','secondary small',null,()=>{ commit(null,()=>{ const r=habImport(t); if(!r.made.length) return false; return `Importado: ${r.made.map(x=>`«${x.name}»`).join(' y ')} con ${pl(r.logs,'día registrado','días registrados')}`; }); scheduleHabSync(600); },'download'));
@@ -2001,27 +2150,64 @@ function renderHabitica(v){
     }
     tc.append(ul);
     const gone=state.habitica.map.filter(m=>m.missing&&habitById(m.habitId));
-    if(gone.length){ tc.append(el('p','small-print',`Ya no están en Habitica (se conservan aquí): ${gone.map(m=>habitById(m.habitId).name).join(', ')}.`)); }
+    if(gone.length) tc.append(el('p','small-print',`Ya no están en Habitica (se conservan aquí): ${[...new Set(gone.map(m=>habitById(m.habitId).name))].join(', ')}.`));
   }
   v.append(tc);
-  // Cómo funciona y conexión
-  const hc=el('section','card hab-how'); hc.append(h2i('Cómo se reparten','help'));
-  const ul2=el('ul');
-  for(const s of ['Marca donde quieras: lo que marques en Habitica aparece aquí y lo que marques aquí se puntúa en Habitica (con su experiencia, oro, objetos y daño al jefe). Antes de enviar se comprueba lo que ya hay en Habitica, así que no se duplica.',
-    'Habitica solo deja marcar el día que tiene abierto. Si aún no lo ha empezado (no la has abierto hoy), lo de hoy espera; lo de ayer se envía como si usaras «Registrar la actividad de ayer». Los días anteriores solo se guardan aquí.',
-    'El nombre y la programación de las diarias enlazadas se cambian en Habitica; aquí se actualizan solos.',
-    'Hábitos nunca empieza el día de Habitica ni lo cierra: eso solo lo hace Habitica al abrirla.']) ul2.append(el('li','',s));
-  hc.append(ul2); v.append(hc);
+  v.append(habFreqGuide());
+  // Conexión
   const sc=el('section','card'); sc.append(h2i('Conexión','refresh'));
   const last=habCfg.lastPull?new Date(habCfg.lastPull):null;
-  sc.append(el('p','muted',last?`Última sincronización: ${ymd(last)===today()?'hoy':fmtDate(ymd(last))}, a las ${pad(last.getHours())}:${pad(last.getMinutes())}.${habRt.last?` Traídos: ${habRt.last.imported}. Enviados: ${habRt.last.sent}.`:''} Se sincroniza al abrir la app, tras cada cambio y cada 3 minutos.`:'Todavía no se ha sincronizado.'));
+  sc.append(el('p','muted',last?`Última importación: ${ymd(last)===today()?'hoy':fmtDate(ymd(last))}, a las ${pad(last.getHours())}:${pad(last.getMinutes())}. Se importa al abrir la app, al volver a ella y cada 3 minutos. Solo se lee de Habitica: nunca se marca ni se cambia nada allí.`:'Todavía no se ha importado nada.'));
   if(habRt.user) sc.append(el('p','small-print',`Inicio de día en Habitica: ${pad(habDayStart())}:00. Día abierto en Habitica: ${fmtDate(habOpenDay())}.`));
-  const r=el('div','row'); r.append(btn('Desconectar','danger',null,()=>{ if(!confirm('Se borran de este dispositivo el ID y el token de Habitica. Los hábitos, los registros y los enlaces se conservan. ¿Desconectar?')) return; clearInterval(habTimer); clearTimeout(habRt.timer); habCfg=null; saveHabCfg(); Object.assign(habRt,{user:null,tasks:null,party:null,status:'off',err:null,cronPending:false}); renderApp(); },'x')); sc.append(r);
+  const r=el('div','row'); r.append(btn('Desconectar','danger',null,()=>{ if(!confirm('Se borran de este dispositivo el ID y el token de Habitica. Los hábitos, los registros y los enlaces se conservan. ¿Desconectar?')) return; clearInterval(habTimer); clearTimeout(habRt.timer); habCfg=null; saveHabCfg(); Object.assign(habRt,{user:null,tasks:null,party:null,status:'off',err:null}); renderApp(); },'x')); sc.append(r);
   v.append(sc);
+}
+/* ---- Guía: cómo crear cada frecuencia en Habitica ---- */
+const HAB_FREQS=[
+  ['Todos los días','Diaria','Repetir: Diaria. Repetir cada: 1 día.','Es la opción por defecto al crear una diaria.'],
+  ['Cada X días (cada 2, cada 3…)','Diaria','Repetir: Diaria. Repetir cada: X días. La fecha de inicio es el primer día que toca.','El ritmo es fijo desde la fecha de inicio, aunque falles un día.'],
+  ['Días concretos de la semana (lunes, miércoles y viernes)','Diaria','Repetir: Semanal. Repetir cada: 1 semana. En «Los días», marca solo los que quieras.','Sin ningún día marcado, la diaria se queda gris siempre.'],
+  ['Días de la semana cada 2 o más semanas (martes, una semana sí y otra no)','Diaria','Repetir: Semanal. Repetir cada: 2 semanas (o las que sean). Marca los días. Pon la fecha de inicio en la semana en que sí toca.','Las semanas se cuentan de 7 en 7 desde la fecha de inicio.'],
+  ['Un día del mes (el 14 de cada mes)','Diaria','Pon la fecha de inicio en un día 14. Repetir: Mensual. Repetir cada: 1 mes. En «Se repite el», elige «día del mes».','Si ese día no existe en un mes (30, 31), toca el último día de ese mes. Para el último día de cada mes, empieza un día 31.'],
+  ['Varios días del mes (el 1 y el 15)','Dos diarias','Habitica solo repite un día del mes por diaria: crea una diaria con inicio el día 1 y otra con inicio el día 15, ambas mensuales.','En Hábitos puedes enlazar cada una con su propio hábito.'],
+  ['Un día del mes cada X meses (el 1, cada trimestre)','Diaria','Fecha de inicio: el día 1 del primer mes. Repetir: Mensual. Repetir cada: 3 meses. «Se repite el»: día del mes.',''],
+  ['Un día de la semana del mes (el primer lunes, el último viernes)','Diaria','Pon la fecha de inicio en ese día (por ejemplo, el primer lunes de un mes). Repetir: Mensual. «Se repite el»: día de la semana.','«Último» no existe como tal: con inicio en un cuarto viernes toca el cuarto viernes; con inicio en un quinto, solo los meses que lo tienen.'],
+  ['Una fecha al año (un cumpleaños, una revisión anual)','Diaria','Fecha de inicio: ese día. Repetir: Anual. Repetir cada: 1 año.',''],
+  ['Cada X años (una renovación cada 2 años)','Diaria','Fecha de inicio: el día del primer año que toca. Repetir: Anual. Repetir cada: 2 años.',''],
+  ['X veces por semana o por mes, cualquier día','Diaria + lista','Habitica no tiene cuotas. Truco habitual: crea una diaria semanal que toque solo el último día de tu semana (o una mensual el último día del mes) y añádele una lista de comprobación con X elementos («Sesión 1», «Sesión 2»…). Marca un elemento cada vez que lo hagas y la diaria al completar la lista.','En Hábitos se importará como una diaria de ese día. Si quieres la cuota real («3 veces por semana») con sus rachas, crea ese hábito solo en Hábitos, sin enlazar.'],
+  ['Algo que quieres hacer más (beber agua, subir escaleras)','Hábito +','Crea un Hábito y deja activado solo «Positivo».','Cada pulsación cuenta: en Hábitos se importa como hábito de cantidad (veces al día).'],
+  ['Algo que quieres evitar (picar entre horas)','Hábito −','Crea un Hábito y deja activado solo «Negativo».','En Hábitos se importa como «Evitar»: cada día con alguna pulsación es una recaída.'],
+  ['Una cosa con lado bueno y malo (escaleras / ascensor)','Hábito + y −','Crea un Hábito con «Positivo» y «Negativo» activados.','En Hábitos se importa como dos hábitos y se analiza el balance (+ frente a −) en «Ver balance».'],
+  ['Aparcar una diaria sin borrarla','Diaria','Repetir cada: 0. Queda gris y no toca nunca.','En Hábitos se importa archivada.'],
+];
+function habFreqGuide(){
+  const c=el('section','card hab-guide'); c.append(h2i('Cómo crear cada frecuencia en Habitica','calendar'));
+  const st=el('details','sync-help'); st.append(el('summary','','Pasos para crear o editar una tarea'));
+  const ol=el('ol');
+  for(const s of ['Web (habitica.com): en la página de tareas pulsa «+ Crear», arriba a la derecha, y elige «Diaria» o «Hábito». Para cambiar una que ya existe, pulsa sobre ella.',
+    'Android: en la barra inferior abre «Diarias» o «Hábitos» y pulsa el botón «+». Para cambiar una, tócala.',
+    'Escribe el título y, si quieres, las notas, la lista de comprobación y la dificultad (más difícil da más oro y experiencia, y quita más vida si fallas).',
+    'En una diaria, rellena «Fecha de inicio», «Repetir» (Diaria, Semanal, Mensual o Anual) y «Repetir cada». En semanal aparecen los días; en mensual, «Se repite el» (día del mes o día de la semana, tomados de la fecha de inicio). Debajo se ven las próximas fechas: compruébalas.',
+    'En un hábito, activa «Positivo», «Negativo» o los dos. En «Reiniciar contador» eliges si el contador vuelve a cero cada día, semana o mes (no cambia el historial que importa Hábitos).',
+    'Pulsa «Crear» o «Guardar». En Hábitos aparece en la pantalla Habitica para importarla o enlazarla.']) ol.append(el('li','',s));
+  st.append(ol); c.append(st);
+  const ul=el('div','freq-list');
+  for(const [what,type,how,note] of HAB_FREQS){
+    const d=el('details','freq'); const sm=el('summary'); sm.append(el('span','fq-what',what),el('span','chip',type)); d.append(sm);
+    d.append(el('p','',how)); if(note) d.append(el('p','muted small',note)); ul.append(d);
+  }
+  c.append(ul);
+  const ad=el('details','sync-help'); ad.append(el('summary','','Ajustes que cambian cuándo «toca»'));
+  const ul2=el('ul');
+  for(const s of ['Inicio de día personalizado: menú de usuario → Ajustes → «Inicio de día personalizado». Es la hora a la que acaba tu día en Habitica (a partir de medianoche). Hábitos lo tiene en cuenta al importar.',
+    'Registrar la actividad de ayer: al abrir Habitica tras el cambio de día te enseña las diarias de ayer sin marcar. Es la única forma de apuntar el día anterior.',
+    'Pausar el daño: menú de usuario → Ajustes → «Pausar daño» (en Android, «Pausar tus diarias»). Útil en vacaciones; en Hábitos puedes poner la misma pausa en cada hábito.']) ul2.append(el('li','',s));
+  ad.append(ul2); c.append(ad);
+  return c;
 }
 function habConnectCard(){
   const c=el('section','card'); c.append(h2i('Conectar con Habitica','link'));
-  c.append(el('p','muted','Con la conexión, lo que marques aquí se puntúa en Habitica y lo que marques allí aparece aquí, con su historial.'));
+  c.append(el('p','muted','Marcas en Habitica y aquí se importan tus diarias y hábitos con su historial, para ver las estadísticas. Solo se lee: nunca se cambia nada en Habitica.'));
   const g=el('div','form-grid');
   const uid=field('input',{type:'text',autocomplete:'off',spellcheck:false,placeholder:'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}); g.append(fld('ID de usuario',uid,'full'));
   const tok=field('input',{type:'password',autocomplete:'off',spellcheck:false}); g.append(fld('Token de la API',tok,'full'));
@@ -2039,7 +2225,7 @@ function habConnectCard(){
   r.append(go2); c.append(r);
   const det=el('details','sync-help'); det.open=true; det.append(el('summary','','Dónde están el ID y el token'));
   const ol=el('ol');
-  for(const s of ['En el ordenador, entra en habitica.com e inicia sesión (en la app del móvil está en Menú → Ajustes → API, pero copiar es más fácil en el PC).',
+  for(const s of ['En el ordenador, entra en habitica.com e inicia sesión (en la app de Android está en Menú → Ajustes → API, pero copiar es más fácil en el PC).',
     'Pulsa el icono de tu usuario, arriba a la derecha, y elige «Ajustes».',
     'Entra en la pestaña «API» (o abre directamente habitica.com/user/settings/api).',
     'En «ID de usuario», pulsa copiar y pégalo arriba.',
@@ -2145,7 +2331,7 @@ function renderToday(v){
   }
   v.append(head);
   const bn=backupBanner(); if(bn) v.append(bn);
-  { const hs=habStatusLine(); if(hs&&habRt.status!=='syncing'){ const b=el('button','hab-note'); b.type='button'; b.append(ic(habRt.status==='error'?'alert':'shield'),el('span','',hs)); b.addEventListener('click',()=>go('habitica')); v.append(b); } }
+  if(habCfg&&isToday){ const hs=habStatusLine(), al=hs?null:habAlerts(); if(hs||al){ const b=el('button','hab-note'); b.type='button'; b.append(ic(hs?'alert':'paw'),el('span','',hs||`Habitica: ${al.text}.`)); b.addEventListener('click',()=>go('habitica')); v.append(b); } }
 
   if(!state.habits.length){
     const e=el('div','empty'); e.append(ic('grid'),btn('Crear el primer hábito','',null,()=>openHabitEditor(null),'plus')); v.append(e); return;
@@ -2237,7 +2423,8 @@ function habitRow(h,s,d){
   const sk=el('span','streak'+(st.current?'':' zero')); sk.append(ic('flame'),document.createTextNode(streakUnit(st.current,st.kind))); sk.title=`Racha actual. Mejor: ${streakUnit(st.best,st.kind)}`; meta.append(sk);
   if(s.kind==='period') meta.append(el('span','',periodText(s.period,d)));
   if(h.kind==='count') meta.append(el('span','',`Objetivo: ${fmtNum(h.target.amount)}${h.target.unit?' '+h.target.unit:''}`));
-  if(h.kind==='avoid'&&!s.paused&&s.scheduled!==false) meta.append(el('span','chip'+(log?' slip':' clean'),log?'Recaída':'Sin recaídas'));
+  if(h.kind==='avoid'&&!s.paused&&s.scheduled!==false) meta.append(el('span','chip'+(log?' slip':' clean'),log?(log.value>1?`${log.value} recaídas`:'Recaída'):'Sin recaídas'));
+  if(habLinkOf(h.id)){ const hc=el('span','hab-tag'); hc.append(ic('shield'),document.createTextNode('Habitica')); hc.title='Se marca en Habitica y se importa aquí'; meta.append(hc); }
   if(s.before) meta.append(el('span','chip',`Empieza el ${fmtDate(h.startDate)}`));
   if(!s.done&&!s.paused&&missedLast(h,d)) { const c=el('span','chip warn'); c.append(ic('alert'),document.createTextNode('No falles dos veces')); meta.append(c); }
   if(log&&log.mini) meta.append(el('span','chip','Versión mínima'));
@@ -2254,11 +2441,13 @@ function habitRow(h,s,d){
   return li;
 }
 function toggleDone(h,d){
+  if(habLocked(h)) return;
   if(h.kind==='avoid'){ const slip=!!getLog(h.id,d); commit(slip?'Recaída quitada':'⚠️ Recaída anotada',()=>{ setLog(h.id,d,slip?0:1); }); return; }
   const done=isDoneDay(h,d);
   commit(done?'Desmarcado':'✅ Hecho',()=>{ setLog(h.id,d,done?0:1,null,false); if(!done&&isSkipped(h.id,d)) setSkip(h.id,d,false); if(!done&&extendStart(h.id,d)) return `✅ Hecho. El hábito empieza ahora el ${fmtDate(d)}`; if(!done) return celebrate(h,d)||undefined; });
 }
 function bump(h,d,delta){
+  if(habLocked(h)) return;
   const log=getLog(h.id,d), v=Math.max(0,Math.round(((log?log.value:0)+delta)*1000)/1000);
   commit(null,()=>{ setLog(h.id,d,v); if(v>0&&isSkipped(h.id,d)) setSkip(h.id,d,false); if(v>0) extendStart(h.id,d); return v>=h.target.amount&&(!log||log.value<h.target.amount)?(celebrate(h,d)||'✅ Objetivo cumplido'):`${h.name}: ${fmtNum(v)}${h.target.unit?' '+h.target.unit:''}`; });
 }
@@ -2288,6 +2477,7 @@ function modalHeader(title,icon,color){
   h.append(t,btn('','ghost icon','Cerrar',closeDialog,'x')); return h;
 }
 function openDayDialog(h,d){
+  if(habLocked(h)) return;
   const log=getLog(h.id,d), skip=getSkip(h.id,d);
   openDialog(dlg=>{
     dlg.append(modalHeader(h.name,h.icon,h.color));
@@ -3235,7 +3425,7 @@ function renderStats(v){
   const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title');
   const h=pickHabit(ui.statHabit);
   tt.append(el('h1','page-title',h?h.name:'Estadísticas')); row.append(tt);
-  if(h){ const act=el('div','head-actions'); act.append(btn('Todos','secondary small',null,()=>{ ui.statHabit=''; saveUI(); renderApp(); },'chev-left')); if(h.kind!=='avoid') act.append(btn('Rellenar días','secondary small',null,()=>openFillDialog(h),'calendar')); act.append(btn('','secondary small icon','Editar hábito',()=>openHabitEditor(h),'pencil')); row.append(act); }
+  if(h){ const act=el('div','head-actions'); act.append(btn('Todos','secondary small',null,()=>{ ui.statHabit=''; saveUI(); renderApp(); },'chev-left')); if(h.kind!=='avoid'&&!habLinkOf(h.id)) act.append(btn('Rellenar días','secondary small',null,()=>openFillDialog(h),'calendar')); act.append(btn('','secondary small icon','Editar hábito',()=>openHabitEditor(h),'pencil')); row.append(act); }
   head.append(row); head.append(filterBar(true)); v.append(head);
   if(!state.habits.length){ const e=el('div','empty'); e.append(ic('bar-chart'),btn('Crear el primer hábito','',null,()=>openHabitEditor(null),'plus')); v.append(e); return; }
   if(h) renderHabitStats(v,h); else renderGlobalStats(v);
@@ -3257,6 +3447,7 @@ function renderHabitStats(v,h){
   if(h.cue||h.mini){ const m2=el('div','hmeta'); if(h.cue) m2.append(el('span','',`Cuándo: ${h.cue}`)); if(h.mini) m2.append(el('span','',`Versión mínima: ${h.mini}`)); info.append(m2); }
   if(h.description) info.append(el('p','hdesc',h.description));
   v.append(info);
+  { const pp=pmPair(h.id); if(pp) pmCards(v,pp); }
   // Resumen
   const pts=scoreSeries(h), sNow=scoreAt(pts,t), sM=scoreAt(pts,addDaysS(t,-30)), sY=scoreAt(pts,addDaysS(t,-365));
   const st=computeStats(h);
@@ -3293,7 +3484,7 @@ function renderHabitStats(v,h){
   }
   // Calendario con números
   const cc=el('section','card'), chd=el('div','card-head'); chd.append(h2i('Calendario','calendar'));
-  const eb=btn(calEdit?'Terminar':'Editar',calEdit?'small':'secondary small',null,()=>{ calEdit=!calEdit; renderApp(); },calEdit?'check':'pencil'); eb.setAttribute('aria-pressed',String(calEdit)); chd.append(eb); cc.append(chd);
+  const eb=btn(calEdit?'Terminar':'Editar',calEdit?'small':'secondary small',null,()=>{ calEdit=!calEdit; renderApp(); },calEdit?'check':'pencil'); eb.setAttribute('aria-pressed',String(calEdit)); if(!habLinkOf(h.id)) chd.append(eb); cc.append(chd);
   if(calEdit) cc.append(el('div','small-print edit-note',h.kind==='count'?'Toca un día para escribir la cantidad.':h.kind==='avoid'?'Toca un día para anotar o quitar una recaída.':'Toca un día para marcarlo o desmarcarlo. Los días anteriores al inicio también se pueden marcar.'));
   cc.append(heatmap(h,[h],ui.statPeriod,'hstats',{numbers:true,edit:calEdit})); v.append(cc);
   // Mejores rachas
@@ -3601,6 +3792,7 @@ function renderDaysGrid(v,d){
 /* ---- Días pasados ---- */
 let calEdit=false;   // modo Editar del calendario de la ficha (no se guarda)
 function quickToggle(h,d){
+  if(habLocked(h)) return;
   hideTip();
   if(d>today()) return;
   if(h.kind==='count'){ if(inRange(h,d)||canBackfill(h,d)) openDayDialog(h,d); return; }
@@ -3609,6 +3801,7 @@ function quickToggle(h,d){
 }
 /* Rellenar un periodo de días pasados de una vez (por ejemplo, al pasar el historial de otra app) */
 function openFillDialog(h){
+  if(habLocked(h)) return;
   const t=today(), sc=h.schedule;
   const def=sc.type==='weekdays'?sc.days.slice():[0,1,2,3,4,5,6];
   const sel=new Set(def);
@@ -3673,7 +3866,7 @@ function renderHelp(v){
   sec('Hoy',['Muestra los hábitos que tocan el día elegido. Toca el círculo para marcarlo; los de cantidad se suman y restan con + y −. Toca el nombre para abrir el detalle del día: nota, cantidad exacta o pausa.','Con las flechas, el selector de fecha o «Ayer» puedes registrar días pasados. Los hábitos que no tocan ese día están en «No tocan hoy» y también se pueden marcar (no suman a la racha).','Todo cambio se puede deshacer con el botón del aviso o con Ctrl+Z.']);
   sec('Tipos de hábito',[['Sí / no: se marca el día que se hace.','Cantidad: se suma una cantidad (vasos, minutos, páginas…); el día cuenta si llega al objetivo.','Evitar: para dejar algo. Solo se marca el día que se cae (recaída); el resto de días programados cuentan solos como días limpios. Hoy no cuenta hasta que termina, salvo que haya recaída.']]);
   sec('Días pasados',['Puedes registrar cualquier día pasado desde «Hoy» (flechas, selector de fecha o «Ayer»), desde «Varios días», tocando un día del calendario o desde la ficha del hábito.','Si registras un día anterior al inicio del hábito, el inicio se adelanta a ese día. En la ficha, el botón «Editar» del calendario permite marcar y desmarcar días de un toque, y «Rellenar días» marca (o borra) de una vez todos los días de un periodo, eligiendo los días de la semana: útil para pasar el historial de otra app.','En los hábitos «Evitar», los días anteriores al inicio no se rellenan solos: para adelantar el inicio, cambia «Empieza» en el editor.']);
-  sec('Habitica',['En la pantalla Habitica (en el móvil, en Más) pegas tu ID de usuario y tu token de la API. Están en habitica.com → icono de usuario → Ajustes → pestaña API. Se guardan solo en ese dispositivo; en el otro hay que conectarlo igual.','«Importar» crea el hábito con su historial; «Enlazar con…» lo une a uno que ya tengas y completa los días que falten. Los hábitos de Habitica con + y − se separan en dos: uno de cantidad (+) y uno de «Evitar» (−).','Marca donde quieras: lo de Habitica aparece aquí y lo de aquí se puntúa allí, sin duplicar. Habitica solo admite marcas del día que tiene abierto: si no la has abierto hoy, lo de hoy espera (lo verás en «Hoy») y lo de ayer se envía como «Registrar la actividad de ayer». Los días anteriores solo se guardan aquí.','El nombre y la programación de las diarias se cambian en Habitica. Si alguna vez se expone el token, genera otro en esa página de la API y vuelve a conectar.']);
+  sec('Habitica',['Se marca solo en Habitica; Hábitos importa tus diarias y hábitos con su historial y los analiza. Nunca cambia nada en Habitica.','Para conectar: en habitica.com → icono de usuario → Ajustes → pestaña API, copia el ID de usuario y el token y pégalos en la pantalla Habitica (en el móvil, en Más). Se guardan solo en ese dispositivo; en el otro hay que conectarlo igual.','«Importar» crea el hábito con su historial; «Enlazar con…» lo une a uno que ya tengas, conserva lo que había y añade los días de Habitica. Los hábitos enlazados llevan la marca «Habitica» y no se marcan aquí.','Los hábitos de Habitica con + y − se importan como dos (uno por botón) y se analizan juntos en su ficha: balance diario, días ganados y perdidos, días sin − y en qué día de la semana se concentran.','La pantalla Habitica enseña tu personaje, la misión del grupo, los huevos que puedes eclosionar, las mascotas que tu comida puede convertir en monturas y cómo crear cada frecuencia en Habitica. Si hay algo en el establo, «Hoy» te avisa.']);
   sec('Sincronización',['En Ajustes y avisos → Sincronización pegas un token de GitHub (sirve el del Revisor de Tareas) y eliges una contraseña de cifrado. Repite lo mismo en el otro dispositivo con el mismo token y la misma contraseña.','Los datos se guardan cifrados en un Gist secreto de tu cuenta. Se sincroniza al abrir la app, unos segundos después de cada cambio, al volver a la app y cada 3 minutos. En cada hábito, registro o pausa prevalece la versión más reciente, y los borrados también se propagan. No se sincronizan los ajustes ni la interfaz.','Si ves un punto rojo en Ajustes, la sincronización está en pausa (token caducado, contraseña incorrecta…): ábrelo para ver el motivo.']);
   sec('Hoy en varios días',['El botón «Varios días» de «Hoy» muestra los hábitos en filas y los últimos días en columnas (4 en el móvil, 7 en el PC). Toca una casilla para marcarla o desmarcarla; en los de cantidad se abre el detalle. Toca el nombre para ver sus estadísticas.']);
   sec('Calendario',['Con «Todos los hábitos», cada día toma el color de los hábitos que tocaban: todos cumplidos, algunos, ninguno, pausa o no tocaba. Los hábitos de «X veces por semana» y los registros de días que no tocaban solo suman si se hicieron. Toca un día para abrirlo en «Hoy» y editarlo.','Con un hábito elegido se ve cada día: hecho, parcial (cantidad por debajo del objetivo), no cumplido, pausa o no tocaba. En los de «X veces por semana», la última columna muestra la cuota de cada semana. Toca un día para editar su registro.']);
@@ -3758,6 +3951,7 @@ window.__habitos={
   isDue, isScheduled, moodStats, scoreSeries, scoreAt, relations, weekdayRates, buildTable, dayGlobal, habitDay, monthCompliance, globalCompliance, computeStreaks, computeStats, compliance, unitsOf, mergeStates, undo, commit, exportData, parseNum,
   syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
   mark(hid,d,v){ return commit('Marcado',()=>setLog(hid,d,v)); },
+  stableInfo, pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
   habSync, get habRt(){ return habRt; }, get habCfg(){ return habCfg; }, scheduleText, habSchedule:t=>habSchedule(t).schedule, habDailyDays:t=>Object.fromEntries(habDailyDays(t).days), habHabitDays:t=>Object.fromEntries(habHabitDays(t).days), habDayOf, habOpenDay, dueFixed, normSchedule,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
