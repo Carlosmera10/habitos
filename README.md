@@ -72,7 +72,7 @@ En **Ajustes y avisos → Sincronización (PC y móvil)**, con los pasos para cr
 
 ## Habitica
 
-**Markdown:** los títulos, notas, etiquetas y nombres de Habitica se interpretan: negrita, cursiva, tachado, código, enlaces, direcciones web y emojis `:nombre:` (los mismos 1.900 que Habitica). Los nombres de los hábitos se guardan como texto limpio (sin asteriscos) y se muestran con formato en el Panel, la ficha y las listas; las notas mantienen los saltos de línea.
+**Markdown:** títulos, notas, etiquetas y nombres se interpretan como en Habitica (markdown-it con enlaces automáticos y sus emojis `:nombre:`): negrita, cursiva, tachado, código, enlaces, imágenes (como enlace), entidades (`&amp;`…), escapes, títulos, listas, citas y código. El analizador es una adaptación reducida de markdown-it y linkify-it (MIT) y se comprobó contra `habitica-markdown` 4.1.0: 73 casos escritos a mano, 64 títulos y notas realistas y unas 30.000 cadenas aleatorias dan el mismo texto visible (solo cambia, en casos raros, cómo se codifica la dirección de algún enlace con caracteres no ingleses). Los nombres se guardan como texto limpio y se muestran con formato en el Panel, la ficha y las listas; nunca se inserta HTML del texto.
 
 Solo se hacen lecturas: nunca se puntúa, nunca se llama a `POST /cron` ni se cambia nada en Habitica.
 
