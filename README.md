@@ -7,7 +7,7 @@ Panel personal para **Habitica**: las diarias y los hábitos se marcan en Habiti
 ## Pantallas
 
 - **Panel**: personaje con su mascota y montura (iconos de Habitica), vida, experiencia, maná y oro; misión del grupo con la vida del jefe o los objetos; resumen del establo; diarias de hoy (hecha, pendiente o no toca, racha de Habitica, lista de comprobación y color de la tarea); hábitos de hoy con lo pulsado en + y −; tareas pendientes (vencidas y para hoy); diarias cumplidas y experiencia ganada de los últimos 14 días; año de diarias. Aviso de copia de seguridad.
-- **Establo**: qué se puede eclosionar ya (huevo + poción = mascota, nueva o para recuperar una que ya es montura, y cuántas a la vez); mascotas que se pueden mejorar con su comida favorita (lo que tienes y lo que falta, primero las que ya pueden ser montura); inventario de comida (con la poción que prefiere y cuántas mascotas tuyas la quieren) y sillas; huevos y pociones (con las combinaciones útiles); colección de mascotas normales 9 × 10 con mascotas y monturas, y recuento de las de misión. Los iconos se cargan de `habitica-assets.s3.amazonaws.com/mobileApp/images/` (los de la app de Android); si uno falla, se ve un icono propio.
+- **Establo**: arriba, con todo el detalle, las mascotas que ya pueden ser montura con tu comida. Lo demás va en grupos desplegables: qué puedes eclosionar (por huevo: huevo + poción = mascota, nueva o para recuperar), mascotas que crecen (por la comida que les gusta: lo que necesitan y lo que te queda), tu comida, huevos y pociones, y tu colección por tipos (normales, de misión, mágicas, raras y especiales), con la tabla 9 × 10 de las normales. Los iconos se cargan de `habitica-assets.s3.amazonaws.com/mobileApp/images/` (los de la app de Android); si uno falla, se ve un icono propio.
 - **Calendario**: mes de todos los hábitos o de uno; tocar un día abre su detalle (solo consulta).
 - **Estadísticas**: con todos los hábitos, experiencia ganada por día, semana, mes o año (se guarda cada cambio de día en `habitica.xp`), a qué hora marcas las diarias (día de la semana × hora), color de cada tarea en Habitica (valor negativo o positivo), rachas actuales de Habitica, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación de hábitos o etiquetas, reparto por etiqueta, «Hábitos que van juntos» y cuadrícula anual. Con un hábito, su ficha: puntuación (como Loop), valor en Habitica a lo largo del tiempo, balance + / − en los hábitos con los dos botones, historial, calendario con números, mejores rachas, frecuencia y cumplimiento por día de la semana y por mes.
 - **Tablas** ordenables y exportables a CSV (separador «;» y coma decimal): resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones.
@@ -71,6 +71,8 @@ En **Ajustes y avisos → Sincronización (PC y móvil)**, con los pasos para cr
 - Si algo falla (token caducado, contraseña incorrecta…), aparece un aviso y un punto rojo en «Ajustes y avisos»; la sincronización queda en pausa hasta corregirlo y pulsar «Sincronizar ahora».
 
 ## Habitica
+
+**Markdown:** los títulos, notas, etiquetas y nombres de Habitica se interpretan: negrita, cursiva, tachado, código, enlaces, direcciones web y emojis `:nombre:` (los mismos 1.900 que Habitica). Los nombres de los hábitos se guardan como texto limpio (sin asteriscos) y se muestran con formato en el Panel, la ficha y las listas; las notas mantienen los saltos de línea.
 
 Solo se hacen lecturas: nunca se puntúa, nunca se llama a `POST /cron` ni se cambia nada en Habitica.
 
