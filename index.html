@@ -628,6 +628,11 @@ dialog{border-radius:20px;background:var(--panel)}
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
 /* Panel de Habitica */
+.filters select.hsel{min-width:16.5rem}
+@media (max-width:720px){.filters select.hsel{min-width:0}}
+.seg.types button{display:inline-flex;align-items:center;gap:4px;padding:7px 12px}
+.seg.types .ic{width:16px;height:16px}
+.seg.types .n{font-size:.78rem;opacity:.75;font-variant-numeric:tabular-nums}
 .cday.h-free{background:var(--panel);color:var(--ink)}
 .hm-grid b.pq{background:color-mix(in srgb,var(--c) 28%,var(--heat-off))}
 .hm-grid b.hd.q1{background:color-mix(in srgb,var(--c) 55%,var(--heat-off))}
@@ -1516,7 +1521,7 @@ if(bc) bc.onmessage=async e=>{
 };
 
 /* ================= Interfaz: preferencias de cada dispositivo ================= */
-const UI_DEFAULT={view:'today',theme:'auto',side:'open',showArchived:false,catFilter:'',showNotDue:false,calHabit:'',statHabit:'',statPeriod:'12m',inclArchived:false,todayMode:'day',fCat:'',fTag:'',scoreGran:'month',histGran:'month',qtyGran:'day',rankBy:'pct',cmpMode:'habits',cmpIds:[],table:'resumen',sorts:{},regSearch:'',regPage:0};
+const UI_DEFAULT={view:'today',theme:'auto',side:'open',showArchived:false,catFilter:'',showNotDue:false,calHabit:'',statHabit:'',statTypes:'both',statPeriod:'12m',inclArchived:false,todayMode:'day',fCat:'',fTag:'',scoreGran:'month',histGran:'month',qtyGran:'day',rankBy:'pct',cmpMode:'habits',cmpIds:[],table:'resumen',sorts:{},regSearch:'',regPage:0};
 let ui=Object.assign({},UI_DEFAULT);
 try{ ui=Object.assign({},UI_DEFAULT,JSON.parse(localStorage.getItem(UI_KEY)||'{}')); }catch(e){}
 if(!['today','calendar','stats','tables','habits','settings','help'].includes(ui.view)) ui.view='today';
@@ -3567,11 +3572,39 @@ document.addEventListener('pointerout',e=>{ const t=e.target.closest&&e.target.c
 document.addEventListener('focusin',e=>{ const t=e.target.closest&&e.target.closest('[data-tip]'); if(t) showTip(t); else hideTip(); });
 window.addEventListener('scroll',hideTip,{passive:true});
 
+/* ---- Diarias y hábitos de Habitica ---- */
+/* Diaria o hábito (+/−) según su origen en Habitica; los propios cuentan como diarias */
+function habType(h){ const m=habLinkOf(h.id); return m?(m.kind==='daily'?'daily':'habit'):(h.kind==='avoid'?'habit':'daily'); }
+const statTypes=()=>['daily','habit','both'].includes(ui.statTypes)?ui.statTypes:'both';
+const typeOk=h=>{ const t=statTypes(); return t==='both'||habType(h)===t; };
+const typesLabel=()=>({daily:'Todas las diarias',habit:'Todos los hábitos',both:'Todas las diarias y hábitos'})[statTypes()];
+/* Dos botones que se marcan y desmarcan; siempre queda al menos uno */
+function typeToggle(){
+  const g=el('div','seg types'); g.setAttribute('role','group'); g.setAttribute('aria-label','Mostrar diarias, hábitos o los dos');
+  const all=habitsForStats(), t=statTypes();
+  const on={daily:t!=='habit',habit:t!=='daily'};
+  for(const [k,lbl,icn] of [['daily','Diarias','calendar'],['habit','Hábitos','activity']]){
+    const n=all.filter(x=>habType(x)===k).length;
+    const b=el('button'); b.type='button'; b.setAttribute('aria-pressed',on[k]?'true':'false');
+    b.append(ic(on[k]?'check':icn),document.createTextNode(` ${lbl} `),el('span','n',String(n)));
+    b.title=on[k]?`Quitar las ${lbl.toLowerCase()}`:`Añadir las ${lbl.toLowerCase()}`;
+    b.addEventListener('click',()=>{
+      const nx={...on,[k]:!on[k]};
+      if(!nx.daily&&!nx.habit){ showToast('Deja marcadas las diarias, los hábitos o los dos',{timeout:3500}); return; }
+      ui.statTypes=nx.daily&&nx.habit?'both':nx.daily?'daily':'habit';
+      const cur=ui.statHabit&&habitById(ui.statHabit); if(cur&&!typeOk(cur)) ui.statHabit='';
+      saveUI(); renderApp();
+    });
+    g.append(b);
+  }
+  return g;
+}
+
 /* ---- Selector de hábito común ---- */
-function habitSelect(value,onChange,label){
+function habitSelect(value,onChange,label,byType){
   const s=field('select'); s.setAttribute('aria-label',label);
-  s.append(opt('','Todos los hábitos',!value));
-  for(const h of habitsForStats()) s.append(opt(h.id,h.name+(h.archived?' (archivado)':''),h.id===value));
+  if(byType) s.classList.add('hsel'); s.append(opt('',byType?typesLabel():'Todos los hábitos',!value));
+  for(const h of habitsForStats().filter(x=>!byType||typeOk(x))) s.append(opt(h.id,h.name+(h.archived?' (archivado)':''),h.id===value));
   s.addEventListener('change',()=>onChange(s.value));
   return s;
 }
@@ -3790,7 +3823,7 @@ const fmtPts=x=>x==null?'—':(Math.round(x*100)===0?'±0':(x>0?'+':'−')+Math.
 const kindLabel=h=>isCycle(h.schedule)?'Lista':h.kind==='count'?'Cantidad':h.kind==='avoid'?'Evitar':'Sí / no';
 /* Hábitos visibles en estadísticas y tablas (archivados, categoría y etiqueta) */
 function filteredHabits(){
-  return habitsForStats().filter(h=>(!ui.fCat||(ui.fCat==='none'?!h.categoryId:h.categoryId===ui.fCat))&&(!ui.fTag||h.tags.includes(ui.fTag)));
+  return habitsForStats().filter(h=>typeOk(h)&&(!ui.fCat||(ui.fCat==='none'?!h.categoryId:h.categoryId===ui.fCat))&&(!ui.fTag||h.tags.includes(ui.fTag)));
 }
 /* Límites del periodo elegido: últimos 12 meses o un año natural */
 function periodBounds(p=ui.statPeriod){
@@ -3974,7 +4007,8 @@ function insights(habits,a,b){
 /* ---- Estadísticas ---- */
 function filterBar(withHabit){
   const bar=el('div','filters');
-  if(withHabit) bar.append(habitSelect(ui.statHabit,id=>{ ui.statHabit=id; saveUI(); renderApp(); },'Hábito de las estadísticas'));
+  bar.append(typeToggle());
+  if(withHabit) bar.append(habitSelect(ui.statHabit,id=>{ ui.statHabit=id; saveUI(); renderApp(); },'Hábito de las estadísticas',true));
   const ys=periodOptions(), per=field('select'); per.setAttribute('aria-label','Periodo'); per.append(opt('12m','Últimos 12 meses',ui.statPeriod==='12m'));
   for(const y of ys) per.append(opt(y,'Año '+y,ui.statPeriod===y));
   per.addEventListener('change',()=>{ ui.statPeriod=per.value; saveUI(); renderApp(); });
@@ -3992,7 +4026,7 @@ function filterBar(withHabit){
 }
 function renderStats(v){
   const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title');
-  const h=pickHabit(ui.statHabit);
+  const h0=pickHabit(ui.statHabit), h=h0&&typeOk(h0)?h0:null;
   tt.append(el('h1','page-title',h?h.name:'Estadísticas')); row.append(tt);
   if(h){ const act=el('div','head-actions'); act.append(btn('Todos','secondary small',null,()=>{ ui.statHabit=''; saveUI(); renderApp(); },'chev-left')); row.append(act); }
   head.append(row); head.append(filterBar(true)); v.append(head);
@@ -4149,11 +4183,11 @@ function renderGlobalStats(v){
   const [a30]=periodRange('30');
   let perfect=0; for(let d=a30; d<=t; d=addDaysS(d,1)) if(dayGlobal(d,habits).st==='all') perfect++;
   const ins=insights(habits,a,b);
-  const tl=[['Últimos 30 días',fmtPct(globalCompliance(habits,a30,t)),'Media de los hábitos'],['Periodo',fmtPct(globalCompliance(habits,a,b)),cap(periodName())],['Tendencia',fmtPts(ins.trend),'30 días frente a los 30 anteriores'],['Días perfectos',String(perfect),'En los últimos 30 días']];
+  const tl=[['Últimos 30 días',fmtPct(globalCompliance(habits,a30,t)),({daily:'Media de las diarias',habit:'Media de los hábitos',both:'Media de diarias y hábitos'})[statTypes()]],['Periodo',fmtPct(globalCompliance(habits,a,b)),cap(periodName())],['Tendencia',fmtPts(ins.trend),'30 días frente a los 30 anteriores'],['Días perfectos',String(perfect),'En los últimos 30 días']];
   if(ins.best!=null) tl.push(['Mejor día',cap(DOW_NAME[ins.best]),fmtPct(ins.wd[ins.best])]);
   if(ins.worst!=null&&ins.worst!==ins.best) tl.push(['Peor día',cap(DOW_NAME[ins.worst]),fmtPct(ins.wd[ins.worst])]);
   if(ins.weekdays!=null&&ins.weekend!=null) tl.push(['Fin de semana',fmtPct(ins.weekend),`Entre semana: ${fmtPct(ins.weekdays)}`]);
-  tl.push(['Hábitos',String(habits.length)]);
+  { const nd=habits.filter(x=>habType(x)==='daily').length, nh=habits.length-nd, ty=statTypes(); tl.push(ty==='daily'?['Diarias',String(nd)]:ty==='habit'?['Hábitos',String(nh)]:['Diarias y hábitos',String(habits.length),`${pl(nd,'diaria','diarias')} y ${pl(nh,'hábito','hábitos')}`]); }
   v.append(tilesOf(tl));
   habiticaStats(v,habits);
   // Mes a mes
@@ -4364,7 +4398,7 @@ function renderHelp(v){
   sec('Cuándo se importa',['Al abrir la app, al volver a ella, cada 3 minutos y con «Importar ahora». Las diarias y hábitos nuevos de Habitica aparecen solos; los que borras allí quedan archivados aquí con su historial (se ven con «Incluir archivados»).','Cada marca de una diaria cuenta para el día que Habitica tenía abierto al marcarla, con tu inicio de día personalizado. Los hábitos con + y − se importan como dos (uno por botón) y se analizan juntos en su ficha («Balance + / −»). Las etiquetas de Habitica sirven para agrupar en Estadísticas y Tablas.']);
   sec('Panel',['Personaje (con tu mascota y montura), misión del grupo con la vida del jefe, resumen del establo, diarias de hoy con su racha y su color en Habitica, hábitos de hoy con lo pulsado en + y −, tareas pendientes, diarias cumplidas y experiencia de los últimos 14 días, y tu año de diarias. Toca una diaria o un hábito para ver su ficha.']);
   sec('Establo',['Qué huevos puedes eclosionar ya (con la poción y la mascota que sale), qué mascotas puedes convertir en montura con la comida que tienes (la favorita suma 5 y la demás 2; a 50 es montura), tu comida con la poción que prefiere cada una, tus huevos y pociones, y la colección de mascotas normales (9 huevos × 10 pociones).']);
-  sec('Calendario, Estadísticas y Tablas',['Calendario: cada día con el color de lo cumplido; toca un día para ver el detalle.','Estadísticas: con «Todos los hábitos», experiencia ganada, horas a las que marcas, color de cada tarea en Habitica, rachas, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación, etiquetas y relaciones. Con un hábito, su ficha: puntuación, valor en Habitica a lo largo del tiempo, calendario, rachas, frecuencia y cumplimiento.','Tablas: resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones; «Exportar CSV» para Excel (separador «;» y coma decimal).']);
+  sec('Calendario, Estadísticas y Tablas',['Calendario: cada día con el color de lo cumplido; toca un día para ver el detalle.','Estadísticas y Tablas: los botones «Diarias» y «Hábitos» eligen qué se muestra (pulsa uno para quitarlo o añadirlo; pueden ir los dos, pero no ninguno) y el desplegable lista solo lo elegido.','Estadísticas: con «Todas las diarias y hábitos», experiencia ganada, horas a las que marcas, color de cada tarea en Habitica, rachas, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación, etiquetas y relaciones. Con un hábito, su ficha: puntuación, valor en Habitica a lo largo del tiempo, calendario, rachas, frecuencia y cumplimiento.','Tablas: resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones; «Exportar CSV» para Excel (separador «;» y coma decimal).']);
   sec('Diarias con lista (cuotas)',['Una diaria con un solo día fijo (por ejemplo, semanal los domingos, mensual o anual) y 2 o más elementos en la lista se trata como una cuota: «3 de la lista por semana (cierra el domingo)». El ciclo va del día siguiente al anterior día fijo hasta el día fijo, incluido.',
     ['El ciclo se cumple si completas la lista o si marcas la diaria en Habitica, también si la marcas hasta 3 días después del día fijo (por ejemplo, el lunes con el recordatorio) o con «Registrar la actividad de ayer».','En los calendarios, el periodo cumplido sale en color claro y los días en que marcaste elementos de la lista, en oscuro; cuantos más elementos ese día, más oscuro. Un ciclo no cumplido marca en rojo su día fijo.','Habitica no guarda cuándo marcas cada elemento de la lista: se anota el día en que la app lo ve marcado. Para que el día sea exacto, abre la app (o pulsa «Importar ahora») el día que marques.','En ciclos antiguos, de los que Habitica solo guarda la diaria marcada, sale en oscuro el día en que se marcó y el periodo en claro.','Las listas de un solo elemento siguen como una diaria normal.']]);
   sec('Sincronización y copias',['Ajustes → Sincronización guarda el historial cifrado en un Gist secreto de tu GitHub para tenerlo igual en el PC y en el móvil (mismo token y misma contraseña en los dos).','Ajustes → Copias de seguridad exporta un archivo JSON. No uses «Borrar datos del sitio» de Chrome: borraría también las otras apps publicadas en la misma dirección.']);
