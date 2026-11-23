@@ -628,6 +628,15 @@ dialog{border-radius:20px;background:var(--panel)}
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
 /* Panel de Habitica */
+.cday.h-free{background:var(--panel);color:var(--ink)}
+.hm-grid b.pq{background:color-mix(in srgb,var(--c) 28%,var(--heat-off))}
+.hm-grid b.hd.q1{background:color-mix(in srgb,var(--c) 55%,var(--heat-off))}
+.hm-grid b.hd.q2{background:color-mix(in srgb,var(--c) 72%,var(--heat-off))}
+.hm-grid b.hd.q3{background:color-mix(in srgb,var(--c) 86%,var(--heat-off))}
+.cday.h-pdone{background:color-mix(in srgb,var(--c) 28%,var(--panel));border-color:color-mix(in srgb,var(--c) 35%,var(--panel));color:var(--ink)}
+.cday.h-done.h-q1{background:color-mix(in srgb,var(--c) 55%,var(--panel));border-color:color-mix(in srgb,var(--c) 55%,var(--panel))}
+.cday.h-done.h-q2{background:color-mix(in srgb,var(--c) 72%,var(--panel));border-color:color-mix(in srgb,var(--c) 72%,var(--panel))}
+.cday.h-done.h-q3{background:color-mix(in srgb,var(--c) 86%,var(--panel));border-color:color-mix(in srgb,var(--c) 86%,var(--panel))}
 .md p{margin:0 0 6px}.md p:last-child{margin-bottom:0}.md ul,.md ol{margin:4px 0 6px;padding-left:22px}.md li{margin:2px 0}
 .md .md-h{font-weight:700;margin:8px 0 4px}.md blockquote{margin:6px 0;padding-left:10px;border-left:3px solid var(--line-strong);color:var(--muted)}
 .md pre{background:var(--track);padding:8px 10px;border-radius:8px;overflow-x:auto;white-space:pre}.md hr{border:0;border-top:1px solid var(--line);margin:8px 0}
@@ -1019,7 +1028,7 @@ function defaultState(){
     categories:DEFAULT_CATS.map((name,i)=>({id:'cat'+(i+1),name,order:i,updatedAt:EPOCH})),
     tags:[],
     moods:[],
-    habitica:{userId:null,lastImport:null,map:[],history:[],xp:{}},
+    habitica:{userId:null,lastImport:null,map:[],history:[],xp:{},checks:{},done:{}},
     settings:{weekStart:1,lastBackup:null,backupDays:7,backupSnooze:null,notifyPending:true,createdAt:t},
     deleted:{}};
 }
@@ -1051,6 +1060,12 @@ function normSchedule(s){
     case 'timesPerWeek':{ const t=Math.round(Number(s.times)); return {type:'timesPerWeek',times:t>=1?Math.min(t,7):1}; }
     case 'timesPerMonth':{ const t=Math.round(Number(s.times)); return {type:'timesPerMonth',times:t>=1?Math.min(t,31):1}; }
     case 'timesPerYear':{ const t=Math.round(Number(s.times)); return {type:'timesPerYear',times:t>=1?Math.min(t,366):1}; }
+    case 'cycle':{
+      /* Lista de Habitica por ciclo: «times» elementos entre un día fijo y el siguiente (el ciclo se cierra el día que toca) */
+      const base=normSchedule(s.base);
+      if(!['weekdays','monthDays','nthWeekday','yearly','everyN'].includes(base.type)) return base;
+      const t=Math.round(Number(s.times)); return {type:'cycle',base,times:t>=1?Math.min(t,999):1};
+    }
     case 'timesPerDays':{ const n=Math.round(Number(s.days)), t=Math.round(Number(s.times)); if(!(n>=2)) return {type:'daily'}; const dd=Math.min(n,365); return {type:'timesPerDays',times:t>=1?Math.min(t,dd):1,days:dd}; }
     case 'everyN':{ const n=Math.round(Number(s.n)); return n>=2?{type:'everyN',n:Math.min(n,365)}:{type:'daily'}; }
     default: return {type:'daily'};
@@ -1148,7 +1163,11 @@ function normalizeState(x){
   st.habitica={userId:typeof hb.userId==='string'?hb.userId:null,lastImport:isoOr(hb.lastImport,null),
     map:(Array.isArray(hb.map)?hb.map:[]).filter(m=>m&&typeof m.habiticaId==='string'&&m.habiticaId&&hm.has(m.habitId)).map(m=>({habiticaId:m.habiticaId.slice(0,80),habitId:m.habitId,kind:['daily','up','down'].includes(m.kind)?m.kind:(hm.get(m.habitId).kind==='avoid'?'down':'daily'),name:typeof m.name==='string'?m.name.slice(0,200):'',missing:m.missing===true,updatedAt:isoOr(m.updatedAt,EPOCH),value:Number.isFinite(Number(m.value))?Math.round(Number(m.value)*100)/100:null,priority:[0.1,1,1.5,2].includes(Number(m.priority))?Number(m.priority):null,streak:Number.isFinite(Number(m.streak))?Math.max(0,Math.round(Number(m.streak))):null})).filter((m,i,a)=>a.findIndex(o=>o.habitId===m.habitId)===i),
     history:(Array.isArray(hb.history)?hb.history:[]).filter(e=>e&&typeof e.habiticaId==='string'&&typeof e.period==='string'&&Number.isFinite(Number(e.value))).map(e=>({habiticaId:e.habiticaId,kind:['daily','up','down'].includes(e.kind)?e.kind:'daily',period:String(e.period).slice(0,7),value:Number(e.value)})),
-    xp:(()=>{ const o={}; if(hb.xp&&typeof hb.xp==='object') for(const [d,v] of Object.entries(hb.xp)) if(validYMD(d)&&d<=t&&Number.isFinite(Number(v))) o[d]=Math.round(Number(v)); return o; })()};
+    xp:(()=>{ const o={}; if(hb.xp&&typeof hb.xp==='object') for(const [d,v] of Object.entries(hb.xp)) if(validYMD(d)&&d<=t&&Number.isFinite(Number(v))) o[d]=Math.round(Number(v)); return o; })(),
+    /* Elementos de listas vistos marcados: «tarea|elemento|fin del ciclo» → [día, cuándo se vio] */
+    checks:(()=>{ const o={}; if(hb.checks&&typeof hb.checks==='object') for(const [k,v] of Object.entries(hb.checks)) if(typeof k==='string'&&k.split('|').length===3&&Array.isArray(v)&&validYMD(v[0])&&v[0]<=t) o[k.slice(0,200)]=[v[0],isoOr(v[1],EPOCH)]; return o; })(),
+    /* Ciclos que Habitica dio por hechos: «hábito|fin del ciclo» → [día en que se anota, cuándo] */
+    done:(()=>{ const o={}; if(hb.done&&typeof hb.done==='object') for(const [k,v] of Object.entries(hb.done)){ const [hid,d]=String(k).split('|'); if(hm.has(hid)&&validYMD(d)&&Array.isArray(v)&&validYMD(v[0])) o[k]=[v[0],isoOr(v[1],EPOCH)]; } return o; })()};
   const s=x.settings&&typeof x.settings==='object'?x.settings:{};
   st.settings={weekStart:[0,1].includes(Number(s.weekStart))?Number(s.weekStart):1,
     lastBackup:isoOr(s.lastBackup,null),backupDays:[0,7,14,30].includes(Number(s.backupDays))?Number(s.backupDays):7,
@@ -1203,24 +1222,56 @@ function dueFixed(e,d){
 function isDue(h,d){ h=asHabit(h); return !!h&&isScheduled(h,d)&&!isSkipped(h.id,d); }
 /* ---- Cuotas por periodo: X veces por semana, por mes natural, por año o cada N días ---- */
 const QUOTA={timesPerWeek:'week',timesPerMonth:'month',timesPerYear:'year',timesPerDays:'block'};
-const isQuota=s=>!!s&&s.type in QUOTA;
+/* Tipo de periodo de una cuota; las listas por ciclo toman el de su día fijo */
+function quotaPer(s){ if(!s) return null; if(s.type==='cycle'){ const b=s.base.type; return b==='weekdays'?'week':b==='everyN'?'block':b==='yearly'?'year':'month'; } return QUOTA[s.type]||null; }
+const isQuota=s=>!!quotaPer(s);
+const isCycle=s=>!!s&&s.type==='cycle';
 const dimOf=d=>new Date(Number(d.slice(0,4)),Number(d.slice(5,7)),0).getDate();
 /* Días del mes: si el día elegido no existe en ese mes (31 en abril), toca el último */
 function monthDayDue(s,d){ const dom=Number(d.slice(8)), dim=dimOf(d); return s.days.includes(dom)||(dom===dim&&s.days.some(x=>x>dim)); }
 /* Periodo de la cuota que contiene el día d */
+const periodCache=new WeakMap();
 function periodOf(e,d){
-  const s=e.schedule, per=QUOTA[s.type];
+  const s=e.schedule, per=quotaPer(s);
+  if(s.type==='cycle'){
+    let m=periodCache.get(s); if(!m||m.from!==e.from){ m={from:e.from,map:new Map()}; periodCache.set(s,m); }
+    const hit=m.map.get(d); if(hit) return hit;
+    /* El ciclo va del día siguiente al anterior día fijo hasta el próximo día fijo (incluido) */
+    const be={from:e.from,schedule:s.base}; let end=d, n=0; while(!dueFixed(be,end)&&n<800){ end=addDaysS(end,1); n++; }
+    let st=addDaysS(d,-1), k=0; while(st>=e.from&&!dueFixed(be,st)&&k<800){ st=addDaysS(st,-1); k++; }
+    const res=[st<e.from?e.from:addDaysS(st,1),end,per];
+    for(let x=res[0];x<=res[1];x=addDaysS(x,1)) m.map.set(x,res);
+    return res;
+  }
   if(per==='week'){ const a=weekStartOf(d); return [a,addDaysS(a,6),per]; }
   if(per==='month') return [d.slice(0,8)+'01',d.slice(0,8)+pad(dimOf(d)),per];
   if(per==='year') return [d.slice(0,4)+'-01-01',d.slice(0,4)+'-12-31',per];
   const n=s.days, k=Math.floor(daysBetween(e.from,d)/n), a=addDaysS(e.from,k*n); return [a,addDaysS(a,n-1),per];
 }
 function evalPeriod(h,e,a,b,t){
-  const per=QUOTA[e.schedule.type], days=[];
+  const ix=I(), ck=h.id+'|'+e.from+'|'+a+'|'+b; if(!ix.per) ix.per=new Map(); const hit=ix.per.get(ck); if(hit) return hit;
+  const u=evalPeriod0(h,e,a,b,t); ix.per.set(ck,u); return u;
+}
+/* Marca de Habitica: la diaria con lista se dio por hecha en ese ciclo (aunque falten elementos por anotar) */
+const cycleMarked=(hid,end)=>!!(state.habitica.done&&state.habitica.done[hid+'|'+end]);
+function evalPeriod0(h,e,a,b,t){
+  const per=quotaPer(e.schedule), days=[];
   for(let s=a; s<=b; s=addDaysS(s,1)){ if(!inRange(h,s)) continue; if(scheduleEntryAt(h,s).from!==e.from) continue; days.push(s); }
   const len=daysBetween(a,b)+1;
   const u={kind:'period',per,start:a,end:b,len,days:days.length,partial:days.length<len,times:e.schedule.times,count:0,required:0,status:'skip'};
   if(!days.length) return u;
+  if(e.schedule.type==='cycle'){
+    /* Se suman los elementos de la lista anotados cada día; varios en un día cuentan todos */
+    let avail=0;
+    for(const s of days){ const l=s<=t?getLog(h.id,s):null; if(l) u.count+=h.kind==='count'?l.value:1; if(!isSkipped(h.id,s)||l) avail++; }
+    u.count=Math.round(u.count*1000)/1000; u.marked=cycleMarked(h.id,b);
+    u.required=avail?u.times:0;
+    if(!u.required&&!u.marked){ u.status='skip'; return u; }
+    if(!u.required) u.required=u.times;
+    if(u.marked||u.count>=u.required){ u.status='done'; return u; }
+    if(u.end>=t){ u.status='pending'; return u; }
+    u.status=u.partial?'skip':'missed'; return u;
+  }
   let avail=0, remaining=0;
   for(const s of days){
     const done=s<=t&&isDoneDay(h,s), paused=isSkipped(h.id,s);
@@ -1241,12 +1292,12 @@ function evalWeek(h,w,t){ const e=scheduleEntryAt(h,w<h.startDate?h.startDate:w)
 /* Unidades de cumplimiento en orden: días programados o semanas. Estado: done, missed, pending (hoy aún se puede) o skip (pausa: ni suma ni rompe) */
 function unitsOf(h){
   h=asHabit(h); const ix=I(); const c=ix.units.get(h.id); if(c) return c;
-  const t=ix.today, units=[], periods=new Set();
+  const t=ix.today, units=[], periods=new Set(); let qEnd=null, qFrom=null;
   if(h.startDate<=t){
     const last=h.endDate&&h.endDate<t?h.endDate:t;
     for(let d=parseYMD(h.startDate), end=parseYMD(last); d<=end; d=addDays(d,1)){
       const s=ymd(d), e=scheduleEntryAt(h,s), sc=e.schedule;
-      if(isQuota(sc)){ const [a,b]=periodOf(e,s), k=e.from+'|'+a; if(!periods.has(k)){ periods.add(k); units.push(evalPeriod(h,e,a,b,t)); } continue; }
+      if(isQuota(sc)){ if(qEnd&&s<=qEnd&&qFrom===e.from) continue; const [a,b]=periodOf(e,s), k=e.from+'|'+a; qEnd=b; qFrom=e.from; if(!periods.has(k)){ periods.add(k); units.push(evalPeriod(h,e,a,b,t)); } continue; }
       let due;
       due=dueFixed(e,s);
       if(!due) continue;
@@ -1258,7 +1309,7 @@ function unitsOf(h){
   ix.units.set(h.id,units);
   return units;
 }
-const unitKindNow=h=>QUOTA[h.schedule.type]||'day';
+const unitKindNow=h=>quotaPer(h.schedule)||'day';
 function computeStreaks(h){
   h=asHabit(h); if(!h) return null;
   const units=unitsOf(h), t=today(), runs=[]; let cur=null;
@@ -1286,7 +1337,7 @@ function compliance(h,from,to){
       if(u.partial||u.status==='skip'||u.status==='pending') continue;
       const ref=u.end<t?u.end:t;
       if(ref<from||ref>to) continue;
-      sum+=Math.min(u.count,u.required)/u.required; n++;
+      sum+=u.status==='done'?1:Math.min(u.count,u.required)/u.required; n++;
     }
   }
   return {value:n?sum/n:null,sum,n};
@@ -1328,6 +1379,13 @@ function scheduleText(s){
     case 'timesPerMonth': return s.times===1?'1 vez al mes':`${s.times} veces al mes`;
     case 'timesPerYear': return s.times===1?'1 vez al año':`${s.times} veces al año`;
     case 'timesPerDays': return `${pl(s.times,'vez','veces')} cada ${s.days} días`;
+    case 'cycle': { const b=s.base, n=`${s.times} de la lista`;
+      if(b.type==='weekdays'&&b.days.length===1) return `${n} ${b.every>1?`cada ${b.every} semanas`:'por semana'} (cierra el ${DOW_NAME[b.days[0]]})`;
+      if(b.type==='monthDays'&&b.days.length===1) return `${n} ${b.every>1?`cada ${b.every} meses`:'al mes'} (cierra el día ${b.days[0]})`;
+      if(b.type==='nthWeekday'&&b.weeks.length===1&&b.days.length===1) return `${n} ${b.every>1?`cada ${b.every} meses`:'al mes'} (cierra el ${ORDINAL[b.weeks[0]]} ${DOW_NAME[b.days[0]]})`;
+      if(b.type==='yearly') return `${n} ${b.every>1?`cada ${b.every} años`:'al año'} (cierra el ${b.day} de ${MONTHS[b.month-1]})`;
+      if(b.type==='everyN') return `${n} cada ${b.n} días`;
+      return `${n} por ciclo (${scheduleText(b).toLowerCase()})`; }
     case 'monthDays': return (s.days.length===1?'Día ':'Días ')+listY(s.days.map(String))+(s.every>1?` cada ${s.every} meses`:' de cada mes');
     case 'everyN': return `Cada ${s.n} días`;
   }
@@ -1398,6 +1456,12 @@ function mergeStates(a,b){
   const hk=e=>e.habiticaId+'|'+e.kind+'|'+e.period, seenH=new Set(out.habitica.history.map(hk));
   for(const e of b.habitica.history) if(!seenH.has(hk(e))) out.habitica.history.push(e);
   out.habitica.xp=Object.assign({},b.habitica.xp||{},a.habitica.xp||{});
+  /* Listas: unión; gana lo visto antes y lo quitado después no vuelve */
+  for(const [f,pre] of [['checks','hchk:'],['done','hdone:']]){
+    const o={}; for(const src of [a.habitica[f]||{},b.habitica[f]||{}]) for(const [k,v] of Object.entries(src)){ const p=o[k]; if(!p||v[1]<p[1]) o[k]=v; }
+    for(const k of Object.keys(o)){ const tb=del[pre+k]; if(tb&&tb>o[k][1]) delete o[k]; }
+    out.habitica[f]=o;
+  }
   out.deleted=del;
   return normalizeState(out);
 }
@@ -1518,7 +1582,7 @@ const SYNC_KEY='habitos_v1_sync', SYNC_FILE='habitos-sync.json', SYNC_DESC='Háb
 const tsOf=s=>{ const n=Date.parse(s); return isNaN(n)?0:n; };
 function syncErr(kind,msg){ const e=new Error(msg); e.kind=kind; return e; }
 /* Lo que se sincroniza: los datos, no los ajustes ni la interfaz de cada dispositivo */
-const syncPart=st=>({habits:st.habits,logs:st.logs,skips:st.skips,moods:st.moods,categories:st.categories,tags:st.tags,habitica:{map:st.habitica.map,history:st.habitica.history,xp:st.habitica.xp},deleted:st.deleted});
+const syncPart=st=>({habits:st.habits,logs:st.logs,skips:st.skips,moods:st.moods,categories:st.categories,tags:st.tags,habitica:{map:st.habitica.map,history:st.habitica.history,xp:st.habitica.xp,checks:st.habitica.checks,done:st.habitica.done},deleted:st.deleted});
 function fingerprint(st){
   const p=syncPart(st), s=JSON.stringify([p.habits,p.logs.slice().sort((a,b)=>logKey(a)<logKey(b)?-1:1),p.skips.slice().sort((a,b)=>logKey(a)<logKey(b)?-1:1),p.moods.slice().sort((a,b)=>a.date<b.date?-1:1),p.categories,p.tags,p.habitica,Object.keys(p.deleted).sort().map(k=>k+p.deleted[k])]);
   let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(16)+':'+s.length;
@@ -2331,6 +2395,55 @@ function habSetDay(h,d,v,stamp){
   return 0;
 }
 const habDayValue=(h,kind,c)=>{ const n=c?(kind==='up'?c.up:c.down):0; return h.kind==='check'?(n>0?1:0):n; };
+/* Diaria con lista que hace de cuota: un solo día fijo por semana, mes, año o cada N días, y 2 o más elementos.
+   Se cuenta lo que se va marcando de la lista durante el ciclo, que se cierra el día que toca. */
+function habCycleSchedule(t){
+  if(!t||t.type!=='daily') return null;
+  const cl=Array.isArray(t.checklist)?t.checklist.length:0; if(cl<2) return null;
+  const conv=habSchedule(t); if(conv.grey) return null; const b=conv.schedule;
+  const one=(b.type==='weekdays'&&b.days.length===1)||(b.type==='monthDays'&&b.days.length===1)||(b.type==='nthWeekday'&&b.weeks.length===1&&b.days.length===1)||b.type==='yearly'||(b.type==='everyN'&&b.n>=2);
+  return one?normSchedule({type:'cycle',base:b,times:cl}):null;
+}
+/* Habitica no guarda cuándo se marca cada elemento de una lista: se anota el día en que la app lo ve marcado
+   (o el de la última modificación de la tarea, si es posterior a la importación anterior). La diaria marcada da el ciclo por hecho;
+   si se marca uno o dos días después del día fijo sin haber cerrado ese ciclo, cuenta para él. */
+function habCycleSync(t,h,m,stamp){
+  const t0=today(), id=m?m.habiticaId:(t.id||t._id), since=habCfg&&habCfg.lastPull||'', pre=h.id+'|', pid=id+'|';
+  let ch=0;
+  const ent=d=>scheduleEntryAt(h,d<h.startDate?h.startDate:d);
+  const marks=new Map(); let detailFrom=t0;
+  const addMark=c=>{
+    if(c>t0||c<h.startDate) return; const e=ent(c); if(!isCycle(e.schedule)) return;
+    const be={from:e.from,schedule:e.schedule.base}; let day=c;
+    if(!dueFixed(be,c)) for(let k=1;k<=3;k++){ const x=addDaysS(c,-k); if(x<h.startDate) break; if(dueFixed(be,x)){ if(!marks.has(periodOf(e,x)[1])) day=x; break; } }
+    const b=periodOf(e,day)[1]; if(!marks.has(b)) marks.set(b,day);
+  };
+  const hist=(Array.isArray(t.history)?t.history:[]).filter(e=>e&&'completed' in e&&Number.isFinite(msOf(e.date))).sort((a,b)=>msOf(a.date)-msOf(b.date));
+  for(const e of hist){ const ms=msOf(e.date), d=habDayOf(ms); if(d<detailFrom) detailFrom=d; if(e.completed) addMark(openDayAt(ms)); }
+  if(t.completed) addMark(habOpenDay()<=t0?habOpenDay():t0);
+  /* Elementos de la lista del ciclo abierto */
+  const od=habOpenDay()<=t0?habOpenDay():t0, e0=ent(od);
+  if(isCycle(e0.schedule)&&od>=h.startDate){
+    const [a,b]=periodOf(e0,od); let day=od; const up=msOf(t.updatedAt);
+    if(Number.isFinite(up)&&(!since||up>Date.parse(since))) day=openDayAt(up);
+    if(day<a) day=a; if(day>od) day=od;
+    for(const it of (Array.isArray(t.checklist)?t.checklist:[])){
+      if(!it||!it.id) continue; const k=`${id}|${it.id}|${b}`, rec=state.habitica.checks[k];
+      if(it.completed&&!rec){ state.habitica.checks[k]=[day,stamp]; delete state.deleted['hchk:'+k]; ch++; }
+      else if(!it.completed&&rec){ delete state.habitica.checks[k]; state.deleted['hchk:'+k]=stamp; ch++; }
+    }
+  }
+  /* Ciclos dados por hechos */
+  for(const k of Object.keys(state.habitica.done)) if(k.startsWith(pre)){ const b=k.slice(pre.length); if(b>=detailFrom&&!marks.has(b)){ delete state.habitica.done[k]; state.deleted['hdone:'+k]=stamp; ch++; } }
+  for(const [b,day] of marks){ const k=pre+b, v=state.habitica.done[k]; if(!v||v[0]!==day){ state.habitica.done[k]=[day,stamp]; delete state.deleted['hdone:'+k]; ch++; } }
+  /* Registros por día: los elementos vistos; en los ciclos sin elementos vistos, el día en que se dio por hecho */
+  const cnt=new Map(), withChecks=new Set();
+  for(const [k,v] of Object.entries(state.habitica.checks)) if(k.startsWith(pid)){ cnt.set(v[0],(cnt.get(v[0])||0)+1); withChecks.add(k.split('|')[2]); }
+  for(const [k,v] of Object.entries(state.habitica.done)) if(k.startsWith(pre)&&!withChecks.has(k.slice(pre.length))&&!cnt.has(v[0])) cnt.set(v[0],1);
+  for(const [d,n] of cnt) if(d<=t0&&d>=h.startDate) ch+=habSetDay(h,d,n,stamp);
+  for(const l of state.logs.filter(l=>l.habitId===h.id&&l.source==='habitica')) if(!cnt.has(l.date)){ setLog(h.id,l.date,0); ch++; }
+  return ch;
+}
 function reconcile(dailys,habits,stamp){
   const byId=new Map(dailys.concat(habits).map(t=>[t.id||t._id,t]));
   const t0=today(); let changed=0, other=0;
@@ -2346,13 +2459,18 @@ function reconcile(dailys,habits,stamp){
     if(m.priority!==pr||m.value!==val||m.streak!==stk){ m.priority=[0.1,1,1.5,2].includes(pr)?pr:null; m.value=val; m.streak=stk; }
     const both=t.type==='habit'&&t.up!==false&&!!t.down;
     /* El nombre lo manda Habitica (si no lo has cambiado aquí) */
-    { const want=habLocalName(t.text,m.kind,both), rawOld=(m.name||'')+(both?(m.kind==='up'?' (+)':' (−)'):'');
-      if(t.text&&h.name!==want&&(!m.name||h.name===habLocalName(m.name,m.kind,both)||h.name===rawOld||h.name===rawOld.slice(0,120))){ h.name=want; h.updatedAt=stamp; other++; }
+    { const want=habLocalName(t.text,m.kind,both);
+      if(t.text&&h.name!==want){ h.name=want; h.updatedAt=stamp; other++; }
       if(t.text&&t.text!==m.name){ m.name=t.text; m.updatedAt=stamp; } }
     if(m.kind==='daily'){
-      const conv=habSchedule(t);
-      if(!sameSchedule(conv.schedule,h.schedule)){ const from=h.startDate>t0?h.startDate:t0; h.scheduleHistory=h.scheduleHistory.filter(e=>e.from<from); h.scheduleHistory.push({from,schedule:conv.schedule}); h.schedule=conv.schedule; fixHistory(h,conv.schedule); h.updatedAt=stamp; other++; }
-      for(const [d,done] of habDailyDays(t).days) if(d<=t0) changed+=habSetDay(h,d,done?1:0,stamp);
+      const cyc=habCycleSchedule(t), want=cyc||habSchedule(t).schedule, wantKind=cyc?'count':'check';
+      if(h.kind!==wantKind){
+        /* Pasa de diaria normal a lista por ciclo (o al revés): se rehace desde el inicio con lo que dice Habitica */
+        h.kind=wantKind; h.target=cyc?{amount:1,unit:'de la lista'}:null; h.scheduleHistory=[{from:h.startDate,schedule:want}]; h.schedule=want; fixHistory(h,want); h.updatedAt=stamp; other++;
+        for(const l of state.logs.filter(l=>l.habitId===h.id&&l.source==='habitica')) setLog(h.id,l.date,0);
+      } else if(!sameSchedule(want,h.schedule)){ const from=h.startDate>t0?h.startDate:t0; h.scheduleHistory=h.scheduleHistory.filter(e=>e.from<from); h.scheduleHistory.push({from,schedule:want}); h.schedule=want; fixHistory(h,want); h.updatedAt=stamp; other++; }
+      if(cyc) changed+=habCycleSync(t,h,m,stamp);
+      else for(const [d,done] of habDailyDays(t).days) if(d<=t0) changed+=habSetDay(h,d,done?1:0,stamp);
     } else {
       for(const [d,c] of habHabitDays(t).days) if(d<=t0) changed+=habSetDay(h,d,habDayValue(h,m.kind,c),stamp);
     }
@@ -2531,8 +2649,8 @@ function habImport(t){
     const base={id:newId(),name:habLocalName(t.text,kind,both),description:String(t.notes||'').slice(0,2000),order,color,createdAt:now,updatedAt:now,tags:(Array.isArray(t.tags)?t.tags:[]).map(x=>'hab-'+x).filter(x=>state.tags.some(g=>g.id===x)),categoryId:null,tod:'any'};
     let x;
     if(kind==='daily'){
-      const conv=habSchedule(t), sd=habStartDate(t);
-      x=Object.assign(base,{kind:'check',icon:'check',schedule:conv.schedule,scheduleHistory:[{from:sd,schedule:conv.schedule}],startDate:sd,archived:!!conv.grey});
+      const conv=habSchedule(t), sd=habStartDate(t), cyc=habCycleSchedule(t), sc=cyc||conv.schedule;
+      x=Object.assign(base,{kind:cyc?'count':'check',target:cyc?{amount:1,unit:'de la lista'}:null,icon:cyc?'list':'check',schedule:sc,scheduleHistory:[{from:sd,schedule:sc}],startDate:sd,archived:!!conv.grey});
     } else {
       const {days}=habHabitDays(t); let first=habStartDate(t); for(const d of days.keys()) if(d<first) first=d;
       const up=kind==='up';
@@ -2557,6 +2675,7 @@ function habLink(t,kind,h){
 }
 function habBackfill(t,h,kind){
   const id=t.id||t._id, t0=today(), stamp=nowIso(); let logs=0;
+  if(kind==='daily'&&isCycle(h.schedule)){ const m=habLinked(id,'daily'); habCycleSync(t,h,m,stamp); logs=state.logs.filter(l=>l.habitId===h.id).length; return {logs,olds:0}; }
   const r=kind==='daily'?habDailyDays(t):habHabitDays(t);
   for(const [d,v] of r.days){
     if(d>t0||getLog(h.id,d)) continue;
@@ -3385,19 +3504,32 @@ function habitDay(h,d){
   const log=getLog(h.id,d), skip=getSkip(h.id,d), sc=scheduleEntryAt(h,d).schedule;
   const frac=log?(h.kind==='count'?log.value/h.target.amount:1):0;
   if(h.kind==='avoid'){ if(skip&&!log) return {st:'pause',skip}; if(log) return {st:'missed',log}; if(!isScheduled(h,d)) return {st:'off'}; return {st:d===t?'pending':'done'}; }
+  if(isQuota(sc)){
+    /* Cuotas: el día anotado en color intenso (más intenso cuantos más elementos), el resto del periodo cumplido en claro */
+    const e=scheduleEntryAt(h,d), [a,b]=periodOf(e,d), w=evalPeriod(h,e,a,b,t);
+    if(log&&(isDoneDay(h,d)||isCycle(sc))){ const n=h.kind==='count'?log.value:1; return {st:'done',log,frac:1,period:w,lvl:isCycle(sc)?Math.max(1,Math.min(4,Math.ceil(n))):4}; }
+    if(skip) return {st:'pause',skip,period:w};
+    if(log) return {st:'partial',log,frac,period:w};
+    if(w.status==='done') return {st:'pdone',period:w};
+    if(w.status==='missed'&&d===w.end) return {st:'missed',period:w};
+    return {st:'free',period:w};
+  }
   if(isDoneDay(h,d)) return {st:'done',log,frac:1};
   if(skip) return {st:'pause',skip};
   if(log) return {st:'partial',log,frac};
-  if(isQuota(sc)) return {st:'free'};
   if(!isScheduled(h,d)) return {st:'off'};
   return {st:d===t?'pending':'missed'};
 }
-const DAY_TXT={all:'Todos cumplidos',some:'Algunos cumplidos',none:'Ninguno cumplido',pending:'Pendiente',pause:'Pausa',off:'No tocaba',future:'',done:'Hecho',partial:'Parcial',missed:'No cumplido',free:'Sin registro',out:'Fuera de las fechas del hábito'};
+const DAY_TXT={pdone:'Periodo cumplido',all:'Todos cumplidos',some:'Algunos cumplidos',none:'Ninguno cumplido',pending:'Pendiente',pause:'Pausa',off:'No tocaba',future:'',done:'Hecho',partial:'Parcial',missed:'No cumplido',free:'Sin registro',out:'Fuera de las fechas del hábito'};
 function dayTip(d,info,h){
   let s=cap(fmtDate(d,true))+'\n';
   if(h){
     s+=(h.kind==='avoid'&&info.st==='done'?'Día limpio':h.kind==='avoid'&&info.st==='missed'?'Recaída':DAY_TXT[info.st])||'';
-    if(h.kind==='count'&&info.log) s+=` · ${fmtNum(info.log.value)}${h.target.unit?' '+h.target.unit:''} de ${fmtNum(h.target.amount)}`;
+    const w=info.period, per={week:'semana',month:'mes',year:'año',block:'periodo'};
+    if(w&&info.st==='pdone') s=cap(fmtDate(d,true))+'\n'+({week:'Semana cumplida',month:'Mes cumplido',year:'Año cumplido'}[w.per]||'Periodo cumplido');
+    if(w&&isCycle(scheduleEntryAt(h,d).schedule)){ if(info.log) s+=` · ${pl(info.log.value,'elemento','elementos')} de la lista`; }
+    else if(h.kind==='count'&&info.log) s+=` · ${fmtNum(info.log.value)}${h.target.unit?' '+h.target.unit:''} de ${fmtNum(h.target.amount)}`;
+    if(w&&w.status!=='skip') s+=`\n${w.per==='week'?'Semana':w.per==='month'?'Mes':w.per==='year'?'Año':'Periodo'} del ${fmtDate(w.start)} al ${fmtDate(w.end)}: ${fmtNum(w.count)} de ${w.required||w.times}${w.marked?' (dada por hecha en Habitica)':''}`;
     if(info.st==='pause'&&info.skip.reason) s+=` · ${info.skip.reason}`;
     if(info.log&&info.log.note) s+='\n'+info.log.note;
   } else {
@@ -3497,7 +3629,8 @@ function renderCalendar(v){
   card.append(grid);
   const lg=el('div','legend');
   const li=(cls,txt,style)=>{ const s=el('span'); const i=el('i'); i.className='lg '+cls; if(style) i.setAttribute('style',style); s.append(i,document.createTextNode(txt)); return s; };
-  if(h){ const c=`var(--hc-${h.color})`; lg.append(li('','Hecho',`background:${c};border-color:${c}`),li('','Parcial',`background:color-mix(in srgb,${c} 22%,var(--panel))`),li('','No cumplido','background:var(--miss-soft)'),li('','Pausa','background:var(--pause-soft);border-style:dashed'),li('','No tocaba','background:var(--subtle)')); }
+  if(h&&h.scheduleHistory.some(e=>isQuota(e.schedule))){ const c=`var(--hc-${h.color})`; lg.append(li('','Periodo cumplido',`background:color-mix(in srgb,${c} 28%,var(--panel))`),li('','Día anotado (más oscuro = más elementos)',`background:${c};border-color:${c}`),li('','Periodo no cumplido','background:var(--miss-soft)'),li('','Pausa','background:var(--pause-soft);border-style:dashed')); }
+  else if(h){ const c=`var(--hc-${h.color})`; lg.append(li('','Hecho',`background:${c};border-color:${c}`),li('','Parcial',`background:color-mix(in srgb,${c} 22%,var(--panel))`),li('','No cumplido','background:var(--miss-soft)'),li('','Pausa','background:var(--pause-soft);border-style:dashed'),li('','No tocaba','background:var(--subtle)')); }
   else lg.append(li('','Todos','background:var(--done);border-color:var(--done)'),li('','Algunos','background:var(--done-soft)'),li('','Ninguno','background:var(--miss-soft)'),li('','Pausa','background:var(--pause-soft);border-style:dashed'),li('','No tocaba','background:var(--subtle)'));
   card.append(lg);
   v.append(card);
@@ -3512,7 +3645,7 @@ function calCell(d,h,habits){
   const s=el('span','s');
   let info;
   if(h){
-    info=habitDay(h,d); b.classList.add('h-'+info.st); b.style.setProperty('--c',`var(--hc-${h.color})`);
+    info=habitDay(h,d); b.classList.add('h-'+info.st); if(info.lvl&&info.lvl<4) b.classList.add('h-q'+info.lvl); b.style.setProperty('--c',`var(--hc-${h.color})`);
     if(h.kind==='count'&&info.log) s.textContent=fmtNum(info.log.value);
     else if(info.st==='pause') s.append(ic('pause'));
     else if(info.log&&info.log.note) s.append(ic('message'));
@@ -3564,7 +3697,7 @@ function heatmap(h,habits,period,key,opts={}){
     if(h){
       info=habitDay(h,d);
       c.style.setProperty('--c',`var(--hc-${h.color})`);
-      c.className=info.st==='done'?'hd':info.st==='partial'?'hp':info.st==='missed'?'l0':info.st==='pause'?'pa':'';
+      c.className=info.st==='done'?(info.lvl&&info.lvl<4?'hd q'+info.lvl:'hd'):info.st==='pdone'?'pq':info.st==='partial'?'hp':info.st==='missed'?'l0':info.st==='pause'?'pa':'';
       if(info.st==='done'){ done++; due++; } else if(info.st==='missed') due++;
     } else {
       info=dayGlobal(d,habits);
@@ -3586,7 +3719,12 @@ function heatmap(h,habits,period,key,opts={}){
   const lg=el('div','legend');
   if(opts.mood){ for(const [val,l] of MOODS){ const s2=el('span'), i=el('i'); i.style.background=`var(--m${val})`; s2.append(i,document.createTextNode(l)); lg.append(s2); } }
   else if(h){ const sw=(st,txt)=>{ const s=el('span'), i=el('i'); i.setAttribute('style',st); s.append(i,document.createTextNode(txt)); return s; }; const c=`var(--hc-${h.color})`;
-    lg.append(sw(`background:${c};border-color:${c}`,'Hecho'),sw(`background:color-mix(in srgb,${c} 40%,var(--heat-off))`,'Parcial'),sw('background:var(--heat-0)','No cumplido'),sw('background:var(--pause-soft)','Pausa'),sw('background:var(--heat-off)','No tocaba')); }
+    if(h.scheduleHistory.some(e=>isQuota(e.schedule))){ const cyc=h.scheduleHistory.some(e=>isCycle(e.schedule));
+      lg.append(sw(`background:color-mix(in srgb,${c} 28%,var(--heat-off))`,'Periodo cumplido'));
+      if(cyc){ const s=el('span'); s.append(document.createTextNode('Días anotados: 1')); for(const k of [1,2,3,4]){ const i=el('i'); i.setAttribute('style',`background:${k<4?`color-mix(in srgb,${c} ${[0,55,72,86][k]}%,var(--heat-off))`:c}`); s.append(i); } s.append(document.createTextNode('4 o más')); lg.append(s); }
+      else lg.append(sw(`background:${c};border-color:${c}`,'Día anotado'));
+      lg.append(sw('background:var(--heat-0)','Periodo no cumplido'),sw('background:var(--pause-soft)','Pausa')); }
+    else lg.append(sw(`background:${c};border-color:${c}`,'Hecho'),sw(`background:color-mix(in srgb,${c} 40%,var(--heat-off))`,'Parcial'),sw('background:var(--heat-0)','No cumplido'),sw('background:var(--pause-soft)','Pausa'),sw('background:var(--heat-off)','No tocaba')); }
   else { const s=el('span'); s.append(document.createTextNode('Menos')); for(const k of [0,1,2,3,4]){ const i=el('i'); i.style.background=`var(--heat-${k})`; s.append(i); } s.append(document.createTextNode('Más')); lg.append(s); const p=el('span'), i=el('i'); i.style.background='var(--heat-off)'; p.append(i,document.createTextNode('No tocaba')); lg.append(p); }
   out.append(lg);
   return out;
@@ -3649,7 +3787,7 @@ const NFP0=new Intl.NumberFormat('es-ES',{style:'percent',maximumFractionDigits:
 const fmtPct0=x=>x==null?'—':NFP0.format(x);
 const fmtDelta=x=>x==null?'—':(Math.abs(x)<0.005?'±0 %':(x>0?'+':'−')+NFP0.format(Math.abs(x)));
 const fmtPts=x=>x==null?'—':(Math.round(x*100)===0?'±0':(x>0?'+':'−')+Math.abs(Math.round(x*100)))+' pts';
-const kindLabel=h=>h.kind==='count'?'Cantidad':h.kind==='avoid'?'Evitar':'Sí / no';
+const kindLabel=h=>isCycle(h.schedule)?'Lista':h.kind==='count'?'Cantidad':h.kind==='avoid'?'Evitar':'Sí / no';
 /* Hábitos visibles en estadísticas y tablas (archivados, categoría y etiqueta) */
 function filteredHabits(){
   return habitsForStats().filter(h=>(!ui.fCat||(ui.fCat==='none'?!h.categoryId:h.categoryId===ui.fCat))&&(!ui.fTag||h.tags.includes(ui.fTag)));
@@ -3669,7 +3807,7 @@ function periodOptions(){
   return ys;
 }
 /* Frecuencia esperada (veces por día) de una programación */
-function freqOf(s){ switch(s.type){ case 'weekdays': return s.days.length/7/(s.every||1); case 'everyN': return 1/s.n; case 'monthDays': return s.days.length/30.44/(s.every||1); case 'nthWeekday': return s.weeks.length*s.days.length/30.44/s.every; case 'yearly': return 1/365.25/s.every; case 'timesPerWeek': return s.times/7; case 'timesPerMonth': return s.times/30.44; case 'timesPerYear': return s.times/365.25; case 'timesPerDays': return s.times/s.days; default: return 1; } }
+function freqOf(s){ switch(s.type){ case 'weekdays': return s.days.length/7/(s.every||1); case 'everyN': return 1/s.n; case 'monthDays': return s.days.length/30.44/(s.every||1); case 'nthWeekday': return s.weeks.length*s.days.length/30.44/s.every; case 'yearly': return 1/365.25/s.every; case 'timesPerWeek': return s.times/7; case 'timesPerMonth': return s.times/30.44; case 'timesPerYear': return s.times/365.25; case 'timesPerDays': return s.times/s.days; case 'cycle': return s.times*freqOf(s.base); default: return 1; } }
 
 /* ---- Puntuación (fuerza del hábito), como en Loop: media móvil exponencial de lo cumplido ----
    Vida media de 13/√f días (f = veces esperadas por día). Cada día o semana programada aporta 1 si se cumple,
@@ -3683,7 +3821,7 @@ function scoreSeries(h){
     const sc=scheduleEntryAt(h,u.start).schedule, f=freqOf(sc), half=13/Math.sqrt(f);
     const m=Math.pow(.5,(u.kind==='period'?u.len:1/f)/half);
     let v;
-    if(u.kind==='period') v=Math.min(u.count,u.required)/u.required;
+    if(u.kind==='period') v=u.status==='done'?1:Math.min(u.count,u.required)/u.required;
     else if(u.status==='done') v=1;
     else if(h.kind==='count'){ const l=getLog(h.id,u.start); v=l?Math.min(1,l.value/h.target.amount):0; }
     else v=0;
@@ -3871,7 +4009,7 @@ function renderHabitStats(v,h){
   const top=el('div','hinfo-top'), icn=el('div','hicon'); icn.append(ic(h.icon)); top.append(icn);
   const tx=el('div'); const hn=el('div','hname'); hn.append(habNameFrag(h)); tx.append(hn);
   const meta=el('div','hmeta'); meta.append(el('span','',scheduleText(h.schedule)),el('span','chip',kindLabel(h)));
-  if(h.kind==='count') meta.append(el('span','',`Objetivo ${fmtNum(h.target.amount)}${h.target.unit?' '+h.target.unit:''} al día`));
+  if(h.kind==='count'&&!isCycle(h.schedule)) meta.append(el('span','',`Objetivo ${fmtNum(h.target.amount)}${h.target.unit?' '+h.target.unit:''} al día`));
   const c14=countIn(h,addDaysS(t,-13),t).n; meta.append(el('span','',av?`${pl(c14,'recaída','recaídas')} en 14 días`:`${pl(c14,'vez','veces')} en 14 días`));
   tx.append(meta); top.append(tx); info.append(top);
   if(h.identity) info.append(el('p','hident',h.identity));
@@ -3908,7 +4046,15 @@ function renderHabitStats(v,h){
   mount(v,chartCard(av?'Recaídas':h.kind==='count'?'Cantidad acumulada':'Historial','bar-chart',ch=>barChart(ch,hItems,{color:av?'var(--danger)':color,labels:'all',title:'Historial'}),
     {tools:granSelect(hg,g=>{ ui.histGran=g; saveUI(); renderApp(); },'Agrupar el historial por',['week','month','quarter','year']),table:miniTable(['Periodo',av?'Recaídas':h.kind==='count'?'Cantidad':'Veces'],hItems.filter(x=>x.value!=null).map(x=>[cap(x.full),fmtNum(x.value)]))}));
   // Cantidad: media diaria por tramo con la línea del objetivo
-  if(h.kind==='count'){
+  if(h.scheduleHistory.some(e=>isCycle(e.schedule))){
+    /* Lista por ciclo: lo anotado en cada ciclo frente a los elementos de la lista */
+    const us=unitsOf(h).filter(u=>u.kind==='period'&&u.status!=='skip').slice(-26);
+    const items=us.map(u=>{ const dd=parseYMD(u.end); return {label:`${dd.getDate()} ${MON3[dd.getMonth()]}`,full:`Del ${fmtDate(u.start)} al ${fmtDate(u.end)}`,value:u.count,tip:`Del ${fmtDate(u.start)} al ${fmtDate(u.end)}: ${fmtNum(u.count)} de ${u.required||u.times}${u.marked?' · dada por hecha en Habitica':''}${u.status==='pending'?' · en curso':u.status==='done'?' · cumplido':' · no cumplido'}`}; });
+    const sc=h.schedule, cyc=isCycle(sc);
+    mount(v,chartCard('Lista por ciclo','list',ch=>barChart(ch,items,{color,labels:'all',ref:cyc?{value:sc.times,label:'Lista completa: '+sc.times}:undefined,title:'Elementos de la lista anotados en cada ciclo'}),
+      {note:'Cada barra es un ciclo (termina el día que toca en Habitica). Habitica no guarda cuándo se marca cada elemento: se anota el día en que la app lo ve marcado, así que conviene abrirla el día que marcas.',
+       table:miniTable(['Ciclo','Anotados','Objetivo','Estado'],us.map(u=>[`${fmtDate(u.start)} – ${fmtDate(u.end)}`,fmtNum(u.count),String(u.required||u.times),u.status==='done'?(u.marked&&u.count<(u.required||u.times)?'Cumplido (dado por hecho)':'Cumplido'):u.status==='pending'?'En curso':'No cumplido']))}));
+  } else if(h.kind==='count'){
     const qg=ui.qtyGran||'day';
     const qItems=buckets(qg,h.startDate).map(x=>{ if(x.a>t||x.b<h.startDate) return Object.assign(x,{value:null}); const a2=x.a<h.startDate?h.startDate:x.a, b2=x.b>t?t:x.b, days=daysBetween(a2,b2)+1, c=countIn(h,a2,b2); return Object.assign(x,{value:Math.round(c.sum/days*100)/100}); });
     mount(v,chartCard('Cantidad media por día','drop',ch=>barChart(ch,qItems,{color,ref:{value:h.target.amount,label:'Objetivo '+fmtNum(h.target.amount)},title:'Cantidad media por día'}),
