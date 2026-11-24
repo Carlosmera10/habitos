@@ -25,6 +25,7 @@
   --m1:#c8553d;--m2:#e0a066;--m3:#b5bab1;--m4:#86c095;--m5:#2e7d58;
   --hc-c1:#3b5fa8;--hc-c2:#2e7d58;--hc-c3:#c0453a;--hc-c4:#cf7629;--hc-c5:#7a52a8;--hc-c6:#1f8686;--hc-c7:#b84a7d;--hc-c8:#97781f;--hc-c9:#56665f;--hc-c10:#5f9426;
   --topbar-h:60px;
+  --st-int:#3b5fa8;--st-per:#7a52a8;--st-con:#b86a1f;--st-str:#c0453a;--stage:#1e2621;--stage-2:#2c352f;--stage-ink:#f3f4ef;--stage-mute:#c5cdc6;
   --font:system-ui,-apple-system,"Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
 :root[data-theme=dark]{color-scheme:dark;
   --paper:#121714;--panel:#1a201c;--field:#151a17;--ink:#e6ebe5;--ink-2:#c5cdc6;--muted:#9aa59d;--faint:#6f7a72;--line:#2a322d;--line-strong:#3a443e;
@@ -38,7 +39,8 @@
   --mark:#d9c048;--mark-soft:#3a3519;--dot:#222a24;--hab-hp:#e0675d;--hab-xp:#dcb43a;--hab-mp:#6d9be0;
   --nav:#e6ebe5;--nav-ink:#121714;
   --m1:#e07a62;--m2:#e6ad78;--m3:#7b847d;--m4:#7cc391;--m5:#56b885;
-  --hc-c1:#7e9be0;--hc-c2:#56b885;--hc-c3:#ec7a6c;--hc-c4:#eda15a;--hc-c5:#b18fe3;--hc-c6:#4fc0bd;--hc-c7:#e47fae;--hc-c8:#d3b257;--hc-c9:#98a8a1;--hc-c10:#9bcd5e}
+  --hc-c1:#7e9be0;--hc-c2:#56b885;--hc-c3:#ec7a6c;--hc-c4:#eda15a;--hc-c5:#b18fe3;--hc-c6:#4fc0bd;--hc-c7:#e47fae;--hc-c8:#d3b257;--hc-c9:#98a8a1;--hc-c10:#9bcd5e;
+  --st-int:#7e9be0;--st-per:#b18fe3;--st-con:#eda15a;--st-str:#ec7a6c;--stage:#0b0f0d;--stage-2:#1d2420;--stage-ink:#e6ebe5;--stage-mute:#a9b3ab}
 :root[data-theme=dark] dialog::backdrop{background:rgba(0,0,0,.6)}
 :root[data-theme=dark] .toast,:root[data-theme=dark] .bottom-nav{border:1px solid var(--line-strong)}
 :root[data-theme=dark] .bottom-nav{border-width:1px 0 0}
@@ -628,6 +630,154 @@ dialog{border-radius:20px;background:var(--panel)}
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
 /* Panel de Habitica */
+/* Personaje */
+.char-tabs{margin:0 0 16px}
+.char-tabs button{padding:8px 14px;font-weight:650}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.card-head h2{margin:0}
+.st-int{--c:var(--st-int)}.st-per{--c:var(--st-per)}.st-con{--c:var(--st-con)}.st-str{--c:var(--st-str)}
+.st-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;color:var(--ink-2);margin:10px 0 12px}
+.st-leg span{display:inline-flex;align-items:center;gap:6px}
+.st-leg .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.p-lvl{background:var(--faint)}.p-pts{background:var(--ink-2)}.p-gear{background:var(--done)}.p-cls{background:var(--heat-2)}.p-buff{background:var(--mark)}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px}
+.st-card2{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--field);display:flex;flex-direction:column;gap:9px}
+.st-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.st-top>div{display:flex;flex-direction:column}
+.st-big{font-size:2.3rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--c);font-variant-numeric:tabular-nums}
+.st-stack{display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden;background:var(--track)}
+.st-stack span{display:block;height:100%}
+.st-eff{font-weight:650;font-size:.92rem}
+.char-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start;margin-top:18px}
+.char-two>.card{margin:0}
+.char-col{display:flex;flex-direction:column;gap:18px}
+.char-col>.card{margin:0}
+.mp-pill{display:inline-flex;align-items:center;font-weight:750;font-size:.84rem;color:var(--hab-mp);background:color-mix(in srgb,var(--hab-mp) 13%,var(--panel));border-radius:7px;padding:3px 8px;white-space:nowrap}
+.sk-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.sk{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:6px 14px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--field)}
+.sk.off{opacity:.6}
+.sk-ic{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--hab-mp) 13%,var(--panel));color:var(--hab-mp)}
+.sk-ic .ic{width:24px;height:24px}
+.sk-t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sk-plan{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--mark-soft);color:var(--warn-ink);font-size:.92rem}
+.bf-list{display:flex;flex-direction:column;gap:8px}
+.bf{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--field)}
+.bf.on{border-color:var(--done-line);background:var(--done-soft)}
+.bf>.ic{flex:none;margin-top:2px;color:var(--muted)}
+.bf.on>.ic{color:var(--done)}
+.bf .st-h3,.card .bf-list+.st-h3{margin:16px 0 8px}
+.offer-list{display:flex;flex-direction:column;gap:7px;font-size:.92rem}
+.offer{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.hero-go{align-self:flex-start;margin-top:4px}
+.hab-hero .hero-body{display:flex;flex-direction:column}
+/* Equipamiento */
+.goal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:10px;margin-top:12px}
+.goal{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-height:62px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);box-shadow:none}
+.goal b{font-size:.95rem}.goal span{font-size:.82rem;color:var(--muted);font-weight:500}
+.goal:hover{background:var(--hover)}
+.goal.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--field)}
+.gear-note{margin:12px 0 0;padding:11px 14px;border-radius:12px;background:var(--accent-soft);color:var(--accent-ink);font-size:.9rem}
+.gq-tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0 0 18px}
+.stat-x{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--field);display:flex;flex-direction:column;gap:7px}
+.st-name{display:flex;align-items:center;gap:7px;font-weight:700;font-size:.9rem}
+.st-dot{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block;flex:none}
+.sx-nums{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sx-nums s{font-size:1.1rem;font-weight:650;font-variant-numeric:tabular-nums}
+.sx-big{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.delta{font-weight:750;font-size:.84rem;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.delta.up{background:var(--done-soft);color:var(--done)}.delta.down{background:var(--danger-soft);color:var(--danger)}.delta.same{background:var(--chip);color:var(--chip-ink)}
+.sx-bar{display:flex;height:8px;border-radius:5px;background:var(--track);overflow:hidden}
+.sx-bar span{display:block;height:100%;background:var(--c)}
+.sx-bar span.add{opacity:.45}
+.gq-rows{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.gq-row{display:grid;grid-template-columns:150px minmax(0,1fr) 22px minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;border-radius:12px}
+.gq-row.head{padding-top:0;padding-bottom:2px;font-size:.84rem;font-weight:700;color:var(--muted)}
+.gq-row.ch{background:var(--mark-soft)}
+.gq-slot{font-size:.84rem;font-weight:700;color:var(--ink-2)}
+.gq-arrow{color:var(--muted)}
+.gq-it{display:flex;gap:10px;align-items:center;min-width:0}
+.gq-t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.gq-t b{font-weight:650}
+.gq-empty{color:var(--faint);font-style:italic;font-size:.9rem}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.st-chip{display:inline-flex;align-items:center;gap:5px;font-weight:650;font-size:.8rem;padding:2px 7px}
+.gq-cls{background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.78rem;padding:2px 6px}
+.buy-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.buy{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--field)}
+.buy.no{opacity:.62}
+.buy-l{display:flex;gap:10px;align-items:center;min-width:0}
+.buy-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.gold{display:inline-flex;align-items:center;gap:4px;font-weight:750;color:color-mix(in srgb,var(--hab-xp) 70%,var(--ink))}
+.gold .ic{width:16px;height:16px;color:var(--hab-xp)}
+ol.steps{margin:8px 0 0;padding-left:1.3rem;color:var(--ink-2);line-height:1.6}
+.bad{color:var(--danger)}
+/* Misión */
+.bt-stage{position:relative;overflow:hidden;border-radius:22px;background:var(--stage);color:var(--stage-ink);padding:26px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:26px;align-items:center;margin-bottom:18px}
+.bt-boss{position:relative;width:240px;height:240px;border-radius:20px;background:radial-gradient(circle at 50% 60%,#3b2a2a 0,var(--stage-2) 72%);display:grid;place-items:center}
+.himg.boss{width:200px;height:200px;background:transparent;border-radius:0}
+.himg.boss img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.himg.boss.noimg .ic{width:96px;height:96px;color:var(--stage-mute)}
+.bt-hit{position:absolute;right:10%;top:26%;font-size:2.8rem;font-weight:900;color:var(--mark);letter-spacing:-.03em;pointer-events:none;opacity:0}
+.bt-boss.shake{animation:btshake .5s ease-in-out}
+.bt-boss.shake .bt-hit{animation:btrise 1.6s ease-out forwards}
+@keyframes btrise{0%{opacity:0;transform:translateY(18px) scale(.8)}20%{opacity:1;transform:translateY(0) scale(1.08)}100%{opacity:0;transform:translateY(-46px)}}
+@keyframes btshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.bt-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.bt-pills{display:flex;gap:8px;flex-wrap:wrap}
+.bt-pill{display:inline-flex;border-radius:999px;padding:4px 11px;font-size:.8rem;font-weight:700;background:var(--stage-2);color:var(--stage-ink)}
+.bt-name{margin:0;font-size:2.3rem;font-weight:850;letter-spacing:-.035em;line-height:1.05;color:var(--stage-ink)}
+.bt-quest{color:var(--stage-mute);margin-top:-6px}
+.bt-hp-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;color:var(--stage-mute)}
+.bt-hp-num{font-size:1.6rem;font-weight:850;color:var(--stage-ink);font-variant-numeric:tabular-nums}
+.bt-hp-num small{font-size:.95rem;color:var(--stage-mute);font-weight:650}
+.bt-bar{position:relative;height:32px;border-radius:12px;background:var(--stage-2);overflow:hidden}
+.bt-fill{position:absolute;left:0;top:0;bottom:0;background:var(--hab-hp);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.bt-pend{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,var(--mark) 0 7px,#c9a91c 7px 14px);transition:opacity .6s}
+.bt-ticks{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 2px),var(--stage) calc(10% - 2px) 10%)}
+.bt-leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:9px;font-size:.88rem;color:var(--stage-mute)}
+.bt-leg span{display:inline-flex;align-items:center;gap:6px}
+.bt-leg .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.bt-leg .sw.hp{background:var(--hab-hp)}.bt-leg .sw.pend{background:repeating-linear-gradient(135deg,var(--mark) 0 3px,#c9a91c 3px 6px)}
+.bt-line{margin:0;font-size:1rem;line-height:1.45;color:var(--stage-ink)}
+.bt-stage .hbar{color:var(--stage-ink)}
+.bt-act{display:flex;gap:10px;flex-wrap:wrap}
+.bt-go{display:inline-flex;align-items:center;gap:7px;font-weight:750;border:0;border-radius:12px;padding:11px 17px;min-height:44px;background:var(--mark);color:#1e2621;box-shadow:none}
+.bt-go:hover{filter:brightness(1.05);background:var(--mark)}
+.bt-go.alt{background:transparent;color:var(--stage-ink);border:1px solid var(--stage-mute)}
+.bt-go.alt:hover{background:var(--stage-2)}
+@media (prefers-reduced-motion:reduce){.bt-fill{transition:none}.bt-boss.shake,.bt-boss.shake .bt-hit{animation:none}.bt-boss.shake .bt-hit{opacity:1}}
+.bt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:start;margin-bottom:18px}
+.bt-grid>.card{margin:0}
+.bt-mine{display:flex;align-items:baseline;gap:8px;margin:6px 0 4px}
+.bt-mine b{font-size:2.4rem;font-weight:850;letter-spacing:-.04em}
+.bt-kv{display:flex;flex-direction:column;gap:7px;font-size:.92rem;margin:10px 0}
+.bt-kv>div{display:flex;justify-content:space-between;gap:10px}
+.bt-mem{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.bt-m{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center}
+.bt-av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;color:#fff;flex:none}
+.bt-m-t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.bt-m-top{display:flex;justify-content:space-between;gap:8px;font-size:.92rem}
+.bt-cb{height:10px;border-radius:6px;background:var(--track);overflow:hidden}
+.bt-cb i{display:block;height:100%;border-radius:6px}
+.bt-dmg{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bt-feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 28px}
+.bt-day{font-size:.84rem;font-weight:750;color:var(--ink-2);margin:12px 0 6px}
+.bt-ev{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dotted var(--line)}
+@media(max-width:760px){
+  .gq-row{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:8px;padding:10px 8px}
+  .gq-row.head span:first-child{display:none}
+  .gq-slot{grid-column:1/-1}
+  .gq-it .himg{display:none}
+  .bt-stage{grid-template-columns:1fr;padding:18px;gap:16px}
+  .bt-boss{width:100%;height:170px}
+  .himg.boss{width:150px;height:150px}
+  .bt-name{font-size:1.8rem}
+  .sk{grid-template-columns:42px minmax(0,1fr)}.sk .mp-pill{grid-column:2;justify-self:start}.sk-ic{width:42px;height:42px}
+  .st-big{font-size:1.8rem}
+  .st-grid,.gq-tot{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .st-card2,.stat-x{padding:11px}
+  .sx-big{font-size:1.5rem}
+}
 .hp-alert{border-top:1px solid var(--danger-line);background:var(--danger-soft);color:var(--ink)}
 .hp-alert .hp-in{max-width:1120px;margin:0 auto;padding:8px 28px;display:flex;align-items:center;gap:12px}
 .hp-alert .hp-in>.ic{color:var(--hab-hp);width:22px;height:22px;flex-shrink:0;fill:var(--hab-hp)}
@@ -648,8 +798,7 @@ html.has-hp-alert .page-head{top:calc(var(--topbar-h) + var(--alert-h,56px))}
 .sell-card .inv.sell{border-color:color-mix(in srgb,var(--hab-xp) 45%,var(--line))}
 .sell-gold{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:color-mix(in srgb,var(--hab-xp) 70%,var(--ink))}
 .sell-gold .ic{width:16px;height:16px;color:var(--hab-xp)}
-.sell-card ol.steps{margin:14px 0 6px;padding-left:1.3rem;color:var(--ink-2)}
-.sell-card ol.steps li{margin:3px 0}
+.sell-card ol.steps{margin:14px 0 6px}
 @media(max-width:760px){
   .topbar{display:block;background:transparent;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}
   .topbar .topbar-in{display:none}
@@ -920,6 +1069,8 @@ svg .gl0{stroke:var(--ink);stroke-width:1;opacity:.55}
   <symbol id="i-paw" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></symbol>
   <symbol id="i-egg" viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7.5C19 9 15.5 2 12 2S5 9 5 14.5C5 19 8 22 12 22z"/></symbol>
   <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-swords" viewBox="0 0 24 24"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="M14.5 6.5 18 3h3v3l-3.5 3.5"/><path d="m5 14 4 4"/><path d="m7 17-3 3"/><path d="m3 19 2 2"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
 </svg>
 
@@ -1555,10 +1706,11 @@ if(bc) bc.onmessage=async e=>{
 };
 
 /* ================= Interfaz: preferencias de cada dispositivo ================= */
-const UI_DEFAULT={view:'today',theme:'auto',side:'open',showArchived:false,catFilter:'',showNotDue:false,calHabit:'',statHabit:'',statTypes:'both',statPeriod:'12m',inclArchived:false,todayMode:'day',fCat:'',fTag:'',scoreGran:'month',histGran:'month',qtyGran:'day',rankBy:'pct',cmpMode:'habits',cmpIds:[],table:'resumen',sorts:{},regSearch:'',regPage:0};
+const UI_DEFAULT={view:'today',theme:'auto',side:'open',showArchived:false,catFilter:'',showNotDue:false,calHabit:'',statHabit:'',statTypes:'both',gearGoal:'int',charTab:'stats',charNoBuff:false,statPeriod:'12m',inclArchived:false,todayMode:'day',fCat:'',fTag:'',scoreGran:'month',histGran:'month',qtyGran:'day',rankBy:'pct',cmpMode:'habits',cmpIds:[],table:'resumen',sorts:{},regSearch:'',regPage:0};
 let ui=Object.assign({},UI_DEFAULT);
 try{ ui=Object.assign({},UI_DEFAULT,JSON.parse(localStorage.getItem(UI_KEY)||'{}')); }catch(e){}
-if(!['today','calendar','stats','tables','habits','settings','help'].includes(ui.view)) ui.view='today';
+if(!['today','character','quest','stable','calendar','stats','tables','settings','help'].includes(ui.view)) ui.view='today';
+if(!['stats','gear'].includes(ui.charTab)) ui.charTab='stats';
 function saveUI(){ try{ localStorage.setItem(UI_KEY,JSON.stringify(ui)); }catch(e){} }
 let selDate=null;   // día que se está viendo en «Hoy» (no se guarda)
 const curDate=()=>selDate&&selDate<today()?selDate:today();
@@ -2526,15 +2678,20 @@ function habApply(changed){
 let habNames=(()=>{ try{ const n=JSON.parse(localStorage.getItem(HAB_NAMES_KEY)); if(n&&n.eggs) return n; }catch(e){} return null; })();
 /* Lo que da Habitica al vender (oro por unidad); sin contenido descargado, sus valores habituales */
 const DROP_POT_VAL={Base:2,White:2,Desert:2,Red:3,Shade:3,Skeleton:3,Zombie:4,CottonCandyPink:4,CottonCandyBlue:4,Golden:5};
+const GEAR_TYPES=['weapon','shield','armor','head','eyewear','headAccessory','body','back'];
 const sellVal=(type,k)=>{ const v=habNames&&habNames.vals&&habNames.vals[type]&&habNames.vals[type][k]; return Number.isFinite(v)&&v>=0?v:type==='eggs'?3:(DROP_POT_VAL[k]||2); };
 async function habLoadNames(){
-  if(habNames&&habNames.vals&&Date.now()-Date.parse(habNames.at)<30*864e5) return;
+  if(habNames&&habNames.vals&&habNames.gear&&Date.now()-Date.parse(habNames.at)<30*864e5) return;
   try{
     const c=await hab('/content?language=es',{anon:true});
     const pick=o=>{ const r={}; for(const [k,v] of Object.entries(o||{})) if(v&&typeof v.text==='string') r[k]=v.text; return r; };
-    const quests={}; for(const [k,q] of Object.entries(c.quests||{})){ if(!q) continue; const col={}; if(q.collect&&typeof q.collect==='object') for(const [ck,cv] of Object.entries(q.collect)) col[ck]={text:cv&&cv.text||ck,count:Number(cv&&cv.count)||0}; quests[k]={text:typeof q.text==='string'?q.text:k,hp:q.boss&&Number(q.boss.hp)||null,boss:q.boss&&q.boss.name||'',collect:col}; }
+    const quests={}; for(const [k,q] of Object.entries(c.quests||{})){ if(!q) continue; const col={}; if(q.collect&&typeof q.collect==='object') for(const [ck,cv] of Object.entries(q.collect)) col[ck]={text:cv&&cv.text||ck,count:Number(cv&&cv.count)||0}; quests[k]={text:typeof q.text==='string'?q.text:k,hp:q.boss&&Number(q.boss.hp)||null,boss:q.boss&&q.boss.name||'',str:q.boss&&Number(q.boss.str)||null,rage:q.boss&&q.boss.rage&&Number(q.boss.rage.value)?{value:Number(q.boss.rage.value),title:typeof q.boss.rage.title==='string'?q.boss.rage.title:''}:null,collect:col}; }
     const vals=o=>{ const r={}; for(const [k,v] of Object.entries(o||{})) if(v&&Number.isFinite(Number(v.value))) r[k]=Number(v.value); return r; };
-    habNames={at:nowIso(),eggs:pick(c.eggs),potions:pick(c.hatchingPotions),food:pick(c.food),quests,vals:{eggs:vals(c.eggs),potions:vals(c.hatchingPotions)}};
+    /* Equipo: nombre, tipo, FUE, INT, CON, PER, clase, clase especial, dos manos, precio */
+    const gear={}; const gf=c.gear&&c.gear.flat||{};
+    for(const [k,g] of Object.entries(gf)){ if(!g||!GEAR_TYPES.includes(g.type)) continue; gear[k]=[typeof g.text==='string'?g.text:k,g.type,Number(g.str)||0,Number(g.int)||0,Number(g.con)||0,Number(g.per)||0,g.klass||'',g.specialClass||'',g.twoHanded?1:0,Number(g.value)||0]; }
+    const spells={}; for(const cl of ['wizard','warrior','rogue','healer']){ spells[cl]={}; for(const [k,s] of Object.entries(c.spells&&c.spells[cl]||{})) if(s) spells[cl][k]={t:typeof s.text==='string'?s.text:k,n:typeof s.notes==='string'?s.notes:'',m:Number(s.mana)||0,l:Number(s.lvl)||0,tg:s.target||''}; }
+    habNames={at:nowIso(),eggs:pick(c.eggs),potions:pick(c.hatchingPotions),food:pick(c.food),quests,vals:{eggs:vals(c.eggs),potions:vals(c.hatchingPotions)},gear,spells};
     try{ localStorage.setItem(HAB_NAMES_KEY,JSON.stringify(habNames)); }catch(e){}
   }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
 }
@@ -2545,13 +2702,21 @@ async function habSync(opts={}){
   habRt.busy=true; setHabStatus('syncing');
   const stamp=nowIso(); let res={ok:true};
   try{
-    const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,items.currentPet,items.currentMount,items.eggs,items.hatchingPotions,items.food,items.pets,items.mounts,tags');
+    const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,items.currentPet,items.currentMount,items.eggs,items.hatchingPotions,items.food,items.pets,items.mounts,items.gear,preferences.dayStart,preferences.timezoneOffset,preferences.costume,tags');
     habRt.user=user; buildCrons(user);
     const dailys=await hab('/tasks/user?type=dailys'), habits=await hab('/tasks/user?type=habits');
     habRt.tasks={dailys,habits};
     try{ habRt.todos=await hab('/tasks/user?type=todos'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
     let party=null; if(user.party&&user.party._id){ try{ party=await hab('/groups/party'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; } }
     habRt.party=party;
+    /* Batalla: el chat del grupo guarda cada golpe al cerrar el día; los compañeros, cada 15 minutos */
+    if(party&&party.quest&&party.quest.key){
+      try{ habRt.chat=await hab('/groups/party/chat?limit=200'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
+    } else habRt.chat=null;
+    if(party&&(opts.force||!habRt.membersAt||Date.now()-habRt.membersAt>15*60e3)){
+      try{ habRt.members=await hab('/groups/party/members?includeAllPublicFields=true'); habRt.membersAt=Date.now(); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
+    }
+    if(!party){ habRt.members=null; habRt.membersAt=0; }
     await habLoadNames();
     /* Todo lo de Habitica se importa solo; las etiquetas y la experiencia diaria también */
     const tg=habSyncTags(user.tags,stamp), xp=habStoreXp(user);
@@ -2594,10 +2759,17 @@ function xpByDay(){
 function scheduleHabSync(delay=2500){ if(!habCfg) return; clearTimeout(habRt.timer); habRt.timer=setTimeout(()=>habSync(),delay); }
 function setHabStatus(s){ habRt.status=s; if(ready&&!$('dlg').open&&(ui.view==='habitica'||ui.view==='today')) renderApp(); else if(ready) renderNav(); }
 function habSnap(){
-  const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null, it=u.items||{};
-  return {name:u.profile&&u.profile.name?mdPlain(u.profile.name):'',stats:{hp:st.hp,maxHealth:st.maxHealth,exp:st.exp,toNextLevel:st.toNextLevel,mp:st.mp,maxMP:st.maxMP,gp:st.gp,lvl:st.lvl,class:st.class},
+  const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null, it=u.items||{}, gr=it.gear||{};
+  const bf=st.buffs||{}, num=v=>Number(v)||0;
+  const old=habCfg&&habCfg.snap||{};
+  const members=Array.isArray(habRt.members)?habRt.members.map(m=>({id:m._id||m.id||'',name:m.profile&&m.profile.name?mdPlain(m.profile.name):'',cls:m.stats&&m.stats.class||'',lvl:num(m.stats&&m.stats.lvl),hp:m.stats&&Number.isFinite(Number(m.stats.hp))?Number(m.stats.hp):null,on:!!(q&&q.members&&q.members[m._id||m.id])})).slice(0,40):(old.members||[]);
+  const events=Array.isArray(habRt.chat)?battleEvents(habRt.chat,q&&q.key):(q&&old.quest&&old.quest.key===q.key?old.events||[]:[]);
+  return {name:u.profile&&u.profile.name?mdPlain(u.profile.name):'',stats:{hp:st.hp,maxHealth:st.maxHealth,exp:st.exp,toNextLevel:st.toNextLevel,mp:st.mp,maxMP:st.maxMP,gp:st.gp,lvl:st.lvl,class:st.class,
+      str:num(st.str),int:num(st.int),con:num(st.con),per:num(st.per),points:num(st.points),buffs:{str:num(bf.str),int:num(bf.int),con:num(bf.con),per:num(bf.per),stealth:num(bf.stealth),streaks:!!bf.streaks}},
+    gear:{equipped:Object.assign({},gr.equipped||{}),costume:Object.assign({},gr.costume||{}),owned:Object.keys(gr.owned||{}).filter(k=>gr.owned[k])},useCostume:!!(u.preferences&&u.preferences.costume),
+    members,events,userId:u._id||u.id||'',
     pet:it.currentPet||'',mount:it.currentMount||'',party:!!habRt.party,partyName:habRt.party&&habRt.party.name?mdPlain(habRt.party.name):'',
-    quest:q&&q.key?{key:q.key,active:!!q.active,progress:q.progress||{}}:null,questMine:u.party&&u.party.quest&&u.party.quest.progress||null,
+    quest:q&&q.key?{key:q.key,active:!!q.active,progress:q.progress||{},members:q.members&&typeof q.members==='object'?Object.assign({},q.members):{}}:null,questMine:u.party&&u.party.quest&&u.party.quest.progress||null,
     items:{eggs:it.eggs||{},hatchingPotions:it.hatchingPotions||{},food:it.food||{},pets:it.pets||{},mounts:it.mounts||{}},at:nowIso()};
 }
 let habTimer=null;
@@ -2628,6 +2800,7 @@ const nmFood=k=>(habNames&&habNames.food[k])||ES_FOOD[k]||prettyKey(k);
 const nmQuest=k=>{ const q=habNames&&habNames.quests[k]; return q?(typeof q==='string'?q:q.text):prettyKey(k); };
 const questInfo=k=>{ const q=habNames&&habNames.quests[k]; return q&&typeof q==='object'?q:null; };
 const nmPet=key=>{ const [e,p]=String(key).split('-'); return `${nmEgg(e)} (${nmPot(p)})`; };
+const PREMIUM_POTIONS=['RoyalPurple','Cupid','Shimmer','Fairy','Floral','Aquatic','Ember','Thunderstorm','Spooky','Ghost','Holly','Peppermint','StarryNight','Rainbow','Glass','Glow','Frost','IcySnow','RoseQuartz','Celestial','Sunshine','Bronze','Watery','Silver','Shadow','Amber','Aurora','Ruby','BirchBark','Fluorite','SandSculpture','Windup','Turquoise','Vampire','AutumnLeaf','BlackPearl','StainedGlass','PolkaDot','MossyStone','Sunset','Moonglow','SolarSystem','Onyx','Porcelain','PinkMarble','RoseGold','Koi','Gingerbread','Jade','Balloon','Opal'];
 const isPremiumPot=p=>!DROP_POTIONS.includes(p)&&!WACKY_POTIONS.includes(p);
 function stableInfo(items){
   const eggs=items.eggs||{}, pots=items.hatchingPotions||{}, food=items.food||{}, pets=items.pets||{}, mounts=items.mounts||{};
@@ -2670,6 +2843,7 @@ function stableInfo(items){
    Cada combinación pide: mascota y montura → nada; solo una de las dos → 1 (si se cría la mascota hasta montura, hay que volver a eclosionarla);
    ninguna → 2; las pociones raras no dan montura → 1 si falta la mascota. Cuentan las pociones normales y los huevos normales siempre;
    los huevos de misión y las pociones mágicas o raras, si los tienes o ya tienes alguna de sus mascotas o monturas. */
+const allMagicPotions=()=>(habNames&&habNames.potions?Object.keys(habNames.potions):PREMIUM_POTIONS.concat(WACKY_POTIONS)).filter(p=>!DROP_POTIONS.includes(p));
 function sellInfo(items){
   const eggs=items.eggs||{}, pots=items.hatchingPotions||{}, pets=items.pets||{}, mounts=items.mounts||{};
   const touched=Object.keys(pets).filter(k=>pets[k]>0||pets[k]===-1).concat(Object.keys(mounts).filter(k=>mounts[k]));
@@ -2680,18 +2854,27 @@ function sellInfo(items){
   for(const [e,n] of Object.entries(eggs)) if(n>0) E.add(e);
   for(const [p,n] of Object.entries(pots)) if(n>0) P.add(p);
   for(const k of touched){ const [e,p]=k.split('-'); if(e&&p&&eggOk(e)&&potOk(p)){ E.add(e); P.add(p); } }
+  /* Todas las pociones mágicas y raras que existen, aunque no las tengas: los huevos normales se guardan también para ellas */
+  const PA=new Set(P); for(const p of allMagicPotions()) PA.add(p);
   const fits=(e,p)=>DROP_POTIONS.includes(p)?true:DROP_EGGS.includes(e);
   const need=(e,p)=>{ const k=`${e}-${p}`, hp=pets[k]>0, hm=!!mounts[k]; if(WACKY_POTIONS.includes(p)) return hp?0:1; return hp&&hm?0:hp||hm?1:2; };
-  const out=[];
-  for(const [type,inv,others,img] of [['eggs',eggs,P,'egg'],['potions',pots,E,'potion']]){
-    for(const [k,n] of Object.entries(inv)){ if(!(n>0)) continue;
-      let req=0; for(const o of others){ const [e,p]=type==='eggs'?[k,o]:[o,k]; if(fits(e,p)) req+=need(e,p); }
-      const extra=n-req; if(extra>0){ const each=sellVal(type,k); out.push({type,key:k,have:n,need:req,extra,each,gold:extra*each}); }
-    }
-  }
   const nm=x=>x.type==='eggs'?nmEgg(x.key):nmPot(x.key);
-  out.sort((a,b)=>(a.type!==b.type?(a.type==='eggs'?-1:1):0)||b.gold-a.gold||nm(a).localeCompare(nm(b),'es'));
-  return {list:out,count:out.reduce((a,x)=>a+x.extra,0),gold:out.reduce((a,x)=>a+x.gold,0)};
+  const calc=Ps=>{
+    const out=[];
+    for(const [type,inv,others] of [['eggs',eggs,Ps],['potions',pots,E]]){
+      for(const [k,n] of Object.entries(inv)){ if(!(n>0)) continue;
+        let req=0; for(const o of others){ const [e,p]=type==='eggs'?[k,o]:[o,k]; if(fits(e,p)) req+=need(e,p); }
+        const extra=n-req; if(extra>0){ const each=sellVal(type,k); out.push({type,key:k,have:n,need:req,extra,each,gold:extra*each}); }
+      }
+    }
+    out.sort((a,b)=>(a.type!==b.type?(a.type==='eggs'?-1:1):0)||b.gold-a.gold||nm(a).localeCompare(nm(b),'es'));
+    return out;
+  };
+  const list=calc(PA), loose=calc(P);
+  /* Lo que además podrías vender si no piensas comprar más pociones mágicas ni raras */
+  const more=[]; for(const x of loose){ const s=list.find(y=>y.type===x.type&&y.key===x.key), d=x.extra-(s?s.extra:0); if(d>0) more.push(Object.assign({},x,{extra:d,gold:d*x.each,need:x.need})); }
+  const tot=l=>({count:l.reduce((a,x)=>a+x.extra,0),gold:l.reduce((a,x)=>a+x.gold,0)});
+  return Object.assign({list,more,moreTot:tot(more)},tot(list));
 }
 function habAlerts(){
   const snap=habRt.user?habSnap():(habCfg&&habCfg.snap);
@@ -2978,6 +3161,7 @@ function heroCard(snap){
   const gold=el('div','hab-gold'); gold.append(habImg('gold','sm','Oro','star'),el('b','',fmtNum(Math.floor(Number(s.gp)||0)))); top.append(nm,gold);
   const bars=el('div','hab-bars'); bars.append(habBar('Vida',s.hp,s.maxHealth||50,'hp'),habBar('Experiencia',s.exp,s.toNextLevel,'xp'),habBar('Maná',s.mp,s.maxMP,'mp'));
   body.append(top,bars);
+  if(ui.view==='today'){ const lk=btn('Atributos, habilidades y equipo','small ghost',null,()=>go('character'),'chev-right'); lk.classList.add('hero-go'); body.append(lk); }
   c.append(pics,body); return c;
 }
 function questCard(snap){
@@ -2997,6 +3181,7 @@ function questCard(snap){
   if(Number(mine.collectedItems)) mm.append(el('span','',`Objetos encontrados hoy: ${mine.collectedItems}`));
   if(mm.childNodes.length) qc.append(mm);
   qc.append(el('p','small-print','El daño y los objetos se aplican cuando Habitica cambia de día.'));
+  if(q.active) qc.append(btn('Ver la batalla','small ghost',null,()=>go('quest'),'swords'));
   return qc;
 }
 function stableTiles(items){
@@ -3196,21 +3381,27 @@ function renderStable(v){
   v.append(c3);
   // 4b. Para vender: lo que ya no hace falta para ninguna mascota ni montura
   const sv=sellInfo(items);
-  if(sv.count){
-    const cs=el('section','card st-card sell-card'); cs.append(h2i(`Para vender: ${fmtNum(sv.gold)} de oro`,'coins'));
-    cs.append(el('p','muted small',`${pl(sv.count,'objeto','objetos')} que ya no te hacen falta. Ya está guardado lo necesario para las mascotas y monturas que te faltan, incluido volver a eclosionar una mascota después de convertirla en montura.`));
-    const gr=el('div','inv-grid');
-    for(const x of sv.list){
-      const it=el('div','inv sell'); it.append(x.type==='eggs'?eggImg(x.key,'lg'):potImg(x.key,'lg'),el('b','inv-n','×'+x.extra),el('div','inv-name',x.type==='eggs'?nmEgg(x.key):nmPot(x.key)));
-      const g=el('div','sell-gold'); g.append(ic('coins'),document.createTextNode(` ${fmtNum(x.gold)} de oro`)); it.append(g);
-      it.append(el('div','muted small',`${x.each} cada ${x.type==='eggs'?'huevo':'poción'} · tienes ${x.have}${x.need?`, guarda ${x.need}`:''}`));
-      gr.append(it);
+  if(sv.count||sv.moreTot.count){
+    const sellGrid=list=>{ const gr=el('div','inv-grid');
+      for(const x of list){
+        const it=el('div','inv sell'); it.append(x.type==='eggs'?eggImg(x.key,'lg'):potImg(x.key,'lg'),el('b','inv-n','×'+x.extra),el('div','inv-name',x.type==='eggs'?nmEgg(x.key):nmPot(x.key)));
+        const g=el('div','sell-gold'); g.append(ic('coins'),document.createTextNode(` ${fmtNum(x.gold)} de oro`)); it.append(g);
+        it.append(el('div','muted small',`${x.each} cada ${x.type==='eggs'?'huevo':'poción'} · tienes ${x.have}${x.need?`, guarda ${x.need}`:''}`));
+        gr.append(it);
+      }
+      return gr; };
+    const cs=el('section','card st-card sell-card'); cs.append(h2i(sv.count?`Para vender: ${fmtNum(sv.gold)} de oro`:'Para vender','coins'));
+    if(sv.count){
+      cs.append(el('p','muted small',`${pl(sv.count,'objeto','objetos')} que ya no te hacen falta para ninguna mascota ni montura, contando todas las pociones mágicas y raras que existen. Ya está guardado lo necesario para lo que te falta, incluido volver a eclosionar una mascota después de convertirla en montura.`));
+      cs.append(sellGrid(sv.list));
+    } else cs.append(el('p','muted small','Contando todas las pociones mágicas y raras que existen, aún necesitas todos tus huevos y pociones.'));
+    if(sv.moreTot.count){
+      const body=el('div'); body.append(el('p','muted small','Los huevos normales también sirven para las pociones mágicas y raras. Si no piensas comprar las que te faltan, esto también sobra:'),sellGrid(sv.more));
+      cs.append(grp(eggImg(sv.more[0].key,'sm'),`Si no vas a comprar más pociones mágicas: ${fmtNum(sv.moreTot.gold)} de oro más`,`${pl(sv.moreTot.count,'huevo normal','huevos normales')} que guardas para pociones mágicas o raras que no tienes`,body,false));
     }
-    cs.append(gr);
     const how=el('ol','steps small');
     for(const s0 of ['En la web: Tiendas → Mercado.','Abajo, abre la barra «Inventario rápido» y elige Huevos o Pociones.','Pulsa el objeto, elige la cantidad que ves aquí y pulsa «Vender».','En la app del móvil: Menú → Objetos, toca el objeto y elige vender.']) how.append(el('li','',s0));
     cs.append(how);
-    cs.append(el('p','small-print','No se cuentan las pociones mágicas que no tienes: si piensas comprar alguna, guarda huevos normales para ella.'));
     v.append(cs);
   }
   // 5. Huevos y pociones (desplegables)
@@ -3396,9 +3587,438 @@ function habSettingsCard(){
   return sc;
 }
 
+/* ================= Personaje: atributos, habilidades y equipo ================= */
+const ST_KEYS=['int','per','con','str'];
+const ST_INFO={int:['Inteligencia','INT','st-int'],per:['Percepción','PER','st-per'],con:['Constitución','CON','st-con'],str:['Fuerza','FUE','st-str']};
+const GEAR_SLOTS=[['weapon','Arma'],['shield','Mano secundaria'],['armor','Armadura'],['head','Cabeza'],['eyewear','Gafas'],['headAccessory','Accesorio de cabeza'],['body','Cuerpo'],['back','Espalda']];
+const isEmptyGear=k=>!k||/_base_0$/.test(k);
+function gearOf(k){
+  const g=habNames&&habNames.gear&&habNames.gear[k]; if(!g) return null;
+  return {key:k,name:mdPlain(g[0]),type:g[1],s:{str:g[2],int:g[3],con:g[4],per:g[5]},klass:g[6],sc:g[7],two:!!g[8],value:g[9]};
+}
+const classGear=(it,cls)=>!!it&&(it.klass===cls||it.sc===cls);
+/* Lo que da una pieza: el equipo de tu clase cuenta doble (como en Habitica) */
+function gearEff(it,cls){ const m=classGear(it,cls)?2:1, o={}; for(const s of ST_KEYS) o[s]=(Number(it.s[s])||0)*m; return o; }
+const DR=(b,max,half)=>max*(b/(b+(half||max/2)));
+const fmt1=n=>fmtNum(Math.round(n*10)/10);
+/* Atributos como los calcula Habitica: nivel/2 + puntos + equipo + bonus de clase + buffs */
+function charStats(snap){
+  const st=snap.stats||{}, cls=st.class||'warrior', lvl=Number(st.lvl)||1, lb=Math.floor(Math.min(lvl,100)/2), buffs=st.buffs||{};
+  const eq=(snap.gear&&snap.gear.equipped)||{}, gear={str:0,int:0,con:0,per:0}, bonus={str:0,int:0,con:0,per:0};
+  let known=!!(habNames&&habNames.gear), missing=0;
+  for(const [slot] of GEAR_SLOTS){ const k=eq[slot]; if(isEmptyGear(k)) continue; const it=gearOf(k); if(!it){ missing++; continue; }
+    for(const s of ST_KEYS){ gear[s]+=it.s[s]; if(classGear(it,cls)) bonus[s]+=it.s[s]; } }
+  const out={cls,lvl,lb,known:known&&!missing,points:Number(st.points)||0,buffs,s:{},t:{}};
+  for(const s of ST_KEYS){ const b=Number(buffs[s])||0, p=Number(st[s])||0; out.s[s]={lvl:lb,pts:p,gear:gear[s],cls:bonus[s],buff:b,total:lb+p+gear[s]+bonus[s]+b}; out.t[s]=out.s[s].total; }
+  return out;
+}
+function statEffect(s,v){
+  if(s==='int') return `+${fmtNum(Math.round(v*2.5))} % de experiencia · ${fmtNum(2*v+30)} de maná máximo`;
+  if(s==='per') return `+${fmtNum(v*2)} % de oro por tarea y más botín`;
+  if(s==='con') return `Pierdes un ${fmt1(Math.min(90,v/2.5))} % menos de vida al fallar`;
+  return `${fmt1(3*(1+v/100))} % de golpe crítico · +${fmt1(v/2)} % de daño al jefe`;
+}
+/* ---- Equipo: la mejor combinación entre lo que tienes ---- */
+const GEAR_GOALS=[
+  ['int','Más experiencia y maná','Inteligencia',{int:1,per:.01,con:.001,str:.001}],
+  ['per','Más oro y botín','Percepción',{per:1,int:.01,con:.001,str:.001}],
+  ['mix','Equilibrio','Inteligencia y percepción',{int:1,per:1,con:.01,str:.01}],
+  ['con','Aguantar los fallos','Constitución',{con:1,int:.01,per:.005,str:.001}],
+  ['str','Golpear al jefe','Fuerza',{str:1,int:.01,per:.005,con:.001}]];
+const gearGoal=()=>GEAR_GOALS.find(g=>g[0]===ui.gearGoal)||GEAR_GOALS[0];
+function ownedGear(snap){ const o=(snap.gear&&snap.gear.owned)||[]; const r=[]; for(const k of o){ if(isEmptyGear(k)) continue; const it=gearOf(k); if(it&&GEAR_TYPES.includes(it.type)) r.push(it); } return r; }
+function bestGear(items,cls,w,eq){
+  const sc=it=>{ const e=gearEff(it,cls); return ST_KEYS.reduce((a,s)=>a+e[s]*(w[s]||0),0); };
+  /* La mejor de cada hueco; a igualdad, la que ya llevas */
+  const pick=list=>{ let best=null,bs=0; const l=list.slice().sort((a,b)=>(eq[b.type]===b.key)-(eq[a.type]===a.key)); for(const it of l){ const v=sc(it); if(v>bs+1e-9){ best=it; bs=v; } } return {it:best,s:bs}; };
+  const by=t=>items.filter(i=>i.type===t), set={};
+  for(const [slot] of GEAR_SLOTS) if(slot!=='weapon'&&slot!=='shield') set[slot]=pick(by(slot)).it;
+  /* Arma a dos manos frente a arma de una mano más la mano secundaria */
+  const w2=pick(by('weapon').filter(i=>i.two)), w1=pick(by('weapon').filter(i=>!i.two)), sh=pick(by('shield'));
+  const curTwo=(gearOf(eq.weapon)||{}).two;
+  if(w2.it&&(w2.s>w1.s+sh.s+1e-9||(Math.abs(w2.s-(w1.s+sh.s))<1e-9&&curTwo))){ set.weapon=w2.it; set.shield=null; } else { set.weapon=w1.it; set.shield=sh.it; }
+  /* Huecos sin nada que sume: se queda lo que llevas */
+  for(const [slot] of GEAR_SLOTS){ if(set[slot]) continue; const k=eq[slot]; if(isEmptyGear(k)) continue; const it=gearOf(k); if(!it) continue;
+    if(slot==='shield'&&set.weapon&&set.weapon.two) continue; if(slot==='weapon'&&it.two&&set.shield) continue; set[slot]=it; }
+  let score=0; for(const [slot] of GEAR_SLOTS) if(set[slot]) score+=sc(set[slot]);
+  return {set,score};
+}
+function gearTotals(base,set,cls){ const t=Object.assign({},base); for(const [slot] of GEAR_SLOTS){ const it=set[slot]; if(!it) continue; const e=gearEff(it,cls); for(const s of ST_KEYS) t[s]+=e[s]; } return t; }
+/* La siguiente pieza de tu clase en la tienda, por hueco */
+function nextClassGear(snap,cls){
+  const owned=new Set((snap.gear&&snap.gear.owned)||[]), g=habNames&&habNames.gear||{}, out=[];
+  for(const slot of ['weapon','armor','head','shield']){
+    const re=new RegExp(`^${slot}_${cls}_(\\d+)$`); let best=null,bn=1e9;
+    for(const k of Object.keys(g)){ const m=re.exec(k); if(!m) continue; const n=Number(m[1]); if(n<1||owned.has(k)||!(g[k][9]>0)) continue; if(n<bn){ bn=n; best=k; } }
+    if(best) out.push(gearOf(best));
+  }
+  return out;
+}
+function statChip(s,v,extra){ const c=el('span','chip st-chip'); const d=el('i','st-dot '+ST_INFO[s][2]); c.append(d,document.createTextNode(`${ST_INFO[s][1]} +${v}${extra||''}`)); return c; }
+function gearCell(it,cls,slot,set){
+  const d=el('div','gq-it');
+  if(!it){ d.append(el('span','gq-empty',slot==='shield'&&set.weapon&&set.weapon.two?'Ocupada: el arma es de dos manos':'Vacío')); return d; }
+  d.append(habImg('shop_'+it.key,'sm',it.name,'shield'));
+  const t=el('div','gq-t'); t.append(el('b','',it.name));
+  const ch=el('div','chips'), e=gearEff(it,cls); for(const s of ST_KEYS) if(e[s]) ch.append(statChip(s,e[s]));
+  if(classGear(it,cls)) ch.append(el('span','chip gq-cls',`${CLASS_NAMES[cls]||'Tu clase'} ×2`));
+  if(it.two) ch.append(el('span','chip','2 manos'));
+  if(!ch.childNodes.length) ch.append(el('span','muted small','Sin atributos'));
+  t.append(ch); d.append(t); return d;
+}
+function charTabs(v){
+  const tabs=el('div','seg char-tabs'); tabs.setAttribute('role','tablist');
+  for(const [k,lbl] of [['stats','Atributos y habilidades'],['gear','Equipamiento']]){
+    const b=el('button'); b.type='button'; b.textContent=lbl; b.setAttribute('role','tab'); const on=(ui.charTab||'stats')===k; b.setAttribute('aria-selected',on?'true':'false'); if(on) b.classList.add('active');
+    b.addEventListener('click',()=>{ ui.charTab=k; saveUI(); renderApp(); }); tabs.append(b);
+  }
+  v.append(tabs);
+}
+function renderCharacter(v){
+  const snap=habCfg?habSnapNow():null, st=snap&&snap.stats||{};
+  panelHead(v,'Personaje',habCfg?[st.class?`${CLASS_NAMES[st.class]||st.class}, nivel ${st.lvl}`:'',lastImportText()].filter(Boolean).join(' · '):'');
+  if(!habCfg){ v.append(habConnectCard()); return; }
+  if(!snap||!snap.stats){ v.append(el('div','empty',habRt.busy?'Importando de Habitica…':'Pulsa «Importar ahora» para ver tu personaje.')); return; }
+  charTabs(v);
+  if(!snap.gear){ v.append(el('div','empty','Pulsa «Importar ahora» para traer tu equipo y tus atributos.')); return; }
+  const cs=charStats(snap);
+  if(!cs.known) v.append(el('div','banner',habNames&&habNames.gear?'Hay piezas de equipo que la app aún no conoce: los atributos pueden quedarse cortos.':'Falta el catálogo de equipo de Habitica: pulsa «Importar ahora».'));
+  if((ui.charTab||'stats')==='gear') renderGear(v,snap,cs); else renderAttrs(v,snap,cs);
+}
+function renderAttrs(v,snap,cs){
+  const st=snap.stats, cls=cs.cls, t=cs.t;
+  // Resumen
+  const hc=heroCard(snap); v.append(hc);
+  // Atributos con su desglose
+  const sec=el('section','card'); const hd=el('div','card-head'); hd.append(h2i('Atributos: de dónde sale cada punto','bar-chart'));
+  const anyBuff=ST_KEYS.some(s=>cs.s[s].buff);
+  const noBuff=!!ui.charNoBuff&&anyBuff;
+  if(anyBuff){ const sw=el('div','seg'); for(const [k,l] of [[false,'Con los buffs de hoy'],[true,'Sin buffs']]){ const b=el('button'); b.type='button'; b.textContent=l; b.setAttribute('aria-pressed',noBuff===k?'true':'false'); b.addEventListener('click',()=>{ ui.charNoBuff=k; saveUI(); renderApp(); }); sw.append(b); } hd.append(sw); }
+  sec.append(hd);
+  const PARTS=[['lvl','Nivel (la mitad de tu nivel)','p-lvl'],['pts','Puntos que asignaste','p-pts'],['gear','Equipo','p-gear'],['cls',`Bonus de ${(CLASS_NAMES[cls]||'clase').toLowerCase()} (su equipo cuenta doble)`,'p-cls'],['buff','Buffs de hoy','p-buff']];
+  const leg=el('div','st-leg'); for(const [k,l,c] of PARTS){ if(k==='buff'&&(!anyBuff||noBuff)) continue; const s=el('span'); s.append(el('i','sw '+c),document.createTextNode(l)); leg.append(s); } sec.append(leg);
+  const grid=el('div','st-grid'), totals={};
+  for(const s of ST_KEYS) totals[s]=cs.s[s].total-(noBuff?cs.s[s].buff:0);
+  const mx=Math.max(60,...ST_KEYS.map(s=>totals[s]));
+  for(const s of ST_KEYS){
+    const x=cs.s[s], card=el('div','st-card2'), top=el('div','st-top');
+    const nm=el('div'); nm.append(el('b','',ST_INFO[s][0]),el('span','muted small',ST_INFO[s][1])); top.append(nm,el('span','st-big '+ST_INFO[s][2],String(totals[s])));
+    const bar=el('div','st-stack'); bar.setAttribute('role','img');
+    const det=[]; for(const [k,l,c] of PARTS){ const val=k==='buff'&&noBuff?0:x[k]; if(!val) continue; const seg=el('span',c); seg.style.width=(val/mx*100)+'%'; seg.title=`${l}: ${val}`; bar.append(seg); det.push(`${k==='lvl'?'nivel':k==='pts'?'puntos':k==='gear'?'equipo':k==='cls'?'bonus':'buff'} ${val}`); }
+    bar.setAttribute('aria-label',`${ST_INFO[s][0]} ${totals[s]}: ${det.join(', ')}`);
+    card.append(top,bar,el('div','st-eff',statEffect(s,totals[s])),el('div','muted small',cap(det.join(' · ')||'sin puntos')));
+    grid.append(card);
+  }
+  sec.append(grid); v.append(sec);
+  const two=el('div','char-two');
+  // Habilidades
+  const sk=el('section','card'); const sh=el('div','card-head'); sh.append(h2i(`Habilidades de ${(CLASS_NAMES[cls]||'tu clase').toLowerCase()}`,'flame')); const mp=Math.floor(Number(st.mp)||0); sh.append(el('span','mp-pill',`${fmtNum(mp)} de maná`)); sk.append(sh);
+  const spells=habNames&&habNames.spells&&habNames.spells[cls];
+  if(cs.lvl<10) sk.append(el('p','muted','Las habilidades llegan al nivel 10, cuando eliges clase.'));
+  else if(!spells||!Object.keys(spells).length) sk.append(el('p','muted','Falta el catálogo de habilidades: pulsa «Importar ahora».'));
+  else {
+    sk.append(el('p','muted small','Con tus atributos de hoy. Se lanzan en Habitica: Recompensas, arriba, en «Habilidades».'));
+    const ul=el('div','sk-list'); const b=cs.buffs||{};
+    for(const [k,s] of Object.entries(spells)){
+      const row=el('div','sk'+(cs.lvl<s.l?' off':'')); const icn=el('span','sk-ic'); icn.append(ic(SKILL_ICON[k]||'star'));
+      const tx=el('div','sk-t'); tx.append(el('b','',mdPlain(s.t)),el('span','small',skillEffect(cls,k,t,b,s)));
+      tx.append(el('span','muted small',cs.lvl<s.l?`Desde el nivel ${s.l}.`:s.m?(mp>=s.m?`Te llega para ${Math.floor(mp/s.m)}.`:`Te faltan ${fmtNum(s.m-mp)} de maná.`):''));
+      row.append(icn,tx,el('span','mp-pill',`${s.m} de maná`)); ul.append(row);
+    }
+    sk.append(ul);
+    const plan=manaPlan(cls,mp,t,b,snap); if(plan){ const p=el('div','sk-plan'); p.append(el('b','','Para tu maná de hoy: '),document.createTextNode(plan)); sk.append(p); }
+  }
+  two.append(sk);
+  // Buffs, grupo y puntos
+  const right=el('div','char-col');
+  const bf=el('section','card'); bf.append(h2i('Buffs de hoy','star')); bf.append(el('p','muted small',`Duran hasta que se cierra tu día en Habitica (a las ${pad(habDayStart())}:00).`));
+  const bl=el('div','bf-list'); const b=cs.buffs||{};
+  for(const s of ST_KEYS){ const n=Number(b[s])||0; if(!n) continue; const r=el('div','bf on'); r.append(ic('check')); const tx=el('div'); tx.append(el('b','',`+${n} de ${ST_INFO[s][0].toLowerCase()}`),el('div','small',buffGain(s,n,cs.t))); r.append(tx); bl.append(r); }
+  if(cls==='wizard'||b.streaks){ const r=el('div','bf'+(b.streaks?' on':'')); r.append(ic(b.streaks?'check':'dot')); const tx=el('div'); tx.append(el('b','',b.streaks?'Rachas protegidas':'Rachas sin proteger'),el('div','small',b.streaks?'Si mañana fallas una diaria, no pierdes las rachas.':'Con Frío escalofriante (40 de maná) no pierdes las rachas si mañana fallas una diaria.')); r.append(tx); bl.append(r); }
+  if(Number(b.stealth)){ const r=el('div','bf on'); r.append(ic('check')); const tx=el('div'); tx.append(el('b','',`Sigilo: ${b.stealth}`),el('div','small',`Esquivas ${pl(b.stealth,'diaria','diarias')} sin hacer al cerrar el día.`)); r.append(tx); bl.append(r); }
+  if(!bl.childNodes.length) bl.append(el('p','muted','Hoy no tienes buffs.'));
+  bf.append(bl);
+  const offers=partyOffers(snap,cls);
+  if(offers.length){ bf.append(el('h3','st-h3','Lo que tu grupo puede darte')); const ol=el('div','offer-list'); for(const o of offers){ const r=el('div','offer'); r.append(el('span','',o[0]),el('span','chip',o[1])); ol.append(r); } bf.append(ol); }
+  right.append(bf);
+  const pt=el('section','card'); pt.append(h2i('Puntos de atributo','plus'));
+  const goal=gearGoal(), gs=goal[0]==='mix'?'int':goal[0];
+  if(cs.points) pt.append(el('p','',`Tienes ${pl(cs.points,'punto','puntos')} sin asignar. Para «${goal[1].toLowerCase()}», ponlos en ${ST_INFO[gs][0].toLowerCase()}.`));
+  else if(cs.lvl<100){ const left=Math.max(0,Math.ceil((Number(st.toNextLevel)||0)-(Number(st.exp)||0))); pt.append(el('p','',`No tienes puntos sin asignar. Al llegar al nivel ${cs.lvl+1} (te faltan ${fmtNum(left)} de experiencia) ganarás 1: para «${goal[1].toLowerCase()}», ponlo en ${ST_INFO[gs][0].toLowerCase()}.`)); }
+  else pt.append(el('p','','A partir del nivel 100 ya no se ganan puntos.'));
+  pt.append(el('p','muted small','En Habitica: menú de tu usuario → Estadísticas → «Puntos de atributo». El objetivo se elige en Equipamiento.'));
+  right.append(pt);
+  two.append(right); v.append(two);
+}
+const SKILL_ICON={fireball:'flame',mpheal:'drop',earth:'activity',frost:'bulb',smash:'target',defensiveStance:'shield',valorousPresence:'users',intimidate:'alert',pickPocket:'coins',backStab:'target',toolsOfTrade:'briefcase',stealth:'moon',heal:'heart',brightness:'sun',protectAura:'shield',healAll:'users'};
+function skillEffect(cls,k,t,b,s){
+  const n=x=>fmtNum(Math.ceil(x)), bo=x=>Number(b[x])||0;
+  const E={
+    fireball:`Experiencia extra en la tarea que elijas y ${n(t.int*0.1)} de daño al jefe (tu inteligencia ÷ 10).`,
+    mpheal:`+${n(DR(t.int,25,125))} de maná a cada compañero que no sea mago.`,
+    earth:`+${n(DR(t.int-bo('int'),30,200))} de inteligencia a todo el grupo hasta que cierre el día.`,
+    frost:'Congela tus rachas: si mañana fallas una diaria, no las pierdes.',
+    smash:`Mejora el color de una tarea y ${n(DR(t.str,55,70))} de daño al jefe.`,
+    defensiveStance:`+${n(DR(t.con-bo('con'),40,200))} de constitución para ti hasta que cierre el día.`,
+    valorousPresence:`+${n(DR(t.str-bo('str'),20,200))} de fuerza a todo el grupo hasta que cierre el día.`,
+    intimidate:`+${n(DR(t.con-bo('con'),24,200))} de constitución a todo el grupo hasta que cierre el día.`,
+    pickPocket:'Oro extra de una tarea: más cuanto más roja esté y más percepción tengas.',
+    backStab:'Experiencia y oro de una tarea, según tu fuerza.',
+    toolsOfTrade:`+${n(DR(t.per-bo('per'),100,50))} de percepción a todo el grupo hasta que cierre el día.`,
+    stealth:'Esquivas diarias sin hacer: no te quitan vida al cerrar el día.',
+    heal:`+${n((t.con+t.int+5)*0.075)} de vida para ti.`,
+    brightness:`Mejora el color de todas tus tareas (+${n(4*t.int/(t.int+40))}).`,
+    protectAura:`+${n(DR(t.con-bo('con'),200,200))} de constitución a todo el grupo hasta que cierre el día.`,
+    healAll:`+${n((t.con+t.int+5)*0.04)} de vida a todo el grupo.`};
+  return E[k]||mdPlain(s.n||'');
+}
+function manaPlan(cls,mp,t,b,snap){
+  const boss=snap.quest&&snap.quest.active&&Number.isFinite(Number(snap.quest.progress&&snap.quest.progress.hp));
+  if(cls!=='wizard'||mp<10) return '';
+  const dmg=Math.ceil(t.int*0.1);
+  if(snap.party&&mp>=35){ const f=Math.floor((mp-35)/10), q=Math.ceil(DR(t.int-(Number(b.int)||0),30,200)), left=mp-35-f*10;
+    return `Terremoto (35)${f?` y ${pl(f,'Estallido de llamas','Estallidos de llamas')} (${f*10})`:''}. El grupo gana +${q} de inteligencia${f&&boss?` y el jefe pierde ${fmtNum(f*dmg)} de vida`:''}${left?`; te ${left===1?'sobra':'sobran'} ${left} de maná`:''}.`; }
+  const f=Math.floor(mp/10); return `${pl(f,'Estallido de llamas','Estallidos de llamas')}${boss?`: ${fmtNum(f*dmg)} de daño al jefe`:''}.`;
+}
+function buffGain(s,n,t){
+  if(s==='int') return `Ganas un ${fmt1(n*2.5)} % más de experiencia y ${fmtNum(2*n)} de maná máximo.`;
+  if(s==='per') return `Ganas un ${fmtNum(n*2)} % más de oro.`;
+  if(s==='con') return `Pierdes un ${fmt1(n/2.5)} % menos de vida al fallar.`;
+  return `Más golpes críticos y +${fmt1(n/2)} % de daño al jefe.`;
+}
+/* Qué buffs pueden darte tus compañeros según su clase y nivel */
+function partyOffers(snap,cls){
+  const me=snap.userId, out=[];
+  const can=[['warrior',13,'Presencia Valerosa','+FUE'],['warrior',14,'Mirada intimidante','+CON'],['rogue',13,'Herramientas del Oficio','+PER'],['healer',13,'Aura Protectora','+CON'],['healer',14,'Bendición','+vida'],['wizard',13,'Terremoto','+INT'],['wizard',12,'Corriente etérea','+maná']];
+  for(const m of snap.members||[]){ if(!m||m.id===me) continue;
+    for(const [c,l,sp,what] of can){ if(m.cls!==c||m.lvl<l) continue; if(what==='+maná'&&cls==='wizard') continue; out.push([`${m.name||'Un compañero'}, ${(CLASS_NAMES[c]||c).toLowerCase()}: ${sp}`,what]); } }
+  return out.slice(0,8);
+}
+function renderGear(v,snap,cs){
+  const cls=cs.cls, eq=(snap.gear&&snap.gear.equipped)||{}, items=ownedGear(snap);
+  const goal=gearGoal(), w=goal[3];
+  // Objetivo
+  const gc=el('section','card'); gc.append(h2i('¿Para qué quieres el equipo?','target'));
+  gc.append(el('p','muted small',`Se elige la mejor combinación entre las ${pl(items.length,'pieza','piezas')} que ya tienes. El equipo de tu clase (${(CLASS_NAMES[cls]||cls).toLowerCase()}) cuenta doble.`));
+  const gg=el('div','goal-grid');
+  for(const g of GEAR_GOALS){ const b=el('button','goal'+(g[0]===goal[0]?' on':'')); b.type='button'; b.setAttribute('aria-pressed',g[0]===goal[0]?'true':'false'); b.append(el('b','',g[1]),el('span','',g[2])); b.addEventListener('click',()=>{ ui.gearGoal=g[0]; saveUI(); renderApp(); }); gg.append(b); }
+  gc.append(gg);
+  if(goal[0]==='str'&&cls==='wizard') gc.append(el('p','gear-note','Como mago, al jefe le haces más daño con inteligencia: cada Estallido de llamas le quita tu inteligencia ÷ 10. La fuerza sube los golpes críticos de las tareas.'));
+  v.append(gc);
+  if(!items.length){ v.append(el('div','empty','No hay piezas de equipo que la app conozca. Pulsa «Importar ahora».')); return; }
+  const base={}; for(const s of ST_KEYS) base[s]=cs.s[s].lvl+cs.s[s].pts+cs.s[s].buff;
+  const nowSet={}; for(const [slot] of GEAR_SLOTS){ const k=eq[slot]; nowSet[slot]=isEmptyGear(k)?null:gearOf(k); }
+  const best=bestGear(items,cls,w,eq), a=gearTotals(base,nowSet,cls), b=gearTotals(base,best.set,cls);
+  // Totales
+  const tg=el('div','gq-tot');
+  for(const s of ST_KEYS){ const d=b[s]-a[s], c=el('div','stat-x'); const top=el('div','st-name'); top.append(el('i','st-dot '+ST_INFO[s][2]),document.createTextNode(ST_INFO[s][0])); c.append(top);
+    const nums=el('div','sx-nums'); if(d) nums.append(el('s','muted',String(a[s]))); nums.append(el('b','sx-big',String(b[s])),el('span','delta '+(d>0?'up':d<0?'down':'same'),d>0?`+${d}`:d<0?`−${-d}`:'igual')); c.append(nums);
+    const bar=el('div','sx-bar'), mx=Math.max(100,a[s],b[s]); const f1=el('span',ST_INFO[s][2]); f1.style.width=(Math.min(a[s],b[s])/mx*100)+'%'; const f2=el('span',ST_INFO[s][2]+' add'); f2.style.width=(Math.max(0,d)/mx*100)+'%'; bar.append(f1,f2); c.append(bar);
+    c.append(el('div','small',statEffect(s,b[s]))); tg.append(c); }
+  v.append(tg);
+  // Pieza a pieza
+  const ec=el('section','card'); const eh=el('div','card-head'); eh.append(h2i('Lo que llevas y lo que te conviene','shield'));
+  let changes=0; const rows=el('div','gq-rows');
+  const hr=el('div','gq-row head'); hr.setAttribute('aria-hidden','true'); hr.append(el('span'),el('span','','Ahora'),el('span'),el('span','','Propuesta')); rows.append(hr);
+  for(const [slot,lbl] of GEAR_SLOTS){
+    const n=nowSet[slot], p=best.set[slot]||null, ch=(n&&n.key)!==(p&&p.key); if(ch) changes++;
+    const r=el('div','gq-row'+(ch?' ch':'')); const ar=ic('chev-right'); ar.classList.add('gq-arrow');
+    r.append(el('span','gq-slot',lbl),gearCell(n,cls,slot,nowSet),ar,gearCell(p,cls,slot,best.set)); rows.append(r);
+  }
+  eh.append(el('span','chip warn',changes?pl(changes,'cambio','cambios'):'Ya llevas lo mejor')); ec.append(eh,rows);
+  ec.append(el('p','muted small',`Las filas en amarillo cambian.${snap.useCostume?' Tienes activado «Usar disfraz»: tu aspecto no cambia.':' Tu aspecto no tiene por qué cambiar: con «Usar disfraz» llevas lo mejor en atributos y te ves como quieras.'}`));
+  v.append(ec);
+  // Tienda y pasos
+  const two=el('div','char-two');
+  const bc=el('section','card'); bc.append(h2i('Con tu oro','coins'));
+  const gp=Math.floor(Number(snap.stats.gp)||0); const intro=el('p','muted small'); intro.append(document.createTextNode('Tienes '),el('b','',`${fmtNum(gp)} de oro`),document.createTextNode('. La siguiente pieza de tu clase en cada hueco, y si mejora la propuesta:')); bc.append(intro);
+  const cands=nextClassGear(snap,cls), bl=el('div','buy-list');
+  const sc=set=>{ let s=0; for(const [slot] of GEAR_SLOTS){ const it=set[slot]; if(!it) continue; const e=gearEff(it,cls); for(const k of ST_KEYS) s+=e[k]*(w[k]||0); } return s; };
+  const list=cands.map(it=>{ const nb=bestGear(items.concat([it]),cls,w,eq), nt=gearTotals(base,nb.set,cls), used=Object.values(nb.set).some(x=>x&&x.key===it.key), gain=nb.score-best.score;
+    const parts=ST_KEYS.map(s=>[s,nt[s]-b[s]]).filter(x=>x[1]>0); return {it,used:used&&gain>1e-9,gain,parts}; }).sort((x,y)=>(y.used-x.used)||(y.gain/(y.it.value||1))-(x.gain/(x.it.value||1)));
+  if(!list.length) bc.append(el('p','muted','No queda equipo de tu clase por comprar.'));
+  for(const x of list){
+    const r=el('div','buy'+(x.used?'':' no')); const l=el('div','buy-l'); l.append(habImg('shop_'+x.it.key,'sm',x.it.name,'shield')); const tx=el('div'); tx.append(el('b','',x.it.name));
+    const e=gearEff(x.it,cls); tx.append(el('div','muted small',ST_KEYS.filter(s=>e[s]).map(s=>`${ST_INFO[s][1]} ${e[s]}`).join(' · ')+(x.it.two?' · 2 manos':'')));
+    l.append(tx); const rr=el('div','buy-r'); const g=el('span','gold'); g.append(ic('coins'),document.createTextNode(` ${fmtNum(x.it.value)}`)); rr.append(g);
+    rr.append(el('span','delta '+(x.used?'up':'same'),x.used?x.parts.map(p=>`+${p[1]} ${ST_INFO[p[0]][1]}`).join(', '):'No mejora'));
+    if(x.used&&x.it.value>gp) rr.append(el('span','muted small',`Te faltan ${fmtNum(x.it.value-gp)}`));
+    r.append(l,rr); bl.append(r);
+  }
+  bc.append(bl,el('p','muted small','En Habitica: columna Recompensas o Tiendas → Mercado → Equipamiento. El Armario encantado (100 de oro) da una pieza al azar y no entra en la cuenta.'));
+  const hw=el('section','card'); hw.append(h2i('Cómo ponértelo en Habitica','help'));
+  const ol=el('ol','steps'); for(const s0 of ['Inventario → Equipamiento.','Pulsa cada pieza de las filas en amarillo y elige «Equipar».','Si no quieres cambiar de aspecto, activa «Usar disfraz» y viste lo que te guste en el disfraz.','Vuelve aquí y pulsa «Importar ahora»: verás los atributos nuevos.']) ol.append(el('li','',s0));
+  hw.append(ol,el('p','muted small','La app solo lee: no cambia el equipo por ti.'));
+  two.append(bc,hw); v.append(two);
+}
+
+/* ================= Misión: la batalla ================= */
+/* Golpes del chat del grupo: Habitica escribe uno por persona al cerrar su día */
+function battleEvents(chat,key){
+  const out=[]; let start=0;
+  for(const m of chat||[]){ const i=m&&m.info; if(!i||!i.type) continue; const t=msOf(m.timestamp); if(!Number.isFinite(t)) continue;
+    if(key&&i.quest&&i.quest!==key) continue;
+    if(i.type==='quest_start'){ if(t>start) start=t; out.push({t,k:'start'}); continue; }
+    const u=mdPlain(String(i.user||''));
+    if(i.type==='boss_damage'||i.type==='boss_dont_attack') out.push({t,k:'hit',u,ud:Number(i.userDamage)||0,bd:i.type==='boss_damage'?Number(i.bossDamage)||0:0});
+    else if(i.type==='user_found_items'){ let n=0; if(i.items&&typeof i.items==='object') for(const v of Object.values(i.items)) n+=Number(v)||0; out.push({t,k:'found',u,n}); }
+    else if(i.type==='boss_rage') out.push({t,k:'rage'});
+    else if(i.type==='boss_defeated'||i.type==='all_items_found') out.push({t,k:'win'});
+  }
+  return out.filter(e=>e.t>=start).sort((a,b)=>a.t-b.t).slice(-200);
+}
+const MEMBER_COLORS=['var(--hc-c1)','var(--hc-c5)','var(--hc-c2)','var(--hc-c4)','var(--hc-c6)','var(--hc-c7)','var(--hc-c3)','var(--hc-c8)'];
+function battleInfo(snap){
+  const q=snap.quest, info=q&&questInfo(q.key)||null, p=q&&q.progress||{}, ev=snap.events||[];
+  const names=[...new Set((snap.members||[]).map(m=>m.name).filter(Boolean).concat(ev.filter(e=>e.u).map(e=>e.u)))];
+  const color=n=>MEMBER_COLORS[Math.max(0,names.indexOf(n))%MEMBER_COLORS.length];
+  const st=ev.find(e=>e.k==='start'), startDay=st?ymd(new Date(st.t)):null;
+  const byDay=new Map(); for(const e of ev){ const d=ymd(new Date(e.t)); if(!byDay.has(d)) byDay.set(d,[]); byDay.get(d).push(e); }
+  const days=[...byDay.entries()].sort((a,b)=>a[0]<b[0]?1:-1);
+  const dmgDay=days.map(([d,l])=>[d,l.filter(e=>e.k==='hit').reduce((a,e)=>a+e.ud,0)]).filter(x=>x[1]>0);
+  const tot=new Map(); for(const e of ev) if(e.k==='hit') tot.set(e.u,(tot.get(e.u)||0)+e.ud);
+  return {q,info,p,days,dmgDay,tot,color,names,startDay};
+}
+function renderQuest(v){
+  const snap=habCfg?habSnapNow():null;
+  panelHead(v,'Misión',habCfg?[snap&&snap.partyName?`Grupo ${snap.partyName}`:'',lastImportText()].filter(Boolean).join(' · '):'');
+  if(!habCfg){ v.append(habConnectCard()); return; }
+  if(!snap){ v.append(el('div','empty','Pulsa «Importar ahora» para ver la misión.')); return; }
+  if(!snap.party){ v.append(el('div','empty','No estás en ningún grupo. En Habitica, entra en «Grupo» para crear uno o aceptar una invitación.')); return; }
+  const q=snap.quest;
+  if(!q){ v.append(el('div','empty','Tu grupo no tiene ninguna misión en curso. En Habitica: Grupo → «Empezar una misión» y elige un pergamino de tu inventario.')); return; }
+  const B=battleInfo(snap), info=B.info, p=B.p, isBoss=Number.isFinite(Number(p.hp));
+  if(!q.active){
+    const mem=q.members||{}, vals=Object.values(mem), yes=vals.filter(x=>x===true).length;
+    const c=el('section','card'); c.append(h2i(nmQuest(q.key),'swords'),el('p','',`La misión espera a que el grupo acepte: ${yes} de ${vals.length||'?'} ${vals.length===1?'ha aceptado':'han aceptado'}.`),el('p','muted small','En Habitica: Grupo → la misión → «Aceptar». Empieza cuando aceptan todos o quien la lanzó la arranca.')); v.append(c); return;
+  }
+  const mine=snap.questMine||{}, pend=Number(mine.up)||0;
+  // Escenario
+  const stage=el('section','bt-stage'); stage.setAttribute('aria-labelledby','btName');
+  const art=el('div','bt-boss'); art.append(habImg('quest_'+q.key,'boss',info&&info.boss||nmQuest(q.key),'swords'));
+  const hit=el('span','bt-hit'); hit.setAttribute('aria-hidden','true'); art.append(hit);
+  const side=el('div','bt-side');
+  const pills=el('div','bt-pills'); pills.append(el('span','bt-pill',isBoss?'Jefe':'Recolección'));
+  const firstDay=B.startDay||(B.days.length?B.days[B.days.length-1][0]:null); if(firstDay) pills.append(el('span','bt-pill',`Día ${daysBetween(firstDay,today())+1} de batalla`));
+  if(isBoss&&info&&info.str) pills.append(el('span','bt-pill',`Fuerza del jefe: ${fmt1(info.str)}`));
+  const h=el('h2','bt-name',info&&info.boss?mdPlain(info.boss):nmQuest(q.key)); h.id='btName';
+  side.append(pills,h);
+  if(info&&info.boss) side.append(el('div','bt-quest',nmQuest(q.key)));
+  let line='';
+  if(isBoss){
+    const hp=Math.max(0,Number(p.hp)), max=info&&info.hp||Math.max(hp,1), after=Math.max(0,hp-pend);
+    const lastDay=B.dmgDay.length?B.dmgDay[0][1]:0, before=Math.min(max,hp+(B.days.length&&B.days[0][0]===today()?lastDay:0));
+    const wrap=el('div','bt-hpw'), top=el('div','bt-hp-top'); const num=el('span','bt-hp-num'); num.append(document.createTextNode(fmtNum(Math.ceil(hp))+' '),el('small','',`de ${fmtNum(max)}`)); top.append(el('span','','Vida del jefe'),num);
+    const bar=el('div','bt-bar'); bar.setAttribute('role','img'); bar.setAttribute('aria-label',`Vida del jefe: ${fmtNum(Math.ceil(hp))} de ${fmtNum(max)}${pend?`; tu golpe pendiente de ${fmt1(pend)} lo dejaría en ${fmtNum(Math.ceil(after))}`:''}`);
+    const fill=el('i','bt-fill'), pd=el('i','bt-pend'), ticks=el('i','bt-ticks'); bar.append(fill,pd,ticks);
+    const pc=x=>(x/max*100)+'%';
+    const anim=lastView!=='quest'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+    fill.style.width=pc(anim?before:hp); pd.style.left=pc(after); pd.style.width=pc(hp-after);
+    if(anim) requestAnimationFrame(()=>requestAnimationFrame(()=>{ fill.style.width=pc(hp); }));
+    const leg=el('div','bt-leg'); const l1=el('span'); l1.append(el('i','sw hp'),document.createTextNode('Le queda')); leg.append(l1);
+    if(pend){ const l2=el('span'); l2.append(el('i','sw pend'),document.createTextNode(`Tu golpe pendiente: ${fmt1(pend)}`)); leg.append(l2); }
+    wrap.append(top,bar,leg); side.append(wrap);
+    if(info&&info.rage&&Number.isFinite(Number(p.rage))) side.append(habBar(info.rage.title?`Furia: ${mdPlain(info.rage.title)}`:'Furia del jefe',Number(p.rage),info.rage.value,'xp'));
+    const dueLeft=dailyRows().filter(r=>r.due&&!r.done).length;
+    line=pend?`Si cumples lo que te queda, al cerrar el día lo dejas en ${fmtNum(Math.ceil(after))}.`:'Aún no has sumado daño hoy: cada tarea cumplida le resta vida al cerrar el día.';
+    if(dueLeft) line+=` Te ${dueLeft===1?'falta 1 diaria: si no la haces':`faltan ${dueLeft} diarias: si no las haces`}, el jefe golpea a todo el grupo.`;
+    const ln=el('p','bt-line',line); side.append(ln);
+    if(pend){
+      const act=el('div','bt-act'); const play=el('button','bt-go'); play.type='button'; play.append(ic('play'),document.createTextNode(' Ver tu golpe de hoy'));
+      const back=el('button','bt-go alt'); back.type='button'; back.textContent='Volver a ahora';
+      play.addEventListener('click',()=>{ fill.style.width=pc(hp); pd.style.opacity='1'; art.classList.remove('shake'); hit.textContent=''; void art.offsetWidth;
+        requestAnimationFrame(()=>{ fill.style.width=pc(after); pd.style.opacity='0'; hit.textContent='−'+fmtNum(Math.round(pend)); art.classList.add('shake'); num.firstChild.nodeValue=fmtNum(Math.ceil(after))+' '; ln.textContent=`Así queda tras tu golpe de hoy: ${fmtNum(Math.ceil(after))}. Lo que hagan los demás no se ve hasta que cierren su día.`; }); });
+      back.addEventListener('click',()=>{ fill.style.width=pc(hp); pd.style.opacity='1'; hit.textContent=''; art.classList.remove('shake'); num.firstChild.nodeValue=fmtNum(Math.ceil(hp))+' '; ln.textContent=line; });
+      act.append(play,back); side.append(act);
+    }
+  } else {
+    const col=p.collect||{};
+    for(const [k,n] of Object.entries(col)){ const ci=info&&info.collect[k]; side.append(habBar(ci?ci.text:prettyKey(k),Number(n)||0,ci?ci.count:0,'xp')); }
+    side.append(el('p','bt-line',Number(mine.collectedItems)?`Hoy llevas ${pl(Number(mine.collectedItems),'objeto encontrado','objetos encontrados')}: se suman al cerrar el día.`:'Cada tarea cumplida puede encontrar objetos; se suman al cerrar el día.'));
+  }
+  stage.append(art,side); v.append(stage);
+  // Tarjetas
+  const grid=el('div','bt-grid');
+  if(isBoss){
+    const me=el('section','card'); me.append(h2i('Tu parte de hoy','user'));
+    const big=el('div','bt-mine'); big.append(el('b','',fmt1(pend)),el('span','muted','de daño pendiente')); me.append(big);
+    me.append(el('p','small','Lo sumas con cada tarea cumplida y le llega al jefe cuando se cierra tu día.'));
+    const kv=el('div','bt-kv'); const add=(a,b,cls)=>{ const r=el('div'); r.append(el('span','',a),el('b',cls||'',b)); kv.append(r); };
+    const dueLeft=dailyRows().filter(r=>r.due&&!r.done).length; add('Diarias que te quedan hoy',String(dueLeft));
+    if(dueLeft) add(dueLeft===1?'Si no la haces':'Si no las haces','el jefe ataca a todo el grupo','bad');
+    const st=snap.stats||{}; if(st.class==='wizard'&&Number(st.lvl)>=11){ const cs=charStats(snap), f=Math.floor((Number(st.mp)||0)/10); if(f) add(`Con tu maná (${fmtNum(Math.floor(Number(st.mp)||0))})`,`${pl(f,'Estallido','Estallidos')}: +${fmtNum(f*Math.ceil(cs.t.int*0.1))}`); }
+    me.append(kv); const lk=btn('Ver tus habilidades','small ghost',null,()=>{ ui.charTab='stats'; go('character'); },'chev-right'); me.append(lk);
+    grid.append(me);
+  }
+  // Quién pega más
+  const wc=el('section','card'); wc.append(h2i(isBoss?'Quién pega más':'Quién encuentra más','users'));
+  wc.append(el('p','muted small','Desde que empezó la misión, sacado del chat del grupo.'));
+  const tot=isBoss?B.tot:(()=>{ const m=new Map(); for(const [,l] of B.days) for(const e of l) if(e.k==='found') m.set(e.u,(m.get(e.u)||0)+e.n); return m; })();
+  const ml=el('div','bt-mem'), mem=(snap.members||[]).filter(m=>m.on||tot.has(m.name)), seen=new Set();
+  const rows=mem.map(m=>{ seen.add(m.name); return {n:m.name,me:m.id===snap.userId,v:tot.get(m.name)||0,hp:m.hp}; });
+  for(const [n,val] of tot) if(!seen.has(n)) rows.push({n,v:val,hp:null});
+  rows.sort((a,b)=>b.v-a.v); const mx=Math.max(1,...rows.map(r=>r.v));
+  for(const r of rows){ const d=el('div','bt-m'); const av=el('span','bt-av',(r.n||'?').trim().charAt(0).toUpperCase()); av.style.background=B.color(r.n);
+    const tx=el('div','bt-m-t'); const top=el('div','bt-m-top'); top.append(el('b','',r.n+(r.me?' (tú)':'')),el('span','bt-dmg',fmtNum(Math.round(r.v)))); const bar=el('div','bt-cb'); const f=el('i'); f.style.width=(r.v/mx*100)+'%'; f.style.background=B.color(r.n); bar.append(f);
+    tx.append(top,bar); if(r.hp!=null){ const low=r.hp<20; tx.append(el('span','small'+(low?' bad':' muted'),`Vida ${fmtNum(Math.floor(r.hp))} de 50${low?': vigílalo':''}`)); }
+    d.append(av,tx); ml.append(d); }
+  if(!rows.length) ml.append(el('p','muted','Aún no hay golpes en el chat del grupo.'));
+  wc.append(ml); grid.append(wc);
+  // Previsión
+  if(isBoss){
+    const fc=el('section','card'); fc.append(h2i('Previsión','calendar'));
+    const hp=Math.max(0,Number(p.hp)), max=info&&info.hp||hp, last=B.dmgDay.slice(0,7), avg=last.length?last.reduce((a,x)=>a+x[1],0)/last.length:0;
+    if(avg>0){ const n=Math.ceil(hp/avg), end=addDaysS(today(),n); const pp=el('p','small'); pp.append(document.createTextNode('El grupo le quita unos '),el('b','',`${fmtNum(Math.round(avg))} al día`),document.createTextNode('. A este ritmo cae en '),el('b','',n===1?'1 día':`unos ${n} días`),document.createTextNode(`, hacia el ${fmtDate(end)}.`)); fc.append(pp);
+      fc.append(bossChart(B,hp,max,avg)); }
+    else fc.append(el('p','muted','Cuando el grupo dé sus primeros golpes, aquí verás cuándo puede caer.'));
+    grid.append(fc);
+  }
+  v.append(grid);
+  // Golpe a golpe
+  const fd=el('section','card'); fd.append(h2i('Golpe a golpe','list')); fd.append(el('p','muted small','Lo que pasó al cerrar cada día, del chat del grupo.'));
+  const fg=el('div','bt-feed');
+  for(const [d,l] of B.days.slice(0,4)){
+    const col=el('div'); col.append(el('div','bt-day',d===today()?'Hoy':d===addDaysS(today(),-1)?'Ayer':cap(fmtDate(d))));
+    const ord=l.slice().sort((a,b)=>(b.ud||b.n||0)-(a.ud||a.n||0));
+    for(const e of ord){
+      const r=el('div','bt-ev'); const av=el('span','bt-av',(e.u||'·').trim().charAt(0).toUpperCase()||'·'); av.style.background=e.u?B.color(e.u):'var(--muted)';
+      let txt='', val='', bad=false;
+      if(e.k==='hit'){ txt=`${e.u} golpea al jefe`; val=`−${fmtNum(Math.round(e.ud))}`; }
+      else if(e.k==='found'){ txt=`${e.u} encuentra objetos`; val=`+${e.n}`; }
+      else if(e.k==='rage'){ txt='El jefe se enfurece'; val='¡furia!'; bad=true; }
+      else if(e.k==='win'){ txt='¡Misión cumplida!'; val=''; }
+      else if(e.k==='start'){ txt='Empieza la misión'; val=''; }
+      r.append(av,el('span','small',txt),el('span','bt-dmg',val)); col.append(r);
+      if(e.k==='hit'&&e.bd){ const r2=el('div','bt-ev'); const a2=el('span','bt-av','!'); a2.style.background='var(--danger)'; r2.append(a2,el('span','small',`El jefe ataca: ${e.u} dejó diarias sin hacer`),el('span','bt-dmg bad',`−${fmt1(e.bd)} de vida a todos`)); col.append(r2); }
+    }
+    fg.append(col);
+  }
+  if(!B.days.length) fg.append(el('p','muted','Aún no hay golpes en el chat del grupo.'));
+  fd.append(fg); v.append(fd);
+}
+/* Vida del jefe por día (reconstruida con los golpes del chat) y la previsión hasta 0 */
+function bossChart(B,hp,max,avg){
+  const pts=[[today(),hp]]; let cur=hp;
+  for(const [d,dm] of B.dmgDay){ cur=Math.min(max,cur+dm); pts.push([addDaysS(d,-1),cur]); }
+  pts.reverse(); const days=Math.ceil(hp/avg), first=pts[0][0], span=Math.max(1,daysBetween(first,today())+days);
+  const W=320,H=150,L=34,R=310,T=10,Bt=120, X=d=>L+(R-L)*daysBetween(first,d)/span, Y=v=>Bt-(Bt-T)*v/max;
+  const s=document.createElementNS(SVGNS,'svg'); s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('width','100%'); s.setAttribute('role','img');
+  s.setAttribute('aria-label',`Vida del jefe por día: de ${fmtNum(Math.round(pts[0][1]))} el ${fmtDate(first)} a ${fmtNum(Math.round(hp))} hoy; a este ritmo llega a 0 hacia el ${fmtDate(addDaysS(today(),days))}`);
+  const mk=(tag,at)=>{ const e=document.createElementNS(SVGNS,tag); for(const [k,val] of Object.entries(at)) e.setAttribute(k,val); s.append(e); return e; };
+  for(const v of [max,max/2,0]){ mk('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--line)'}); const t=mk('text',{x:L-4,y:Y(v)+4,'font-size':10,'text-anchor':'end',fill:'var(--muted)'}); t.textContent=fmtNum(Math.round(v)); }
+  const poly=pts.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ');
+  mk('path',{d:`M${poly.split(' ').join(' L')} L${X(today()).toFixed(1)},${Bt} L${L},${Bt} Z`,fill:'var(--hab-hp)',opacity:.14});
+  mk('polyline',{points:poly,fill:'none',stroke:'var(--hab-hp)','stroke-width':2.5,'stroke-linejoin':'round'});
+  mk('line',{x1:X(today()),y1:Y(hp),x2:X(addDaysS(today(),days)),y2:Bt,stroke:'var(--hab-hp)','stroke-width':2,'stroke-dasharray':'5 5'});
+  mk('circle',{cx:X(today()),cy:Y(hp),r:5,fill:'var(--hab-hp)',stroke:'var(--panel)','stroke-width':2});
+  const lab=(d,txt,anchor,bold)=>{ const t=mk('text',{x:X(d),y:140,'font-size':10,'text-anchor':anchor,fill:bold?'var(--ink)':'var(--muted)','font-weight':bold?700:400}); t.textContent=txt; };
+  lab(first,fmtDate(first),'start'); lab(today(),'hoy','middle',true); lab(addDaysS(today(),days),fmtDate(addDaysS(today(),days)),'end');
+  return s;
+}
+
 /* ================= Navegación ================= */
 const NAV_SHORT={settings:'Ajustes',help:'Ayuda',stats:'Estadísticas'};
-const VIEWS=[['today','Panel','grid'],['stable','Establo','paw'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['settings','Ajustes','sliders'],['help','Ayuda','help']];
+const VIEWS=[['today','Panel','grid'],['character','Personaje','user'],['quest','Misión','swords'],['stable','Establo','paw'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['settings','Ajustes','sliders'],['help','Ayuda','help']];
 function go(v){ if(ui.view!==v){ ui.view=v; saveUI(); lastView=null; } if(v==='today') selDate=null; renderApp(); }
 /* Alerta fija de vida baja: se ve en todas las pantallas mientras la vida esté por debajo del aviso (Ajustes → Habitica) */
 function renderHpAlert(){
@@ -3429,7 +4049,7 @@ function renderNav(){
   const bn=$('bottomNav'); bn.replaceChildren();
   const mk=(v,label,icon)=>{ const b=btn('',ui.view===v?'active':'',null,()=>go(v)); b.append(ic(icon),el('span','',label)); if(ui.view===v) b.setAttribute('aria-current','page'); return b; };
   bn.append(mk('today','Panel','grid'),mk('stable','Establo','paw'),mk('calendar','Calendario','calendar'),mk('stats','Estadísticas','bar-chart'));
-  const more=btn('',['tables','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.dataset.v='more'; more.append(ic('menu'),el('span','','Más')); bn.append(more);
+  const more=btn('',['character','quest','tables','settings','help'].includes(ui.view)?'active':'',null,openMoreMenu); more.dataset.v='more'; more.append(ic('menu'),el('span','','Más')); bn.append(more);
 }
 
 /* ================= Repintado ================= */
@@ -3442,6 +4062,8 @@ function renderApp(){
   if(!VIEWS.some(x=>x[0]===ui.view)) ui.view='today';
   if(ui.view==='today') renderPanel(v);
   else if(ui.view==='stable') renderStable(v);
+  else if(ui.view==='character') renderCharacter(v);
+  else if(ui.view==='quest') renderQuest(v);
   else if(ui.view==='calendar') renderCalendar(v);
   else if(ui.view==='stats') renderStats(v);
   else if(ui.view==='tables') renderTables(v);
@@ -4488,7 +5110,7 @@ function openMoreMenu(){
     dlg.append(modalHeader('Más'));
     const l=el('div','menu-list');
     const it=(v,label,icon)=>btn(label,'',null,()=>{ closeDialog(); go(v); },icon);
-    l.append(it('tables','Tablas','table'),it('settings','Ajustes','sliders'),it('help','Ayuda','help'));
+    l.append(it('character','Personaje','user'),it('quest','Misión','swords'),it('tables','Tablas','table'),it('settings','Ajustes','sliders'),it('help','Ayuda','help'));
     if(deferredPrompt) l.append(btn('Instalar app','',null,()=>{ closeDialog(); installApp(); },'monitor-down'));
     dlg.append(l);
   });
@@ -4505,6 +5127,9 @@ function renderHelp(v){
   sec('Panel',['Personaje (con tu mascota y montura), misión del grupo con la vida del jefe, resumen del establo, diarias de hoy con su racha y su color en Habitica, hábitos de hoy con lo pulsado en + y −, tareas pendientes, diarias cumplidas y experiencia de los últimos 14 días, y tu año de diarias. Toca una diaria o un hábito para ver su ficha.']);
   sec('Establo',['Qué huevos puedes eclosionar ya (con la poción y la mascota que sale), qué mascotas puedes convertir en montura con la comida que tienes (la favorita suma 5 y la demás 2; a 50 es montura), tu comida con la poción que prefiere cada una, tus huevos y pociones, y la colección de mascotas normales (9 huevos × 10 pociones).']);
   sec('Calendario, Estadísticas y Tablas',['Calendario: cada día con el color de lo cumplido; toca un día para ver el detalle.','Estadísticas y Tablas: los botones «Diarias» y «Hábitos» eligen qué se muestra (pulsa uno para quitarlo o añadirlo; pueden ir los dos, pero no ninguno) y el desplegable lista solo lo elegido.','Estadísticas: con «Todas las diarias y hábitos», experiencia ganada, horas a las que marcas, color de cada tarea en Habitica, rachas, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación, etiquetas y relaciones. Con un hábito, su ficha: puntuación, valor en Habitica a lo largo del tiempo, calendario, rachas, frecuencia y cumplimiento.','Tablas: resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones; «Exportar CSV» para Excel (separador «;» y coma decimal).']);
+  sec('Personaje',['Atributos y habilidades: cada atributo con lo que aporta tu nivel (la mitad), los puntos que asignaste, el equipo, el bonus de clase (el equipo de tu clase cuenta doble) y los buffs de hoy, y qué efecto tiene. Las habilidades de tu clase salen con sus cifras según tus atributos y cuántas veces te llega el maná.',
+    'Equipamiento: eliges para qué lo quieres (experiencia y maná, oro, equilibrio, aguantar o golpear al jefe) y se propone la mejor combinación entre las piezas que tienes, teniendo en cuenta que un arma a dos manos deja libre la mano secundaria. También qué piezas de tu clase de la tienda mejorarían la propuesta. El equipo se cambia en Habitica: Inventario → Equipamiento.']);
+  sec('Misión',['La batalla con el jefe: su vida, tu golpe pendiente (lo que le quitarás al cerrar tu día), quién pega más, la previsión de cuándo cae y lo que pasó cada día. Los golpes de cada uno salen del chat del grupo, donde Habitica los anota al cerrar el día de cada persona; el golpe pendiente de los demás no se puede ver.']);
   sec('Diarias con lista (cuotas)',['Una diaria con un solo día fijo (por ejemplo, semanal los domingos, mensual o anual) y 2 o más elementos en la lista se trata como una cuota: «3 de la lista por semana (cierra el domingo)». El ciclo va del día siguiente al anterior día fijo hasta el día fijo, incluido.',
     ['El ciclo se cumple si completas la lista o si marcas la diaria en Habitica, también si la marcas hasta 3 días después del día fijo (por ejemplo, el lunes con el recordatorio) o con «Registrar la actividad de ayer».','En los calendarios, el periodo cumplido sale en color claro y los días en que marcaste elementos de la lista, en oscuro; cuantos más elementos ese día, más oscuro. Un ciclo no cumplido marca en rojo su día fijo.','Habitica no guarda cuándo marcas cada elemento de la lista: se anota el día en que la app lo ve marcado. Para que el día sea exacto, abre la app (o pulsa «Importar ahora») el día que marques.','En ciclos antiguos, de los que Habitica solo guarda la diaria marcada, sale en oscuro el día en que se marcó y el periodo en claro.','Las listas de un solo elemento siguen como una diaria normal.']]);
   sec('Sincronización y copias',['Ajustes → Sincronización guarda el historial cifrado en un Gist secreto de tu GitHub para tenerlo igual en el PC y en el móvil (mismo token y misma contraseña en los dos).','Ajustes → Copias de seguridad exporta un archivo JSON. No uses «Borrar datos del sitio» de Chrome: borraría también las otras apps publicadas en la misma dirección.']);
@@ -4556,7 +5181,7 @@ window.__habitos={
   syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
   mark(hid,d,v){ return commit('Marcado',()=>setLog(hid,d,v)); },   // solo para las pruebas: la interfaz no marca
   mdPlain, mdHTML:s=>{ const d=document.createElement('div'); d.append(mdFrag(s)); return d.innerHTML; },
-  stableInfo, sellInfo, pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
+  stableInfo, sellInfo, allPotions:()=>allMagicPotions(), pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
   habSync, get habRt(){ return habRt; }, get habCfg(){ return habCfg; }, scheduleText, habSchedule:t=>habSchedule(t).schedule, habDailyDays:t=>Object.fromEntries(habDailyDays(t).days), habHabitDays:t=>Object.fromEntries(habHabitDays(t).days), habDayOf, habOpenDay, dueFixed, normSchedule,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
