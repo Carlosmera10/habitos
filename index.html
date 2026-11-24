@@ -628,6 +628,38 @@ dialog{border-radius:20px;background:var(--panel)}
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
 /* Panel de Habitica */
+.hp-alert{border-top:1px solid var(--danger-line);background:var(--danger-soft);color:var(--ink)}
+.hp-alert .hp-in{max-width:1120px;margin:0 auto;padding:8px 28px;display:flex;align-items:center;gap:12px}
+.hp-alert .hp-in>.ic{color:var(--hab-hp);width:22px;height:22px;flex-shrink:0;fill:var(--hab-hp)}
+.hp-alert.crit .hp-in>.ic{animation:hpbeat 1.2s ease-in-out infinite}
+@keyframes hpbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.hp-alert.crit .hp-in>.ic{animation:none}}
+.hp-bar{width:110px;height:10px;border-radius:6px;background:color-mix(in srgb,var(--hab-hp) 18%,var(--panel));overflow:hidden;flex-shrink:0}
+.hp-bar i{display:block;height:100%;background:var(--hab-hp);border-radius:6px}
+.hp-txt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.3}
+.hp-txt b{color:var(--danger);font-size:.95rem}
+.hp-txt span{font-size:.82rem;color:var(--ink-2)}
+.hp-alert .ghost{flex-shrink:0}
+html.has-hp-alert .page-head{top:calc(var(--topbar-h) + var(--alert-h,56px))}
+.hp-set{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px}
+.hp-set label{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.hp-set label .ic{color:var(--hab-hp)}
+.hp-set input{width:5.5rem}
+.sell-card .inv.sell{border-color:color-mix(in srgb,var(--hab-xp) 45%,var(--line))}
+.sell-gold{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:color-mix(in srgb,var(--hab-xp) 70%,var(--ink))}
+.sell-gold .ic{width:16px;height:16px;color:var(--hab-xp)}
+.sell-card ol.steps{margin:14px 0 6px;padding-left:1.3rem;color:var(--ink-2)}
+.sell-card ol.steps li{margin:3px 0}
+@media(max-width:760px){
+  .topbar{display:block;background:transparent;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .topbar .topbar-in{display:none}
+  .hp-alert{border-top:0;border-bottom:1px solid var(--danger-line)}
+  .hp-alert .hp-in{padding:8px 14px calc(8px);gap:10px}
+  .hp-bar{width:56px}
+  .hp-alert .hp-go .lbl{display:none}
+  .hp-txt span{font-size:.78rem}
+  html.has-hp-alert .page-head{top:var(--alert-h,64px)}
+}
 .filters select.hsel{min-width:16.5rem}
 @media (max-width:720px){.filters select.hsel{min-width:0}}
 .seg.types button{display:inline-flex;align-items:center;gap:4px;padding:7px 12px}
@@ -887,6 +919,7 @@ svg .gl0{stroke:var(--ink);stroke-width:1;opacity:.55}
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
   <symbol id="i-paw" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></symbol>
   <symbol id="i-egg" viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7.5C19 9 15.5 2 12 2S5 9 5 14.5C5 19 8 22 12 22z"/></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
 </svg>
 
@@ -897,6 +930,7 @@ svg .gl0{stroke:var(--ink);stroke-width:1;opacity:.55}
       <nav class="topnav" id="navList" aria-label="Navegación"></nav>
       <button type="button" class="install secondary small" id="installBtn" hidden><svg class="ic sm"><use href="#i-monitor-down"/></svg>Instalar app</button>
     </div>
+    <div class="hp-alert" id="hpAlert" role="status" hidden></div>
   </header>
   <main id="main"><div id="view"></div></main>
 </div>
@@ -1034,7 +1068,7 @@ function defaultState(){
     tags:[],
     moods:[],
     habitica:{userId:null,lastImport:null,map:[],history:[],xp:{},checks:{},done:{}},
-    settings:{weekStart:1,lastBackup:null,backupDays:7,backupSnooze:null,notifyPending:true,createdAt:t},
+    settings:{weekStart:1,lastBackup:null,backupDays:7,backupSnooze:null,notifyPending:true,hpAlert:20,createdAt:t},
     deleted:{}};
 }
 function normSchedule(s){
@@ -1176,7 +1210,7 @@ function normalizeState(x){
   const s=x.settings&&typeof x.settings==='object'?x.settings:{};
   st.settings={weekStart:[0,1].includes(Number(s.weekStart))?Number(s.weekStart):1,
     lastBackup:isoOr(s.lastBackup,null),backupDays:[0,7,14,30].includes(Number(s.backupDays))?Number(s.backupDays):7,
-    backupSnooze:isoOr(s.backupSnooze,null),notifyPending:s.notifyPending!==false,mood:s.mood!==false,createdAt:isoOr(s.createdAt,nowIso())};
+    backupSnooze:isoOr(s.backupSnooze,null),notifyPending:s.notifyPending!==false,hpAlert:(n=>Number.isInteger(n)&&n>=0&&n<=49?n:20)(Number(s.hpAlert)),mood:s.mood!==false,createdAt:isoOr(s.createdAt,nowIso())};
   const limit=new Date(); limit.setDate(limit.getDate()-TOMBSTONE_DAYS); const lim=limit.toISOString();
   const del={};
   if(x.deleted&&typeof x.deleted==='object') for(const [k,v] of Object.entries(x.deleted)) if(typeof k==='string'&&validIso(v)){ const iso=new Date(v).toISOString(); if(iso>=lim) del[k]=iso; }
@@ -2490,13 +2524,17 @@ function habApply(changed){
 }
 /* Nombres en español de huevos, pociones, comida y misiones (se guardan 30 días en este dispositivo) */
 let habNames=(()=>{ try{ const n=JSON.parse(localStorage.getItem(HAB_NAMES_KEY)); if(n&&n.eggs) return n; }catch(e){} return null; })();
+/* Lo que da Habitica al vender (oro por unidad); sin contenido descargado, sus valores habituales */
+const DROP_POT_VAL={Base:2,White:2,Desert:2,Red:3,Shade:3,Skeleton:3,Zombie:4,CottonCandyPink:4,CottonCandyBlue:4,Golden:5};
+const sellVal=(type,k)=>{ const v=habNames&&habNames.vals&&habNames.vals[type]&&habNames.vals[type][k]; return Number.isFinite(v)&&v>=0?v:type==='eggs'?3:(DROP_POT_VAL[k]||2); };
 async function habLoadNames(){
-  if(habNames&&Date.now()-Date.parse(habNames.at)<30*864e5) return;
+  if(habNames&&habNames.vals&&Date.now()-Date.parse(habNames.at)<30*864e5) return;
   try{
     const c=await hab('/content?language=es',{anon:true});
     const pick=o=>{ const r={}; for(const [k,v] of Object.entries(o||{})) if(v&&typeof v.text==='string') r[k]=v.text; return r; };
     const quests={}; for(const [k,q] of Object.entries(c.quests||{})){ if(!q) continue; const col={}; if(q.collect&&typeof q.collect==='object') for(const [ck,cv] of Object.entries(q.collect)) col[ck]={text:cv&&cv.text||ck,count:Number(cv&&cv.count)||0}; quests[k]={text:typeof q.text==='string'?q.text:k,hp:q.boss&&Number(q.boss.hp)||null,boss:q.boss&&q.boss.name||'',collect:col}; }
-    habNames={at:nowIso(),eggs:pick(c.eggs),potions:pick(c.hatchingPotions),food:pick(c.food),quests};
+    const vals=o=>{ const r={}; for(const [k,v] of Object.entries(o||{})) if(v&&Number.isFinite(Number(v.value))) r[k]=Number(v.value); return r; };
+    habNames={at:nowIso(),eggs:pick(c.eggs),potions:pick(c.hatchingPotions),food:pick(c.food),quests,vals:{eggs:vals(c.eggs),potions:vals(c.hatchingPotions)}};
     try{ localStorage.setItem(HAB_NAMES_KEY,JSON.stringify(habNames)); }catch(e){}
   }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
 }
@@ -2628,6 +2666,33 @@ function stableInfo(items){
   const mountable=growing.filter(g=>g.canMount);
   return {combos,hatchMax,growing,mountable,foodTotal,saddles,food};
 }
+/* Huevos y pociones que ya no hacen falta para nada: todas las mascotas y monturas que pueden dar están conseguidas.
+   Cada combinación pide: mascota y montura → nada; solo una de las dos → 1 (si se cría la mascota hasta montura, hay que volver a eclosionarla);
+   ninguna → 2; las pociones raras no dan montura → 1 si falta la mascota. Cuentan las pociones normales y los huevos normales siempre;
+   los huevos de misión y las pociones mágicas o raras, si los tienes o ya tienes alguna de sus mascotas o monturas. */
+function sellInfo(items){
+  const eggs=items.eggs||{}, pots=items.hatchingPotions||{}, pets=items.pets||{}, mounts=items.mounts||{};
+  const touched=Object.keys(pets).filter(k=>pets[k]>0||pets[k]===-1).concat(Object.keys(mounts).filter(k=>mounts[k]));
+  const cEggs=habNames&&habNames.eggs?habNames.eggs:null, cPots=habNames&&habNames.potions?habNames.potions:null;
+  const eggOk=e=>DROP_EGGS.includes(e)||QUEST_EGGS.includes(e)||!!(cEggs&&cEggs[e]);
+  const potOk=p=>DROP_POTIONS.includes(p)||WACKY_POTIONS.includes(p)||(cPots?!!cPots[p]:false)||pots[p]>0;
+  const E=new Set(DROP_EGGS), P=new Set(DROP_POTIONS);
+  for(const [e,n] of Object.entries(eggs)) if(n>0) E.add(e);
+  for(const [p,n] of Object.entries(pots)) if(n>0) P.add(p);
+  for(const k of touched){ const [e,p]=k.split('-'); if(e&&p&&eggOk(e)&&potOk(p)){ E.add(e); P.add(p); } }
+  const fits=(e,p)=>DROP_POTIONS.includes(p)?true:DROP_EGGS.includes(e);
+  const need=(e,p)=>{ const k=`${e}-${p}`, hp=pets[k]>0, hm=!!mounts[k]; if(WACKY_POTIONS.includes(p)) return hp?0:1; return hp&&hm?0:hp||hm?1:2; };
+  const out=[];
+  for(const [type,inv,others,img] of [['eggs',eggs,P,'egg'],['potions',pots,E,'potion']]){
+    for(const [k,n] of Object.entries(inv)){ if(!(n>0)) continue;
+      let req=0; for(const o of others){ const [e,p]=type==='eggs'?[k,o]:[o,k]; if(fits(e,p)) req+=need(e,p); }
+      const extra=n-req; if(extra>0){ const each=sellVal(type,k); out.push({type,key:k,have:n,need:req,extra,each,gold:extra*each}); }
+    }
+  }
+  const nm=x=>x.type==='eggs'?nmEgg(x.key):nmPot(x.key);
+  out.sort((a,b)=>(a.type!==b.type?(a.type==='eggs'?-1:1):0)||b.gold-a.gold||nm(a).localeCompare(nm(b),'es'));
+  return {list:out,count:out.reduce((a,x)=>a+x.extra,0),gold:out.reduce((a,x)=>a+x.gold,0)};
+}
 function habAlerts(){
   const snap=habRt.user?habSnap():(habCfg&&habCfg.snap);
   if(!snap||!snap.items) return null;
@@ -2637,6 +2702,7 @@ function habAlerts(){
   if(s.mountable.length) out.push(`tu comida alcanza para ${pl(s.mountable.length,'montura','monturas')}`);
   else if(s.foodTotal&&s.growing.length) out.push(`tienes ${pl(s.foodTotal,'pieza','piezas')} de comida para tus mascotas`);
   if(s.saddles) out.push(`tienes ${pl(s.saddles,'silla de montar','sillas de montar')}`);
+  const sv=sellInfo(snap.items); if(sv.count) out.push(`puedes vender ${pl(sv.count,'huevo o poción que ya no necesitas','huevos y pociones que ya no necesitas')} por ${fmtNum(sv.gold)} de oro`);
   return out.length?{text:cap(listY(out)),s}:null;
 }
 
@@ -3128,6 +3194,25 @@ function renderStable(v){
     c3.append(gr);
   }
   v.append(c3);
+  // 4b. Para vender: lo que ya no hace falta para ninguna mascota ni montura
+  const sv=sellInfo(items);
+  if(sv.count){
+    const cs=el('section','card st-card sell-card'); cs.append(h2i(`Para vender: ${fmtNum(sv.gold)} de oro`,'coins'));
+    cs.append(el('p','muted small',`${pl(sv.count,'objeto','objetos')} que ya no te hacen falta. Ya está guardado lo necesario para las mascotas y monturas que te faltan, incluido volver a eclosionar una mascota después de convertirla en montura.`));
+    const gr=el('div','inv-grid');
+    for(const x of sv.list){
+      const it=el('div','inv sell'); it.append(x.type==='eggs'?eggImg(x.key,'lg'):potImg(x.key,'lg'),el('b','inv-n','×'+x.extra),el('div','inv-name',x.type==='eggs'?nmEgg(x.key):nmPot(x.key)));
+      const g=el('div','sell-gold'); g.append(ic('coins'),document.createTextNode(` ${fmtNum(x.gold)} de oro`)); it.append(g);
+      it.append(el('div','muted small',`${x.each} cada ${x.type==='eggs'?'huevo':'poción'} · tienes ${x.have}${x.need?`, guarda ${x.need}`:''}`));
+      gr.append(it);
+    }
+    cs.append(gr);
+    const how=el('ol','steps small');
+    for(const s0 of ['En la web: Tiendas → Mercado.','Abajo, abre la barra «Inventario rápido» y elige Huevos o Pociones.','Pulsa el objeto, elige la cantidad que ves aquí y pulsa «Vender».','En la app del móvil: Menú → Objetos, toca el objeto y elige vender.']) how.append(el('li','',s0));
+    cs.append(how);
+    cs.append(el('p','small-print','No se cuentan las pociones mágicas que no tienes: si piensas comprar alguna, guarda huevos normales para ella.'));
+    v.append(cs);
+  }
   // 5. Huevos y pociones (desplegables)
   const c4=el('section','card st-card'); c4.append(h2i('Huevos y pociones','egg'));
   const eggs=Object.entries(items.eggs||{}).filter(([k,n])=>n>0), pots=Object.entries(items.hatchingPotions||{}).filter(([k,n])=>n>0);
@@ -3292,6 +3377,10 @@ function habSettingsCard(){
   const u=habRt.user||{}, snap=habSnapNow();
   sc.append(el('p','muted',`Conectado${snap&&snap.name?` como ${snap.name}`:''}. ${lastImportText()||'Todavía no se ha importado nada'}. Se importa al abrir la app, al volver a ella y cada 3 minutos. Solo se lee: nunca se cambia nada en Habitica.`));
   if(u.preferences) sc.append(el('p','small-print',`Inicio de día en Habitica: ${pad(habDayStart())}:00. Día abierto en Habitica: ${fmtDate(habOpenDay())}.`));
+  { const f=el('div','field-row hp-set'), lb=el('label','',''), inp=field('input'); inp.type='number'; inp.min='0'; inp.max='49'; inp.step='1'; inp.id='hpAlertIn'; inp.value=String(state.settings.hpAlert); inp.inputMode='numeric';
+    lb.htmlFor='hpAlertIn'; lb.append(ic('heart'),document.createTextNode(' Avisar si la vida baja de'));
+    inp.addEventListener('change',()=>{ const n=Math.round(Number(inp.value)); if(!Number.isFinite(n)||n<0||n>49){ inp.value=String(state.settings.hpAlert); showToast('Pon un número de 0 a 49 (0 apaga el aviso)',{timeout:3500}); return; } setSetting('hpAlert',n); showToast(n?`Aviso de vida por debajo de ${n}`:'Aviso de vida apagado',{timeout:3000}); });
+    f.append(lb,inp,el('span','muted small','de 50 · 0 lo apaga. Se ve fijo arriba en todas las pantallas.')); sc.append(f); }
   const r=el('div','row'); r.append(btn('Desconectar','danger',null,()=>{ if(!confirm('Se borran de este dispositivo el ID y el token de Habitica. Los hábitos y su historial se conservan. ¿Desconectar?')) return; clearInterval(habTimer); clearTimeout(habRt.timer); habCfg=null; saveHabCfg(); Object.assign(habRt,{user:null,tasks:null,todos:null,party:null,status:'off',err:null}); renderApp(); },'x')); sc.append(r);
   // Hábitos que no vienen de Habitica
   const own=state.habits.filter(h=>!habLinkOf(h.id));
@@ -3311,7 +3400,24 @@ function habSettingsCard(){
 const NAV_SHORT={settings:'Ajustes',help:'Ayuda',stats:'Estadísticas'};
 const VIEWS=[['today','Panel','grid'],['stable','Establo','paw'],['calendar','Calendario','calendar'],['stats','Estadísticas','bar-chart'],['tables','Tablas','table'],['settings','Ajustes','sliders'],['help','Ayuda','help']];
 function go(v){ if(ui.view!==v){ ui.view=v; saveUI(); lastView=null; } if(v==='today') selDate=null; renderApp(); }
+/* Alerta fija de vida baja: se ve en todas las pantallas mientras la vida esté por debajo del aviso (Ajustes → Habitica) */
+function renderHpAlert(){
+  const a=$('hpAlert'); if(!a) return;
+  const lim=state.settings.hpAlert, snap=habCfg?habSnapNow():null, st=snap&&snap.stats;
+  const hp=st&&Number.isFinite(st.hp)?st.hp:null, max=st&&st.maxHealth||50;
+  const show=!!(lim&&hp!==null&&hp<lim);
+  a.hidden=!show; document.documentElement.classList.toggle('has-hp-alert',show);
+  if(!show){ a.replaceChildren(); document.documentElement.style.removeProperty('--alert-h'); return; }
+  const gp=Number(st.gp)||0, crit=hp<Math.min(10,lim);
+  a.className='hp-alert'+(crit?' crit':'');
+  const box=el('div','hp-in'), b=el('div','hp-bar'), f=el('i'); f.style.width=Math.max(2,Math.min(100,hp/max*100))+'%'; b.append(f);
+  const t=el('div','hp-txt'); t.append(el('b','',`Vida baja: ${fmtNum(Math.floor(hp))} de ${max}`),el('span','',gp>=25?`Poción de salud: +15 por 25 de oro (tienes ${fmtNum(Math.floor(gp))}), en Recompensas.`:`Aviso por debajo de ${lim}. Cumple hoy tus diarias para no perder más.`));
+  const set=btn('','small ghost hp-go','Cambiar el aviso de vida',()=>go('settings'),'sliders'); set.append(el('span','lbl','Cambiar aviso'));
+  box.append(ic('heart'),b,t,set); a.replaceChildren(box);
+  requestAnimationFrame(()=>document.documentElement.style.setProperty('--alert-h',a.offsetHeight+'px'));
+}
 function renderNav(){
+  renderHpAlert();
   const nl=$('navList'); nl.replaceChildren();
   for(const [v,label,icon] of VIEWS){
     const b=btn('', 'nav-item'+(ui.view===v?' active':''),null,()=>go(v));
@@ -4450,7 +4556,7 @@ window.__habitos={
   syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
   mark(hid,d,v){ return commit('Marcado',()=>setLog(hid,d,v)); },   // solo para las pruebas: la interfaz no marca
   mdPlain, mdHTML:s=>{ const d=document.createElement('div'); d.append(mdFrag(s)); return d.innerHTML; },
-  stableInfo, pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
+  stableInfo, sellInfo, pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
   habSync, get habRt(){ return habRt; }, get habCfg(){ return habCfg; }, scheduleText, habSchedule:t=>habSchedule(t).schedule, habDailyDays:t=>Object.fromEntries(habDailyDays(t).days), habHabitDays:t=>Object.fromEntries(habHabitDays(t).days), habDayOf, habOpenDay, dueFixed, normSchedule,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
