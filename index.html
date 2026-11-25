@@ -2497,7 +2497,7 @@ function habNameFrag(h){
 const HAB_KEY='habitos_v1_hab', HAB_NAMES_KEY='habitos_v1_habnames2', HAB_API='https://habitica.com/api/v3';
 /* Normas de la API de Habitica: cada llamada lleva «X-Client» con el ID de usuario de quien creó la herramienta y su nombre
    (https://github.com/HabitRPG/habitica/wiki/API-Usage-Guidelines). El ID de usuario no es secreto; el token sí, y nunca va aquí. */
-const HAB_CREATOR_ID='', HAB_APP='habitos';
+const HAB_CREATOR_ID='9c7f051c-08f8-4eab-b3a7-d194cb165944', HAB_APP='habitos';
 const habClient=()=>`${HAB_CREATOR_ID||habCfg.userId}-${HAB_APP}`;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function loadHabCfg(){ try{ const c=JSON.parse(localStorage.getItem(HAB_KEY)); if(c&&typeof c==='object'&&c.userId&&c.token) return c; }catch(e){} return null; }
