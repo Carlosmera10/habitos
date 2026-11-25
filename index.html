@@ -568,10 +568,8 @@ input.field:focus,select.field:focus,textarea.field:focus{border-color:var(--ink
 .mood-btn .mv{font-size:1.2rem;font-weight:800;line-height:1}
 .mood-btn .ml{font-size:.72rem;font-weight:600;color:var(--muted);white-space:nowrap}
 .mood-btn[data-m="1"]{--mc:var(--m1)}.mood-btn[data-m="2"]{--mc:var(--m2)}.mood-btn[data-m="3"]{--mc:var(--m3)}.mood-btn[data-m="4"]{--mc:var(--m4)}.mood-btn[data-m="5"]{--mc:var(--m5)}
-.mood-btn[aria-pressed=true]{background:var(--mc);border-color:var(--mc);color:#fff}
-.mood-btn[aria-pressed=true] .ml{color:#fff}
-.mood-btn[data-m="3"][aria-pressed=true]{color:var(--ink)}
-.mood-btn[data-m="3"][aria-pressed=true] .ml{color:var(--ink)}
+.mood-btn[aria-pressed=true]{background:color-mix(in srgb,var(--mc) 26%,var(--panel));border-color:var(--mc);box-shadow:inset 0 0 0 1.5px var(--mc);color:var(--ink)}
+.mood-btn[aria-pressed=true] .ml{color:var(--ink);font-weight:750}
 .hm-grid b.mo1{background:var(--m1)}.hm-grid b.mo2{background:var(--m2)}.hm-grid b.mo3{background:var(--m3)}.hm-grid b.mo4{background:var(--m4)}.hm-grid b.mo5{background:var(--m5)}
 .rel-list b.neg{color:var(--danger)}
 .sub-h{font-size:.95rem;margin:16px 0 8px}
@@ -630,6 +628,16 @@ dialog{border-radius:20px;background:var(--panel)}
 @media(prefers-reduced-motion:reduce){.toast.party{animation:none}}
 /* Habitica */
 /* Panel de Habitica */
+/* Ánimo: ventana y día */
+.mood-day{margin:-4px 0 14px}
+.mood-lbl{display:block;font-weight:650;font-size:.9rem;margin:6px 0 6px}
+.mood-acts{margin-top:16px;align-items:center}
+.mood-acts .grow{flex:1}
+.danger-txt{color:var(--danger)}
+.day-mood{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--field);border:1px solid var(--line);margin:0 0 14px}
+.dm-dot{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--chip);color:var(--chip-ink);flex:none}
+.day-mood.mo1 .dm-dot{background:var(--m1);color:#fff}.day-mood.mo2 .dm-dot{background:var(--m2);color:#fff}.day-mood.mo3 .dm-dot{background:var(--m3);color:var(--ink)}.day-mood.mo4 .dm-dot{background:var(--m4);color:#fff}.day-mood.mo5 .dm-dot{background:var(--m5);color:#fff}
+.day-note{margin-top:3px;font-size:1rem;overflow-wrap:anywhere}
 /* Personaje */
 .char-tabs{margin:0 0 16px}
 .char-tabs button{padding:8px 14px;font-weight:650}
@@ -1219,7 +1227,7 @@ function defaultState(){
     tags:[],
     moods:[],
     habitica:{userId:null,lastImport:null,map:[],history:[],xp:{},checks:{},done:{}},
-    settings:{weekStart:1,lastBackup:null,backupDays:7,backupSnooze:null,notifyPending:true,hpAlert:20,createdAt:t},
+    settings:{weekStart:1,lastBackup:null,backupDays:7,backupSnooze:null,notifyPending:true,hpAlert:20,mood:true,moodHour:20,createdAt:t},
     deleted:{}};
 }
 function normSchedule(s){
@@ -1361,7 +1369,7 @@ function normalizeState(x){
   const s=x.settings&&typeof x.settings==='object'?x.settings:{};
   st.settings={weekStart:[0,1].includes(Number(s.weekStart))?Number(s.weekStart):1,
     lastBackup:isoOr(s.lastBackup,null),backupDays:[0,7,14,30].includes(Number(s.backupDays))?Number(s.backupDays):7,
-    backupSnooze:isoOr(s.backupSnooze,null),notifyPending:s.notifyPending!==false,hpAlert:(n=>Number.isInteger(n)&&n>=0&&n<=49?n:20)(Number(s.hpAlert)),mood:s.mood!==false,createdAt:isoOr(s.createdAt,nowIso())};
+    backupSnooze:isoOr(s.backupSnooze,null),notifyPending:s.notifyPending!==false,hpAlert:(n=>Number.isInteger(n)&&n>=0&&n<=49?n:20)(Number(s.hpAlert)),mood:s.mood!==false,moodHour:(n=>Number.isInteger(n)&&n>=0&&n<=23?n:20)(Number(s.moodHour)),createdAt:isoOr(s.createdAt,nowIso())};
   const limit=new Date(); limit.setDate(limit.getDate()-TOMBSTONE_DAYS); const lim=limit.toISOString();
   const del={};
   if(x.deleted&&typeof x.deleted==='object') for(const [k,v] of Object.entries(x.deleted)) if(typeof k==='string'&&validIso(v)){ const iso=new Date(v).toISOString(); if(iso>=lim) del[k]=iso; }
@@ -3458,6 +3466,13 @@ function openDayInfo(d,h){
   hideTip(); if(d>today()) return;
   openDialog(dlg=>{
     dlg.append(modalHeader(cap(fmtDate(d,true))));
+    if(state.settings.mood&&!h){
+      const m=getMood(d), box=el('div','day-mood'+(m?' mo'+m.value:''));
+      const tx=el('div','grow'); tx.append(el('b','',m?`Ánimo: ${MOODS[m.value-1][1]}`:'Ánimo sin anotar'));
+      if(m&&m.note) tx.append(el('div','day-note',m.note));
+      box.append(el('span','dm-dot',m?String(m.value):'–'),tx,btn(m?'Cambiar':'Anotar','small secondary',null,()=>{ closeDialog(); setTimeout(()=>openMoodDialog(d),0); },'pencil'));
+      dlg.append(box);
+    }
     const list=h?[h]:habitsForStats().filter(x=>inRange(x,d));
     const ul=el('ul','dl-list');
     for(const x of list){
@@ -4076,6 +4091,50 @@ function renderApp(){
 
 /* ---- Ánimo del día (como en Daylio): 1 a 5 y una nota ---- */
 function getMood(d){ const ix=I(); if(!ix.moods) ix.moods=new Map(state.moods.map(m=>[m.date,m])); return ix.moods.get(d); }
+/* Es lo único que se anota en la app: a partir de la hora elegida pregunta por el día; si falta el de ayer, primero ese */
+const MOOD_ASK_KEY='habitos_v1_moodask';
+const moodAsk=()=>{ try{ const o=JSON.parse(localStorage.getItem(MOOD_ASK_KEY)||'{}'); return o&&typeof o==='object'?o:{}; }catch(e){ return {}; } };
+function snoozeMood(d,min){ const o=moodAsk(), n=Date.now(); for(const k of Object.keys(o)) if(!(o[k]>n)) delete o[k]; o[d]=n+min*60e3; try{ localStorage.setItem(MOOD_ASK_KEY,JSON.stringify(o)); }catch(e){} }
+function moodDue(){
+  if(!state.settings.mood) return null;
+  const t=today(), y=addDaysS(t,-1), o=moodAsk(), n=Date.now(), snz=d=>o[d]>n;
+  const since=state.settings.createdAt?ymd(new Date(state.settings.createdAt)):t;
+  if(y>=since&&!getMood(y)&&!snz(y)) return y;
+  if(new Date().getHours()>=state.settings.moodHour&&!getMood(t)&&!snz(t)) return t;
+  return null;
+}
+function maybeAskMood(){ if(!ready||document.visibilityState!=='visible'||$('dlg').open) return; const d=moodDue(); if(d) openMoodDialog(d,{auto:true}); }
+function openMoodDialog(d,opts={}){
+  hideTip(); if(d>today()) return;
+  const cur=getMood(d); let val=cur?cur.value:0, saved=false;
+  const t=today(), title=opts.auto?(d===t?'¿Qué tal el día?':d===addDaysS(t,-1)?'¿Qué tal fue ayer?':'¿Qué tal fue el día?'):(cur?'Cambiar el ánimo':'Anotar el ánimo');
+  openDialog(dlg=>{
+    dlg.append(modalHeader(title));
+    dlg.append(el('p','muted mood-day',cap(fmtDate(d,true))));
+    const row=el('div','mood-row'); row.setAttribute('role','group'); row.setAttribute('aria-label','Cómo fue el día');
+    const bs=[];
+    for(const [v,l] of MOODS){ const b=el('button','mood-btn'); b.type='button'; b.dataset.m=String(v); b.setAttribute('aria-pressed',v===val?'true':'false'); b.append(el('span','mv',String(v)),el('span','ml',l));
+      b.addEventListener('click',()=>{ val=v; for(const x of bs) x.setAttribute('aria-pressed',x===b?'true':'false'); save.disabled=false; }); bs.push(b); row.append(b); }
+    dlg.append(row);
+    const lb=el('label','mood-lbl','Algo corto sobre el día (opcional)'); lb.htmlFor='moodNote';
+    const inp=field('input'); inp.type='text'; inp.id='moodNote'; inp.maxLength=140; inp.placeholder='Por ejemplo: cena con amigos 🍕'; inp.value=cur&&cur.note||''; inp.autocomplete='off'; inp.setAttribute('enterkeyhint','done');
+    dlg.append(lb,inp);
+    const acts=el('div','row mood-acts');
+    const later=btn(opts.auto?'Ahora no':'Cancelar','secondary',null,()=>closeDialog());
+    const save=btn('Guardar','',null,()=>{
+      if(!val) return; saved=true;
+      const note=inp.value.trim().slice(0,140), now=nowIso();
+      commit(`Ánimo ${d===t?'de hoy':'del '+fmtDate(d)} anotado`,()=>{ state.moods=state.moods.filter(m=>m.date!==d); state.moods.push({date:d,value:val,note,updatedAt:now}); state.moods.sort((a,b)=>a.date<b.date?1:-1); delete state.deleted['mood:'+d]; });
+      closeDialog(); if(opts.auto) setTimeout(maybeAskMood,400);
+    },'check');
+    save.disabled=!val;
+    if(cur&&!opts.auto){ const del=btn('Quitar','ghost danger-txt',null,()=>{ saved=true; commit(`Ánimo del ${fmtDate(d)} quitado`,()=>{ state.moods=state.moods.filter(m=>m.date!==d); state.deleted['mood:'+d]=nowIso(); }); closeDialog(); },'trash'); acts.append(del); }
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&val){ e.preventDefault(); save.click(); } });
+    acts.append(el('span','grow'),later,save); dlg.append(acts);
+    if(opts.auto) dlg.append(el('p','small-print',`Te lo pregunta a partir de las ${pad(state.settings.moodHour)}:00. Se cambia en Ajustes.`));
+  });
+  $('dlg').addEventListener('close',()=>{ if(opts.auto&&!saved) snoozeMood(d,60); },{once:true});
+}
 function ring(frac){
   const s=document.createElementNS(SVGNS,'svg'); s.setAttribute('viewBox','0 0 38 38'); s.setAttribute('aria-hidden','true');
   const r=16, C=2*Math.PI*r;
@@ -4147,6 +4206,22 @@ function renderSettings(v){
   const head=el('header','page-head'); head.append(el('h1','page-title','Ajustes')); v.append(head);
   v.append(habSettingsCard());
   let c, r;
+  // Ánimo del día
+  c=el('section','card'); c.append(h2i('Ánimo del día','sun'));
+  c.append(el('p','muted small','Es lo único que se anota en la app; lo demás viene de Habitica. Una ventana te pregunta cómo fue el día, con una nota corta.'));
+  r=el('div','set-row'); r.append(el('span','lbl','Anotar el ánimo'));
+  const ms=el('div','seg'); ms.setAttribute('role','group'); ms.setAttribute('aria-label','Anotar el ánimo');
+  for(const [k,l] of [[true,'Sí'],[false,'No']]){ const b=btn(l,'',null,()=>setSetting('mood',k)); b.setAttribute('aria-pressed',state.settings.mood===k?'true':'false'); ms.append(b); }
+  r.append(ms); c.append(r);
+  if(state.settings.mood){
+    r=el('div','set-row'); r.append(el('span','lbl','Preguntar a partir de las'));
+    const hs=field('select'); hs.style.width='auto'; hs.setAttribute('aria-label','Hora del aviso del ánimo');
+    for(let i=0;i<24;i++) hs.append(opt(String(i),`${pad(i)}:00`,state.settings.moodHour===i));
+    hs.addEventListener('change',()=>setSetting('moodHour',Number(hs.value))); r.append(hs); c.append(r);
+    r=el('div','set-row'); const m=getMood(today()); r.append(el('span','lbl',m?`Hoy: ${MOODS[m.value-1][1].toLowerCase()}${m.note?` · ${m.note}`:''}`:'Hoy aún no lo has anotado'),btn(m?'Cambiar el de hoy':'Anotar el de hoy','secondary',null,()=>openMoodDialog(today()),'pencil')); c.append(r);
+    c.append(el('p','small-print','Si un día no anotas, al abrir la app al día siguiente te pregunta primero por ese. «Ahora no» lo deja para dentro de una hora. Con «No» desaparece también la estadística del ánimo.'));
+  }
+  v.append(c);
   // Apariencia
   c=el('section','card'); c.append(h2i('Apariencia','sun'));
   r=el('div','set-row'); r.append(el('span','lbl','Tema'));
@@ -4796,7 +4871,7 @@ function renderHabitStats(v,h){
   if(ins.bestM) list.push(['Mejor mes',cap(ins.bestM.x.full),fmtPct(ins.bestM.c)]);
   if(h.kind==='count'){ const q=countIn(h,a,b), days=Math.max(1,daysBetween(a>h.startDate?a:h.startDate,b)+1); list.push(['Media diaria',`${fmtNum(Math.round(q.sum/days*10)/10)}${h.target.unit?' '+h.target.unit:''}`,`Total ${fmtNum(q.sum)}`]); }
   if(av){ const m=I().logs.get(h.id); let last=null; if(m) for(const [d] of m) if(!last||d>last) last=d; const since=last?daysBetween(last,t):daysBetween(h.startDate,t)+1; list.push(['Sin recaer',pl(since,'día','días'),last?`Última: ${fmtDate(last)}`:'Ninguna recaída']); }
-  { const ms=moodStats([h],a,b); if(ms.rel.length) list.push(['Ánimo',`${fmtMood(ms.rel[0].with)} con, ${fmtMood(ms.rel[0].without)} sin`,'Media los días que lo cumples y los que no']); }
+  if(state.settings.mood){ const ms=moodStats([h],a,b); if(ms.rel.length) list.push(['Ánimo',`${fmtMood(ms.rel[0].with)} con, ${fmtMood(ms.rel[0].without)} sin`,'Media los días que lo cumples y los que no']); }
   v.append(tilesOf(list));
   // Puntuación
   const sg=ui.scoreGran||'month';
@@ -4893,7 +4968,7 @@ const NF1=new Intl.NumberFormat('es-ES',{minimumFractionDigits:1,maximumFraction
 const fmtMood=x=>x==null?'—':NF1.format(x);
 function moodCard(habits,a,b){
   const s=moodStats(habits,a,b), c=el('section','card'); c.append(h2i('Ánimo','sun'));
-  if(!s.n){ c.append(el('div','muted','Todavía no has anotado el ánimo de ningún día de este periodo. Se anota al final de «Hoy».')); return c; }
+  if(!s.n){ c.append(el('div','muted',`Todavía no has anotado el ánimo de ningún día de este periodo. La app te lo pregunta cada día a partir de las ${pad(state.settings.moodHour)}:00.`)); return c; }
   c.append(tilesOf([['Ánimo medio',fmtMood(s.avg),'de 1 a 5'],['Días anotados',String(s.n)]]));
   c.append(heatmap(null,habits,ui.statPeriod,'mood',{mood:true}));
   if(s.rel.length){
@@ -4976,7 +5051,7 @@ function renderGlobalStats(v){
   else { const ul=el('ul','rel-list'); for(const r of rel){ const li=el('li'); li.append(el('b','',fmtPts(r.diff)),el('span','',`Los días que cumples «${r.a.name}», cumples «${r.b.name}» el ${fmtPct0(r.p1)} de las veces; los que no, el ${fmtPct0(r.p0)}.`)); ul.append(li); } rc.append(ul); }
   v.append(rc);
   // Ánimo
-  if(state.moods.length) v.append(moodCard(habits,a,b));
+  if(state.settings.mood) v.append(moodCard(habits,a,b));
   // Cuadrícula
   const yc=el('section','card'); yc.append(h2i(cap(periodName()),'grid')); yc.append(heatmap(null,habits,ui.statPeriod,'stats')); v.append(yc);
 }
@@ -5047,11 +5122,12 @@ function sortRows(cols,rows,s){
 const PAGE=100;
 function renderTables(v){
   const head=el('header','page-head'), row=el('div','head-row'), tt=el('div','head-title'); tt.append(el('h1','page-title','Tablas')); row.append(tt);
-  const id=TABLES.some(x=>x[0]===ui.table)?ui.table:'resumen';
+  const TBL=TABLES.filter(x=>x[0]!=='animo'||state.settings.mood);
+  const id=TBL.some(x=>x[0]===ui.table)?ui.table:'resumen';
   const act=el('div','head-actions'); act.append(btn('Exportar CSV','secondary',null,()=>exportCSV(id),'download')); row.append(act);
   head.append(row);
   const tabs=el('div','tabs'); tabs.setAttribute('role','tablist');
-  for(const [k,l] of TABLES){ const bb=btn(l,'tab',null,()=>{ ui.table=k; ui.regPage=0; saveUI(); renderApp(); }); bb.setAttribute('role','tab'); bb.setAttribute('aria-selected',String(k===id)); tabs.append(bb); }
+  for(const [k,l] of TBL){ const bb=btn(l,'tab',null,()=>{ ui.table=k; ui.regPage=0; saveUI(); renderApp(); }); bb.setAttribute('role','tab'); bb.setAttribute('aria-selected',String(k===id)); tabs.append(bb); }
   head.append(tabs, filterBar(false));
   v.append(head);
   if(!state.habits.length){ const e=el('div','empty'); e.append(ic('table'),el('div','',habCfg?'Todavía no hay datos: pulsa «Importar ahora» en el Panel.':'Conecta Habitica en el Panel para ver aquí tus diarias y hábitos.')); v.append(e); return; }
@@ -5127,6 +5203,7 @@ function renderHelp(v){
   sec('Panel',['Personaje (con tu mascota y montura), misión del grupo con la vida del jefe, resumen del establo, diarias de hoy con su racha y su color en Habitica, hábitos de hoy con lo pulsado en + y −, tareas pendientes, diarias cumplidas y experiencia de los últimos 14 días, y tu año de diarias. Toca una diaria o un hábito para ver su ficha.']);
   sec('Establo',['Qué huevos puedes eclosionar ya (con la poción y la mascota que sale), qué mascotas puedes convertir en montura con la comida que tienes (la favorita suma 5 y la demás 2; a 50 es montura), tu comida con la poción que prefiere cada una, tus huevos y pociones, y la colección de mascotas normales (9 huevos × 10 pociones).']);
   sec('Calendario, Estadísticas y Tablas',['Calendario: cada día con el color de lo cumplido; toca un día para ver el detalle.','Estadísticas y Tablas: los botones «Diarias» y «Hábitos» eligen qué se muestra (pulsa uno para quitarlo o añadirlo; pueden ir los dos, pero no ninguno) y el desplegable lista solo lo elegido.','Estadísticas: con «Todas las diarias y hábitos», experiencia ganada, horas a las que marcas, color de cada tarea en Habitica, rachas, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación, etiquetas y relaciones. Con un hábito, su ficha: puntuación, valor en Habitica a lo largo del tiempo, calendario, rachas, frecuencia y cumplimiento.','Tablas: resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones; «Exportar CSV» para Excel (separador «;» y coma decimal).']);
+  sec('Ánimo del día',['Es lo único que se anota en la app. Cada día, a partir de la hora elegida en Ajustes (20:00 si no la cambias), aparece una ventana para elegir cómo fue el día, de «Muy mal» a «Muy bien», y escribir algo corto (admite emojis). Si el día anterior quedó sin anotar, te pregunta primero por ese. «Ahora no» lo deja para dentro de una hora.','En Estadísticas, al pulsar un día del calendario del ánimo ves el ánimo, la nota y lo que hiciste; desde ahí puedes cambiarlo. En Ajustes → «Ánimo del día» puedes dejar de anotarlo: entonces no pregunta y desaparece la estadística.']);
   sec('Personaje',['Atributos y habilidades: cada atributo con lo que aporta tu nivel (la mitad), los puntos que asignaste, el equipo, el bonus de clase (el equipo de tu clase cuenta doble) y los buffs de hoy, y qué efecto tiene. Las habilidades de tu clase salen con sus cifras según tus atributos y cuántas veces te llega el maná.',
     'Equipamiento: eliges para qué lo quieres (experiencia y maná, oro, equilibrio, aguantar o golpear al jefe) y se propone la mejor combinación entre las piezas que tienes, teniendo en cuenta que un arma a dos manos deja libre la mano secundaria. También qué piezas de tu clase de la tienda mejorarían la propuesta. El equipo se cambia en Habitica: Inventario → Equipamiento.']);
   sec('Misión',['La batalla con el jefe: su vida, tu golpe pendiente (lo que le quitarás al cerrar tu día), quién pega más, la previsión de cuándo cae y lo que pasó cada día. Los golpes de cada uno salen del chat del grupo, donde Habitica los anota al cerrar el día de cada persona; el golpe pendiente de los demás no se puede ver.']);
@@ -5151,7 +5228,7 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){ if(pendingSave()) flush(); } else checkDayChange(); });
 window.addEventListener('pagehide',()=>{ if(pendingSave()) flush(); });
 let shownDay=null;
-function checkDayChange(){ if(ready&&shownDay!==today()){ shownDay=today(); touch(); renderApp(); } }
+function checkDayChange(){ if(ready&&shownDay!==today()){ shownDay=today(); touch(); renderApp(); } maybeAskMood(); }
 setInterval(checkDayChange,60000);
 
 async function boot(){
@@ -5168,6 +5245,7 @@ async function boot(){
   renderApp();
   if(syncCfg){ startSyncTimer(); syncNow(); }
   if(habCfg){ startHabTimer(); scheduleHabSync(syncCfg?4000:600); }
+  setTimeout(maybeAskMood,1500);
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/[?&]nosw\b/.test(location.search)){
     navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{});
   }
@@ -5181,7 +5259,7 @@ window.__habitos={
   syncNow, get syncCfg(){ return syncCfg; }, fingerprint,
   mark(hid,d,v){ return commit('Marcado',()=>setLog(hid,d,v)); },   // solo para las pruebas: la interfaz no marca
   mdPlain, mdHTML:s=>{ const d=document.createElement('div'); d.append(mdFrag(s)); return d.innerHTML; },
-  stableInfo, sellInfo, allPotions:()=>allMagicPotions(), pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
+  openMoodDialog, maybeAskMood, moodDue, stableInfo, sellInfo, allPotions:()=>allMagicPotions(), pmStats:(id,a,b)=>pmStats(pmPair(id),a,b), habAlerts,
   habSync, get habRt(){ return habRt; }, get habCfg(){ return habCfg; }, scheduleText, habSchedule:t=>habSchedule(t).schedule, habDailyDays:t=>Object.fromEntries(habDailyDays(t).days), habHabitDays:t=>Object.fromEntries(habHabitDays(t).days), habDayOf, habOpenDay, dueFixed, normSchedule,
   setToday(s){ todayOverride=s||null; touch(); renderApp(); },
   async setState(json){ const st=normalizeState(json); if(!st) throw new Error('estado no válido'); state=st; undoStack.length=0; touch(); if(storeMode==='idb') await idbPut(DB_KEY,JSON.stringify(state)); else localStorage.setItem(LS_FALLBACK,JSON.stringify(state)); renderApp(); return true; },
