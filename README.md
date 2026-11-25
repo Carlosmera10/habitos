@@ -104,3 +104,11 @@ Se sirve con GitHub Pages desde la rama `main`, carpeta `/ (root)`. Archivos: `i
 ## Pruebas
 
 Ganchos en `window.__habitos`: `state`, `normalizeState`, `normalizeItem`, `isDue`, `isScheduled`, `scoreSeries`, `scoreAt`, `relations`, `weekdayRates`, `buildTable`, `dayGlobal`, `habitDay`, `monthCompliance`, `globalCompliance`, `computeStreaks`, `computeStats`, `compliance`, `unitsOf`, `mergeStates`, `undo`, `exportData`, `parseNum`, `syncNow`, `fingerprint`, `habSync`, `habRt`, `stableInfo`, `pmStats`, `habAlerts`, `habSchedule`, `habDailyDays`, `habHabitDays`, `dueFixed`, `normSchedule`, `mark(id, fecha, valor)` (solo para pruebas), `setToday(fecha)` (fija «hoy») y `setState(json)` (escribe en IndexedDB y repinta). Con `?nosw` en la dirección no se registra el service worker.
+
+## Privacidad y avisos
+
+- La app no tiene servidor ni estadísticas de uso: los datos de cada persona se guardan en su navegador (IndexedDB `habitos_v1`). Solo salen hacia Habitica (lecturas con su ID y token) y, si se activa la sincronización, hacia su propio Gist secreto de GitHub, cifrado.
+- El token de Habitica se guarda en `localStorage` (`habitos_v1_hab`), fuera de las copias y de los archivos exportados.
+- La cabecera `X-Client` lleva el ID de usuario de Habitica del autor (`HAB_CREATOR_ID`) y `habitos`, como piden las normas de la API. Las importaciones automáticas (cada 10 minutos con la app a la vista, o al volver a ella si hace más de 5) espacian las llamadas 2,5 s.
+- App gratuita y no oficial, sin relación con Habitica. Arte de Habitica con licencia CC BY-NC-SA 3.0 y código adaptado de markdown-it, linkify-it y markdown-it-emoji (MIT): véase [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+

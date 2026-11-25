@@ -2057,7 +2057,7 @@ function mdDecodeEnt(ent){
 }
 function mdValidCode(c){ if(c>=0xD800&&c<=0xDFFF) return false; if(c>=0xFDD0&&c<=0xFDEF) return false; if((c&0xFFFF)===0xFFFF||(c&0xFFFF)===0xFFFE) return false; if(c>=0x00&&c<=0x08) return false; if(c===0x0B) return false; if(c>=0x0E&&c<=0x1F) return false; if(c>=0x7F&&c<=0x9F) return false; if(c>0x10FFFF) return false; return true; }
 const mdValidLink=url=>{ const s=url.trim().toLowerCase(); return /^(vbscript|javascript|file|data):/.test(s)?/^data:image\/(gif|png|jpeg|webp);/.test(s):true; };
-/* ---- Enlaces automáticos (linkify-it 5, licencia MIT: © Vitaly Puzrin) ---- */
+/* ---- Enlaces automáticos (linkify-it 5, licencia MIT: © Vitaly Puzrin). Emojis: lista de markdown-it-emoji 3 (licencia MIT: © Vitaly Puzrin), la misma que usa Habitica ---- */
 const LKF=(()=>{
   const ZPCc='[\\p{Z}\\p{P}\\p{Cc}]', ZCc='[\\p{Z}\\p{Cc}]', TS='[><\\uff5c]';
   const pseudo=`(?:(?!${TS}|${ZPCc})[\\s\\S])`;
@@ -2495,14 +2495,22 @@ function habNameFrag(h){
 /* Se marca solo en Habitica; Hábitos importa (diarias y hábitos enlazados, con su historial) y analiza.
    Solo se hacen lecturas: nunca se puntúa, ni se cambia de día (POST /cron), ni se toca nada en Habitica. */
 const HAB_KEY='habitos_v1_hab', HAB_NAMES_KEY='habitos_v1_habnames2', HAB_API='https://habitica.com/api/v3';
+/* Normas de la API de Habitica: cada llamada lleva «X-Client» con el ID de usuario de quien creó la herramienta y su nombre
+   (https://github.com/HabitRPG/habitica/wiki/API-Usage-Guidelines). El ID de usuario no es secreto; el token sí, y nunca va aquí. */
+const HAB_CREATOR_ID='', HAB_APP='habitos';
+const habClient=()=>`${HAB_CREATOR_ID||habCfg.userId}-${HAB_APP}`;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function loadHabCfg(){ try{ const c=JSON.parse(localStorage.getItem(HAB_KEY)); if(c&&typeof c==='object'&&c.userId&&c.token) return c; }catch(e){} return null; }
 let habCfg=loadHabCfg();
 function saveHabCfg(){ try{ if(habCfg) localStorage.setItem(HAB_KEY,JSON.stringify(habCfg)); else localStorage.removeItem(HAB_KEY); }catch(e){} }
-const habRt={busy:false,again:false,status:habCfg?'ok':'off',err:null,user:null,party:null,tasks:null,crons:[],timer:null,retryAt:0,last:null};
+const habRt={busy:false,again:false,status:habCfg?'ok':'off',err:null,user:null,party:null,tasks:null,crons:[],timer:null,retryAt:0,last:null,pace:0,lastCall:0};
 async function hab(path,opts={}){
   let res;
+  /* En las importaciones automáticas, las llamadas van espaciadas para no cargar los servidores de Habitica */
+  if(habRt.pace){ const w=habRt.lastCall+habRt.pace-Date.now(); if(w>0) await sleep(w); }
+  habRt.lastCall=Date.now();
   try{
-    res=await fetch(HAB_API+path,{cache:'no-store',headers:opts.anon?{'x-client':habCfg.userId+'-habitos'}:{'x-api-user':habCfg.userId,'x-api-key':habCfg.token,'x-client':habCfg.userId+'-habitos'}});
+    res=await fetch(HAB_API+path,{cache:'no-store',headers:opts.anon?{'x-client':habClient()}:{'x-api-user':habCfg.userId,'x-api-key':habCfg.token,'x-client':habClient()}});
   }catch(e){ throw syncErr('network','No se ha podido conectar con Habitica. Comprueba la conexión.'); }
   if(res.status===401) throw syncErr('token','El ID de usuario o el token de Habitica no son correctos (o el token se ha regenerado).');
   if(res.status===429){ const ra=Math.max(5,Number(res.headers.get('retry-after'))||60); habRt.retryAt=Date.now()+ra*1000; throw syncErr('limit',`Habitica limita las peticiones por minuto; se reintentará dentro de ${ra} s.`); }
@@ -2707,7 +2715,7 @@ async function habSync(opts={}){
   if(!habCfg||!ready) return {ok:false};
   if(habRt.busy){ habRt.again=true; return {ok:false,busy:true}; }
   if(habRt.retryAt&&Date.now()<habRt.retryAt&&!opts.force) return {ok:false};
-  habRt.busy=true; setHabStatus('syncing');
+  habRt.busy=true; setHabStatus('syncing'); habRt.pace=opts.auto?2500:0;
   const stamp=nowIso(); let res={ok:true};
   try{
     const user=await hab('/user?userFields=profile.name,stats,lastCron,history.exp,party._id,party.quest,items.currentPet,items.currentMount,items.eggs,items.hatchingPotions,items.food,items.pets,items.mounts,items.gear,preferences.dayStart,preferences.timezoneOffset,preferences.costume,tags');
@@ -2718,10 +2726,10 @@ async function habSync(opts={}){
     let party=null; if(user.party&&user.party._id){ try{ party=await hab('/groups/party'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; } }
     habRt.party=party;
     /* Batalla: el chat del grupo guarda cada golpe al cerrar el día; los compañeros, cada 15 minutos */
-    if(party&&party.quest&&party.quest.key){
+    if(party&&party.quest&&party.quest.key&&party.quest.active){
       try{ habRt.chat=await hab('/groups/party/chat?limit=200'); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
     } else habRt.chat=null;
-    if(party&&(opts.force||!habRt.membersAt||Date.now()-habRt.membersAt>15*60e3)){
+    if(party&&(opts.force||!habRt.membersAt||Date.now()-habRt.membersAt>30*60e3)){
       try{ habRt.members=await hab('/groups/party/members?includeAllPublicFields=true'); habRt.membersAt=Date.now(); }catch(e){ if(e.kind==='token'||e.kind==='limit') throw e; }
     }
     if(!party){ habRt.members=null; habRt.membersAt=0; }
@@ -2764,7 +2772,7 @@ function xpByDay(){
   for(let i=1;i<ks.length;i++){ const g=state.habitica.xp[ks[i]]-state.habitica.xp[ks[i-1]]; if(g>=0&&daysBetween(ks[i-1],ks[i])<=7) out.set(ks[i],g); }
   return out;
 }
-function scheduleHabSync(delay=2500){ if(!habCfg) return; clearTimeout(habRt.timer); habRt.timer=setTimeout(()=>habSync(),delay); }
+function scheduleHabSync(delay=2500,opts={}){ if(!habCfg) return; clearTimeout(habRt.timer); habRt.timer=setTimeout(()=>habSync(opts),delay); }
 function setHabStatus(s){ habRt.status=s; if(ready&&!$('dlg').open&&(ui.view==='habitica'||ui.view==='today')) renderApp(); else if(ready) renderNav(); }
 function habSnap(){
   const u=habRt.user||{}, st=u.stats||{}, q=(habRt.party&&habRt.party.quest)||null, it=u.items||{}, gr=it.gear||{};
@@ -2781,8 +2789,10 @@ function habSnap(){
     items:{eggs:it.eggs||{},hatchingPotions:it.hatchingPotions||{},food:it.food||{},pets:it.pets||{},mounts:it.mounts||{}},at:nowIso()};
 }
 let habTimer=null;
-function startHabTimer(){ clearInterval(habTimer); if(habCfg) habTimer=setInterval(()=>{ if(document.visibilityState==='visible') habSync({quiet:true}); },180000); }
-document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&habCfg&&ready) scheduleHabSync(1200); });
+/* Automático solo con la app abierta y a la vista: cada 10 minutos, y al volver a ella si hace más de 5 minutos de la última importación */
+function startHabTimer(){ clearInterval(habTimer); if(habCfg) habTimer=setInterval(()=>{ if(document.visibilityState==='visible') habSync({quiet:true,auto:true}); },600000); }
+const habStale=()=>!habCfg||!habCfg.lastPull||Date.now()-Date.parse(habCfg.lastPull)>5*60e3;
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&habCfg&&ready&&habStale()) scheduleHabSync(1200,{auto:true}); });
 window.addEventListener('online',()=>{ if(habCfg&&ready) scheduleHabSync(1000); });
 /* Los hábitos enlazados se marcan en Habitica */
 function habLocked(h){
@@ -5203,6 +5213,9 @@ function renderHelp(v){
   sec('Panel',['Personaje (con tu mascota y montura), misión del grupo con la vida del jefe, resumen del establo, diarias de hoy con su racha y su color en Habitica, hábitos de hoy con lo pulsado en + y −, tareas pendientes, diarias cumplidas y experiencia de los últimos 14 días, y tu año de diarias. Toca una diaria o un hábito para ver su ficha.']);
   sec('Establo',['Qué huevos puedes eclosionar ya (con la poción y la mascota que sale), qué mascotas puedes convertir en montura con la comida que tienes (la favorita suma 5 y la demás 2; a 50 es montura), tu comida con la poción que prefiere cada una, tus huevos y pociones, y la colección de mascotas normales (9 huevos × 10 pociones).']);
   sec('Calendario, Estadísticas y Tablas',['Calendario: cada día con el color de lo cumplido; toca un día para ver el detalle.','Estadísticas y Tablas: los botones «Diarias» y «Hábitos» eligen qué se muestra (pulsa uno para quitarlo o añadirlo; pueden ir los dos, pero no ninguno) y el desplegable lista solo lo elegido.','Estadísticas: con «Todas las diarias y hábitos», experiencia ganada, horas a las que marcas, color de cada tarea en Habitica, rachas, cumplimiento por dificultad, por mes, por semana y por día de la semana, ranking, comparación, etiquetas y relaciones. Con un hábito, su ficha: puntuación, valor en Habitica a lo largo del tiempo, calendario, rachas, frecuencia y cumplimiento.','Tablas: resumen, meses, semanas, días de la semana, etiquetas, rachas, registros y relaciones; «Exportar CSV» para Excel (separador «;» y coma decimal).']);
+  sec('Privacidad, créditos y licencias',['Hábitos es una app gratuita y no oficial: no tiene relación con Habitica ni con HabitRPG, Inc. Se ofrece tal cual, sin garantía; haz una copia de vez en cuando en Ajustes → Copias de seguridad → Exportar.',
+    ['Tus datos se guardan solo en este navegador. La app no tiene servidor ni estadísticas de uso: nadie más ve lo que anotas.','Solo salen de aquí hacia Habitica, para leer tu cuenta (el ID y el token van únicamente a habitica.com), y hacia tu propio Gist secreto de GitHub, cifrado, si activas la sincronización.','Como en cualquier web, GitHub (que aloja la app) y el servidor de imágenes de Habitica reciben la dirección IP de quien la abre.','El token da acceso completo a tu cuenta de Habitica y se guarda solo en este dispositivo, fuera de las copias. Si crees que alguien lo ha visto, regéneralo en habitica.com → Ajustes → API.','La vista Misión muestra datos de tus compañeros de grupo (nombre, clase, vida y golpes) que ya ves en Habitica; no salen de tu dispositivo.'],
+    'Créditos: las imágenes de mascotas, objetos, equipo y jefes son de Habitica y se cargan desde sus servidores; su arte tiene licencia CC BY-NC-SA 3.0, que no permite el uso comercial. La lectura de Markdown adapta markdown-it y linkify-it, y los emojis vienen de markdown-it-emoji (licencia MIT, © Vitaly Puzrin y Alex Kocharin). El código de la app es público en github.com/Carlosmera10/habitos.']);
   sec('Ánimo del día',['Es lo único que se anota en la app. Cada día, a partir de la hora elegida en Ajustes (20:00 si no la cambias), aparece una ventana para elegir cómo fue el día, de «Muy mal» a «Muy bien», y escribir algo corto (admite emojis). Si el día anterior quedó sin anotar, te pregunta primero por ese. «Ahora no» lo deja para dentro de una hora.','En Estadísticas, al pulsar un día del calendario del ánimo ves el ánimo, la nota y lo que hiciste; desde ahí puedes cambiarlo. En Ajustes → «Ánimo del día» puedes dejar de anotarlo: entonces no pregunta y desaparece la estadística.']);
   sec('Personaje',['Atributos y habilidades: cada atributo con lo que aporta tu nivel (la mitad), los puntos que asignaste, el equipo, el bonus de clase (el equipo de tu clase cuenta doble) y los buffs de hoy, y qué efecto tiene. Las habilidades de tu clase salen con sus cifras según tus atributos y cuántas veces te llega el maná.',
     'Equipamiento: eliges para qué lo quieres (experiencia y maná, oro, equilibrio, aguantar o golpear al jefe) y se propone la mejor combinación entre las piezas que tienes, teniendo en cuenta que un arma a dos manos deja libre la mano secundaria. También qué piezas de tu clase de la tienda mejorarían la propuesta. El equipo se cambia en Habitica: Inventario → Equipamiento.']);
